@@ -106,6 +106,12 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .chan dd{margin:0;font-weight:800;font-variant-numeric:tabular-nums}
 .chan dd.top{color:var(--pastel)}
 
+/* ảnh chân dung: ảnh in, viền pastel lệch */
+.portrait{position:relative;isolation:isolate;width:clamp(104px,9vw,140px);aspect-ratio:4/5;margin:0 0 22px;max-width:100%}
+.portrait img{display:block;width:100%;height:100%;object-fit:cover;object-position:60% 25%}
+.portrait::after{content:"";position:absolute;inset:0;transform:translate(10px,10px);border:1px solid var(--pastel);z-index:-1}
+.portrait.big{width:clamp(150px,15vw,210px);margin-bottom:26px}
+
 /* AI lab */
 .ailab{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(16px,3vw,40px);align-items:start;max-width:1180px}
 .ailab .pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,18px)}
@@ -249,6 +255,7 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
   <div class="wrap">
     <div class="hero">
       <div>
+        <figure class="portrait"><img src="tuan.jpg" alt="Ảnh chân dung Nguyễn Duy Việt Tuấn" width="640" height="800"></figure>
         <div class="cap">Video Producer · Hà Nội</div>
         <h1>Nguyễn Duy<br>Việt Tuấn</h1>
         <div class="it role">video producer &amp; editor</div>
@@ -481,6 +488,7 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
   <div class="wrap">
     <div class="contact">
       <div class="l">
+        <figure class="portrait big"><img src="tuan.jpg" alt="Ảnh chân dung Nguyễn Duy Việt Tuấn" width="640" height="800" loading="lazy"></figure>
         <div class="cap">(06) Liên hệ</div>
         <h2>Nguyễn Duy<br>Việt Tuấn</h2>
         <div class="it" style="font-size:clamp(24px,2.6vw,34px)">video producer &amp; editor</div>
@@ -526,7 +534,7 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
   slides.forEach(s=>{
     let k=0;
     s.querySelectorAll('h1,h2,.hero .role').forEach(el=>{el.classList.add('m');el.style.setProperty('--i',k++);});
-    s.querySelectorAll('.cap:not(.cat),.sec,.head p,.head .aside,.hero p,.hero .meta,.reel,figure,.chan,.stat,.note,.tl li,.sk li,.tools>div,.ci,.contact .l>.it,.contact .l>p').forEach(el=>{
+    s.querySelectorAll('.portrait,.cap:not(.cat),.sec,.head p,.head .aside,.hero p,.hero .meta,.reel,figure,.chan,.stat,.note,.tl li,.sk li,.tools>div,.ci,.contact .l>.it,.contact .l>p').forEach(el=>{
       if(el.closest('.top')) return; el.classList.add('a'); el.style.setProperty('--i',k++); });
     s.querySelectorAll('.chip').forEach(el=>{ const p=el.closest('.a'); el.style.setProperty('--i',p?p.style.getPropertyValue('--i'):0); });
   });
