@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="vi">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Portfolio Tuấn Nguyễn</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: một deck slide ngang như timeline dựng phim — thanh trên là tên + phần đang xem, thanh dưới là timeline có timecode */
+:root{
+  --ink:#07080b; --navy:#0e1e44; --navy-2:#1a3268; --pastel:#a8c8f2; --paper:#eef2f8; --muted:#8290ad; --line:#253252;
+  --f-sans:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+  --f-serif:"Cormorant Garamond","Times New Roman",Georgia,serif;
+  --gut-l:max(16px, env(safe-area-inset-left, 0px)); --gut-r:max(16px, env(safe-area-inset-right, 0px));
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--ink);color:var(--paper);font-family:var(--f-sans);font-size:15px;line-height:1.55;overflow:hidden;
+  display:flex;flex-direction:column}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--pastel);outline-offset:3px}
+.it{font-family:var(--f-serif);font-style:italic;font-weight:500;color:var(--pastel);letter-spacing:0}
+.cap{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:var(--muted)}
+
+/* thanh trên */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px;
+  padding-left:var(--gut-l);padding-right:var(--gut-r);border-bottom:1px solid var(--line);flex:0 0 auto}
+.top .who{font-weight:700;font-size:14px;white-space:nowrap}
+.top .now{display:flex;align-items:baseline;gap:10px;min-width:0}
+.top .now .it{font-size:20px}
+.top .now span:last-child{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* sân khấu */
+.stage{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
+.track{display:flex;height:100%}
+@media (prefers-reduced-motion:reduce){.track{transition:none}}
+.slide{flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;padding-block:clamp(20px,4vh,48px);
+  padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(18px,3vh,32px);min-height:100%}
+.head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 32px;align-items:end}
+.head h2{margin:0;font-size:clamp(28px,4.2vw,52px);line-height:1.05;font-weight:800;letter-spacing:-.01em;text-wrap:balance}
+.head .sec{grid-column:1/-1;display:flex;gap:10px;align-items:baseline}
+.head .sec .it{font-size:22px}
+.head p{margin:0;max-width:62ch;color:#c9d3e6}
+.head .aside{text-align:right;font-size:13px;color:var(--muted)}
+.head .aside b{display:block;color:var(--paper);font-size:15px}
+
+/* video */
+.vid{position:relative;background:#000;border-radius:14px;overflow:hidden;max-width:100%}
+.vid video{display:block;width:100%;height:100%;object-fit:cover}
+.v9{aspect-ratio:9/16}.v16{aspect-ratio:16/9}
+figure{margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+figcaption{display:flex;flex-direction:column;gap:6px}
+figcaption .t{font-weight:700;font-size:14px}
+figcaption .t .it{font-size:17px;margin-left:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+  padding:5px 9px 5px 8px;background:var(--navy);border:1px solid rgba(168,200,242,.55);color:var(--paper)}
+.chip::before{content:"";width:5px;height:5px;background:var(--pastel)}
+.row{display:grid;gap:clamp(12px,2vw,24px)}
+.r4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.r3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.r2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.phones{max-width:860px}
+.phones.r3{max-width:700px}
+
+/* slide 1 */
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,56px);align-items:center;flex:1}
+.hero h1{margin:10px 0 6px;font-size:clamp(44px,7vw,96px);line-height:.98;font-weight:800;letter-spacing:-.02em}
+.hero .role{font-size:clamp(26px,3vw,40px)}
+.hero p{max-width:46ch;color:#c9d3e6;margin:18px 0 0}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:22px;font-size:13px;color:var(--muted)}
+.reel{position:relative}
+.reel .vid{border-radius:6px;box-shadow:0 30px 60px -20px rgba(0,0,0,.7)}
+.reel video{object-fit:contain}
+.play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:12px;background:linear-gradient(180deg,transparent 40%,rgba(7,8,11,.55));
+  border:0;cursor:pointer;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+.play i{width:64px;height:64px;border-radius:50%;background:var(--paper);display:grid;place-items:center}
+.play i::after{content:"";border-left:16px solid var(--ink);border-top:10px solid transparent;border-bottom:10px solid transparent;margin-left:4px}
+.reel .tc{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* số liệu */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);flex:1;align-content:center}
+.stat{padding:28px 24px 8px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.stat:first-child{border-left:0;padding-left:0}
+.stat .n{font-size:clamp(48px,6.5vw,96px);font-weight:800;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat .n em{font-style:normal;color:var(--pastel)}
+.stat .it{font-size:26px}
+.stat p{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:24ch}
+.note{font-size:12px;color:var(--muted);margin:0}
+
+/* kênh tiktok */
+.chans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.6vw,20px)}
+.chan{display:grid;grid-template-columns:clamp(96px,9vw,128px) minmax(0,1fr);gap:16px;padding:14px;border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(14,30,68,.55),rgba(14,30,68,.15))}
+.chan .vid{border-radius:8px}
+.chan h3{margin:0;font-size:18px;line-height:1.2}
+.chan .h{font-size:16px;display:block;margin-top:2px}
+.chan .cat{margin-bottom:6px}
+.chan dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:12px 0;font-size:13px}
+.chan dt{color:var(--muted)}
+.chan dd{margin:0;font-weight:800;font-variant-numeric:tabular-nums}
+.chan dd.top{color:var(--pastel)}
+
+/* AI lab */
+.ailab{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(16px,3vw,40px);align-items:start;max-width:1180px}
+.ailab .pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,18px)}
+.prompt{margin:4px 0 0;font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:12px;line-height:1.6;color:var(--muted);
+  border-left:2px solid var(--pastel);padding:4px 0 4px 12px;max-width:60ch}
+.tag{position:absolute;top:10px;left:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 8px;
+  background:rgba(7,8,11,.7);border:1px solid var(--line)}
+.tag.on{background:var(--navy);border-color:rgba(168,200,242,.6)}
+.snd{position:absolute;right:10px;bottom:12px;border:1px solid rgba(168,200,242,.6);background:rgba(7,8,11,.65);padding:6px 10px;
+  font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:background-color .4s var(--ease)}
+.snd:hover,.snd[aria-pressed="true"]{background:var(--navy-2)}
+
+/* phim */
+.film{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,2vw,24px);max-width:1000px}
+.film .vid{border-radius:4px}
+
+/* timeline kinh nghiệm */
+.tl{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px;border-top:1px solid #50648f;padding-top:26px;margin-top:40px}
+.tl li{list-style:none;position:relative;display:flex;flex-direction:column;gap:6px}
+.tl li::before{content:"";position:absolute;top:-32px;left:0;width:11px;height:11px;background:var(--pastel)}
+.tl .y{position:absolute;top:-88px;left:-2px;font-weight:800;font-size:clamp(30px,3vw,44px);letter-spacing:-.02em}
+.tl b{font-size:15px}
+.tl span{font-size:13px;color:#c9d3e6}
+.tl ul{padding:0;margin:0}
+.exp{background:var(--navy)}
+
+/* kỹ năng */
+.skills{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);flex:1;align-content:center}
+.sk{list-style:none;padding:0;margin:0;border-top:1px solid var(--line)}
+.sk li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px;padding:14px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.sk li b{font-size:clamp(18px,2vw,24px);font-weight:800}
+.sk li span{color:#c9d3e6;font-size:14px}
+.tools{display:flex;flex-direction:column;gap:22px}
+.tools .list{display:flex;flex-wrap:wrap;gap:8px}
+.tools .list span{padding:8px 12px;border:1px solid var(--line);font-weight:700;font-size:13px}
+.edu{border-left:2px solid var(--pastel);padding-left:14px}
+.edu b{display:block}
+
+/* liên hệ */
+.contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);flex:1;align-items:stretch;margin-inline:calc(-1 * var(--gut-l)) calc(-1 * var(--gut-r));margin-block:calc(-1 * clamp(20px,4vh,48px))}
+.contact .l{padding:clamp(28px,6vh,72px) var(--gut-r) clamp(28px,6vh,72px) var(--gut-l);display:flex;flex-direction:column;justify-content:center;gap:10px}
+.contact .l h2{margin:0;font-size:clamp(40px,6vw,84px);line-height:1;font-weight:800;letter-spacing:-.02em}
+.contact .r{background:var(--navy);padding:clamp(28px,6vh,72px) var(--gut-r) clamp(28px,6vh,72px) clamp(20px,4vw,56px);display:flex;flex-direction:column;justify-content:center;gap:26px}
+.ci{display:flex;flex-direction:column;gap:4px;border-bottom:1px solid #3c5288;padding-bottom:16px}
+.ci .it{font-size:20px}
+.ci .v{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ci .v strong{font-size:clamp(17px,2vw,24px);user-select:all;overflow-wrap:anywhere}
+.copy{border:1px solid rgba(168,200,242,.6);background:transparent;padding:5px 10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;cursor:pointer}
+.copy:hover{background:var(--navy-2)}
+
+/* thanh dưới: timeline */
+.bar{flex:0 0 auto;border-top:1px solid var(--line);padding-block:10px 12px;padding-left:var(--gut-l);padding-right:var(--gut-r);
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center}
+.nav{width:40px;height:40px;border:1px solid var(--line);background:transparent;cursor:pointer;display:grid;place-items:center}
+.nav:hover{background:var(--navy)}
+.nav:disabled{opacity:.3;cursor:default}
+.nav svg{width:16px;height:16px;fill:none;stroke:var(--paper);stroke-width:2}
+.tlbar{display:flex;gap:3px;min-width:0}
+.tlbar button{flex:1;min-width:0;border:0;background:transparent;padding:0;cursor:pointer;display:flex;flex-direction:column;gap:6px;text-align:left}
+.tlbar button i{display:block;height:6px;background:var(--line)}
+.tlbar button.done i{background:#3c5288}
+.tlbar button[aria-current="true"] i{background:var(--pastel)}
+.tlbar button span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tlbar button[aria-current="true"] span{color:var(--paper)}
+.count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+@media (max-width:1000px){
+  .r4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .chans{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tl{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:96px}
+}
+@media (max-width:720px){
+  .hero,.skills,.contact,.ailab{grid-template-columns:minmax(0,1fr)}
+  .head{grid-template-columns:minmax(0,1fr)}
+  .head .aside{text-align:left}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat{padding:20px 14px 14px;border-left:0;border-top:1px solid var(--line)}
+  .stat:nth-child(even){border-left:1px solid var(--line)}
+  .stat:first-child{padding-left:14px}
+  .chans,.film{grid-template-columns:minmax(0,1fr)}
+  .r3{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .tl{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tlbar button span{display:none}
+  .top .who{display:none}
+  .contact{margin-block:0}
+  .tc-live{display:none}
+}
+
+/* ---------- animation khi vào slide ---------- */
+:root{--ease:cubic-bezier(.22,1,.36,1);--ease-io:cubic-bezier(.65,0,.35,1)}
+@keyframes rise{from{opacity:0;transform:translateY(14px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes lift{from{opacity:0;transform:translateY(.45em);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes dot{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+@keyframes panel{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes label{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.track{transition:transform .95s var(--ease-io)}
+.slide{transition:opacity .9s var(--ease-io),transform .95s var(--ease-io)}
+.slide:not(.cur){opacity:.25;transform:scale(.965)}
+.slide.in .a{animation:rise 1s var(--ease) both;animation-delay:calc(var(--i,0) * 60ms + 180ms)}
+.slide.in .m{animation:lift 1.1s var(--ease) both;animation-delay:calc(var(--i,0) * 60ms + 120ms)}
+.slide.in .chip{animation:slideIn .8s var(--ease) both;animation-delay:calc(var(--i,0) * 60ms + 560ms)}
+.slide.in .chip+.chip{animation-delay:calc(var(--i,0) * 60ms + 660ms)}
+.tl::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:var(--pastel);transform-origin:left}
+.slide.in .tl::before{animation:grow 1.8s var(--ease-io) both .25s}
+.slide.in .tl li::before{animation:dot .9s var(--ease) both;animation-delay:calc(var(--i,0) * 60ms + 400ms)}
+.slide.in .contact .r{animation:panel 1.1s var(--ease) both .15s}
+.vid video{transition:transform 1.2s var(--ease)}
+figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
+.chan{transition:border-color .6s var(--ease),transform .6s var(--ease),box-shadow .6s var(--ease)}
+.chan:hover{border-color:rgba(168,200,242,.5);transform:translateY(-2px);box-shadow:0 18px 40px -24px rgba(0,0,0,.9)}
+.sk li{transition:padding-left .6s var(--ease)}
+.sk li b{transition:color .6s var(--ease)}
+.sk li:hover{padding-left:8px}
+.sk li:hover b{color:var(--pastel)}
+.tlbar button i{transition:background-color .8s var(--ease-io)}
+.nav,.copy{transition:background-color .4s var(--ease)}
+#nowName.swap,#nowNum.swap{animation:label .6s var(--ease) both}
+.tc-live{font-variant-numeric:tabular-nums;color:var(--pastel);margin-left:14px}
+.rec{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e5484d;margin-right:6px;vertical-align:1px;animation:breathe 2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){
+  .slide.in .a,.slide.in .m,.slide.in .chip,.slide.in .tl::before,.slide.in .tl li::before,.slide.in .contact .r,#nowName.swap,#nowNum.swap{animation:none}
+  .rec{animation:none}
+  .vid video,.chan,.sk li,.track,.slide{transition:none}
+  .slide:not(.cur){opacity:1;transform:none}
+}
+</style>
+
+<header class="top">
+  <div class="who">Nguyễn Duy Việt Tuấn</div>
+  <div class="now" aria-live="polite"><span class="it" id="nowNum">(00)</span><span id="nowName">Showreel</span></div>
+  <div class="cap">Portfolio 2019 — 2026<span class="tc-live"><span class="rec"></span><span id="tc">00:00:00:00</span></span></div>
+</header>
+<main class="stage" id="stage">
+<div class="track" id="track">
+
+<!-- 00 SHOWREEL -->
+<section class="slide" id="showreel" data-num="00" data-name="Showreel">
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <div class="cap">Video Producer · Hà Nội</div>
+        <h1>Nguyễn Duy<br>Việt Tuấn</h1>
+        <div class="it role">video producer &amp; editor</div>
+        <p>Hơn 6 năm làm video: quảng cáo sản phẩm, video ads AI, xây kênh TikTok cho F&amp;B và thương hiệu, phim ngắn và MV. Từ ý tưởng, kịch bản, quay đến dựng, màu và âm thanh.</p>
+        <div class="meta"><span>Journey Official</span><span>Crossian</span><span>SVM Group</span><span>Hài Quang Thắng</span><span>AI video</span></div>
+      </div>
+      <div class="reel">
+        <div class="vid v16">
+          <video id="reel" src="showreel.mp4" poster="showreel.jpg" preload="metadata" playsinline></video>
+          <button class="play" id="playReel" aria-label="Phát showreel có tiếng"><i></i>Xem showreel · 60s</button>
+        </div>
+        <div class="tc"><span>Showreel 2026 · 1920×1080</span><span>Bấm → để xem từng phần</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SỐ LIỆU -->
+<section class="slide" id="numbers" data-num="00" data-name="Số liệu">
+  <div class="wrap">
+    <div class="head"><div class="sec"><span class="it">By the numbers</span></div>
+      <h2>Những con số từ các kênh và dự án đã làm</h2></div>
+    <div class="stats">
+      <div class="stat"><div class="n" data-to="6" data-dec="0" data-suf="">6<em>+</em></div><span class="it">năm</span><p>Làm sản xuất video, từ 2019 đến nay</p></div>
+      <div class="stat"><div class="n" data-to="200" data-dec="0" data-suf="K">200K<em>+</em></div><span class="it">followers</span><p>Xây dựng trên 6 kênh TikTok</p></div>
+      <div class="stat"><div class="n" data-to="90" data-dec="0" data-suf="M">90M<em>+</em></div><span class="it">lượt xem</span><p>Cộng từ các video top của các kênh</p></div>
+      <div class="stat"><div class="n" data-to="2.9" data-dec="1" data-suf="M">2.9M<em>+</em></div><span class="it">lượt thích</span><p>Tổng lượt thích trên TikTok</p></div>
+    </div>
+    <p class="note">Số liệu lấy từ trang TikTok của từng kênh, tháng 10/2026.</p>
+  </div>
+</section>
+
+<!-- 01 JOURNEY -->
+<section class="slide" id="journey" data-num="01" data-name="Performance Ads · Journey">
+  <div class="wrap">
+    <div class="head">
+      <div class="sec"><span class="it">(01)</span><span class="cap">Performance Ads</span></div>
+      <h2>Quảng cáo sản phẩm công nghệ cho Journey Official</h2>
+      <div class="aside"><b>107K followers</b>video top 6.5M view</div>
+      <p>Video ads cho phụ kiện công nghệ của Journey và Alogic (thị trường nước ngoài): hook, product demo, ASMR. Kiêm leader team Organic làm nội dung TikTok, Instagram · 2023 – 2025.</p>
+    </div>
+    <div class="row r4 phones">
+      <figure><div class="vid v9"><video data-loop src="j-axie.mp4" poster="j-axie.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">AXIE<span class="it">hook</span></span><div class="chips"><span class="chip">Hook editing</span></div></figcaption></figure>
+      <figure><div class="vid v9"><video data-loop src="j-nova.mp4" poster="j-nova.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">NOVA<span class="it">hook</span></span><div class="chips"><span class="chip">Color grading</span></div></figcaption></figure>
+      <figure><div class="vid v9"><video data-loop src="j-trio.mp4" poster="j-trio.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">TRIO<span class="it">product demo</span></span><div class="chips"><span class="chip">Product cinematography</span></div></figcaption></figure>
+      <figure><div class="vid v9"><video data-loop src="j-loc8.mp4" poster="j-loc8.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">LOC8 Motion<span class="it">demo</span></span><div class="chips"><span class="chip">Pacing &amp; text</span></div></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 02 CROSSIAN -->
+<section class="slide" id="crossian" data-num="01" data-name="Performance Ads · Crossian">
+  <div class="wrap">
+    <div class="head">
+      <div class="sec"><span class="it">(01)</span><span class="cap">Performance Ads</span></div>
+      <h2>Video ads AI tại Crossian</h2>
+      <div class="aside"><b>Editor</b>2025 – 2026</div>
+      <p>Dựng video quảng cáo hiệu suất có dùng AI cho các sản phẩm của Crossian, cùng MV thương hiệu 4K và phim sự kiện cuối năm.</p>
+    </div>
+    <div class="row r3 phones">
+      <figure><div class="vid v9"><video data-loop src="c-holdme.mp4" poster="c-holdme.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">HoldmeMark<span class="it">AI ad</span></span><div class="chips"><span class="chip">AI video</span></div></figcaption></figure>
+      <figure><div class="vid v9"><video data-loop src="c-inspouch.mp4" poster="c-inspouch.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Inspouch<span class="it">AI ad</span></span><div class="chips"><span class="chip">Motion text</span></div></figcaption></figure>
+      <figure><div class="vid v9"><video data-loop src="c-owen.mp4" poster="c-owen.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">OwenAxis<span class="it">AI ad</span></span><div class="chips"><span class="chip">Performance editing</span></div></figcaption></figure>
+    </div>
+    <div class="row r2" style="max-width:1000px">
+      <figure><div class="vid v16"><video data-loop src="c-mv.mp4" poster="c-mv.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">MV Crossian<span class="it">4K brand film</span></span><div class="chips"><span class="chip">Cinematography</span><span class="chip">Color grading</span></div></figcaption></figure>
+      <figure><div class="vid v16"><video data-loop src="c-banana.mp4" poster="c-banana.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Banana Land<span class="it">year-end event film</span></span><div class="chips"><span class="chip">2D graphics</span><span class="chip">Edit</span></div></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- AI LAB -->
+<section class="slide" id="ailab" data-num="01" data-name="AI Lab">
+  <div class="wrap">
+    <div class="head">
+      <div class="sec"><span class="it">(01)</span><span class="cap">AI Lab · Gemini Veo</span></div>
+      <h2>Video AI: từ prompt đến bản dựng hoàn chỉnh</h2>
+      <div class="aside"><b>Prompt → Veo → hậu kỳ</b>tháng 10/2026</div>
+      <p>Tạo cảnh bằng Gemini (Veo), sau đó làm hậu kỳ như một video thật: chọn đoạn đẹp, cắt bỏ lỗi AI, chỉnh màu, thêm chữ, nhạc và SFX.</p>
+    </div>
+    <div class="ailab">
+      <figure>
+        <div class="vid v16"><video data-loop src="ai-intro.mp4" poster="ai-intro.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Behind the timeline<span class="it">intro showreel 2026</span></span>
+          <div class="chips"><span class="chip">AI video</span><span class="chip">Prompt design</span></div>
+          <p class="prompt">"Cinematic slow dolly-in on a video editor's desk at night… deep navy ambient light, soft pastel blue rim light… 35mm film look."</p></figcaption>
+      </figure>
+      <div class="pair">
+        <figure><div class="vid v9"><video data-loop src="ai-raw.mp4" poster="ai-raw.jpg" muted loop playsinline preload="none"></video><span class="tag">AI thô</span></div>
+          <figcaption><span class="t">Đế sạc không dây<span class="it">raw Veo</span></span><div class="chips"><span class="chip">10s · 1 prompt</span></div></figcaption></figure>
+        <figure><div class="vid v9"><video data-loop id="aiEdit" src="ai-edit.mp4" poster="ai-edit.jpg" muted loop playsinline preload="none"></video><span class="tag on">Đã dựng</span>
+          <button class="snd" data-target="aiEdit" aria-pressed="false">Bật tiếng</button></div>
+          <figcaption><span class="t">Concept ad<span class="it">8s, đã hậu kỳ</span></span><div class="chips"><span class="chip">Cắt lỗi AI</span><span class="chip">Text + SFX</span></div></figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 TIKTOK -->
+<section class="slide" id="tiktok" data-num="02" data-name="TikTok Channels">
+  <div class="wrap">
+    <div class="head">
+      <div class="sec"><span class="it">(02)</span><span class="cap">TikTok Channels · 2025 – 2026</span></div>
+      <h2>6 kênh TikTok: lên ý tưởng, quay, dựng và phát triển kênh</h2>
+      <div class="aside"><b>F&amp;B · Lifestyle · Brand</b>số liệu tại trang kênh</div>
+    </div>
+    <div class="chans">
+      <article class="chan"><div class="vid v9"><video data-loop src="t-bongbang.mp4" poster="t-bongbang.jpg" muted loop playsinline preload="none"></video></div>
+        <div><div class="cap cat">F&amp;B</div><h3>Bánh mì Bống Bang</h3><span class="it h">@banhmi.bongngbang75</span>
+          <dl><dt>Followers</dt><dd>19.3K</dd><dt>Likes</dt><dd>426.9K</dd><dt>Video top</dt><dd class="top">3.3M view</dd></dl>
+          <div class="chips"><span class="chip">Concept &amp; script</span><span class="chip">Shoot</span></div></div></article>
+      <article class="chan"><div class="vid v9"><video data-loop src="t-bongcha.mp4" poster="t-bongcha.jpg" muted loop playsinline preload="none"></video></div>
+        <div><div class="cap cat">F&amp;B</div><h3>BôngCha</h3><span class="it h">@bongcha75</span>
+          <dl><dt>Followers</dt><dd>4,966</dd><dt>Likes</dt><dd>72K</dd><dt>Video top</dt><dd class="top">470.3K view</dd></dl>
+          <div class="chips"><span class="chip">Product styling</span><span class="chip">Edit</span></div></div></article>
+      <article class="chan"><div class="vid v9"><video data-loop src="t-kimngan.mp4" poster="t-kimngan.jpg" muted loop playsinline preload="none"></video></div>
+        <div><div class="cap cat">Lifestyle</div><h3>Kim Ngân 9Life</h3><span class="it h">@kimngan.9life</span>
+          <dl><dt>Followers</dt><dd>55.8K</dd><dt>Likes</dt><dd>1.1M</dd><dt>Video top</dt><dd class="top">2.6M view</dd></dl>
+          <div class="chips"><span class="chip">Storytelling</span><span class="chip">Edit</span></div></div></article>
+      <article class="chan"><div class="vid v9"><video data-loop src="t-hadon.mp4" poster="t-hadon.jpg" muted loop playsinline preload="none"></video></div>
+        <div><div class="cap cat">F&amp;B</div><h3>Hà Đôn</h3><span class="it h">@hadon.fnb</span>
+          <dl><dt>Followers</dt><dd>3,948</dd><dt>Likes</dt><dd>132.2K</dd><dt>Video top</dt><dd class="top">2.8M view</dd></dl>
+          <div class="chips"><span class="chip">Subtitle design</span><span class="chip">Edit</span></div></div></article>
+      <article class="chan"><div class="vid v9"><video data-loop src="t-greensm.mp4" poster="t-greensm.jpg" muted loop playsinline preload="none"></video></div>
+        <div><div class="cap cat">Brand</div><h3>Green SM Platform</h3><span class="it h">@greensm.platform</span>
+          <dl><dt>Followers</dt><dd>17.8K</dd><dt>Likes</dt><dd>131.1K</dd><dt>Video top</dt><dd class="top">14.2M view</dd></dl>
+          <div class="chips"><span class="chip">Talking-head edit</span><span class="chip">Color</span></div></div></article>
+      <article class="chan"><div class="vid v9"><video data-loop src="t-journey.mp4" poster="t-journey.jpg" muted loop playsinline preload="none"></video></div>
+        <div><div class="cap cat">Brand</div><h3>Journey</h3><span class="it h">@thejrnyofficial</span>
+          <dl><dt>Followers</dt><dd>107K</dd><dt>Likes</dt><dd>1.1M</dd><dt>Video top</dt><dd class="top">6.5M view</dd></dl>
+          <div class="chips"><span class="chip">Product demo</span><span class="chip">2D motion</span></div></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- 04 FILM & MV -->
+<section class="slide" id="film" data-num="03" data-name="Film & Music Video">
+  <div class="wrap">
+    <div class="head">
+      <div class="sec"><span class="it">(03)</span><span class="cap">Film &amp; Music Video</span></div>
+      <h2>Web drama cho SVM Group, MV parody với Hài Quang Thắng</h2>
+      <div class="aside"><b>SVM Group</b>2022 – 2023</div>
+      <p>Đứng kênh và chịu trách nhiệm sản xuất phim cho SVM Group. Trước đó cộng tác sản xuất video cùng nghệ sĩ Quang Thắng và hỗ trợ ê-kíp chương trình Việc Tử Tế.</p>
+    </div>
+    <div class="film">
+      <figure><div class="vid v16"><video data-loop src="f-drama1.mp4" poster="f-drama1.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Web drama<span class="it">SVM Group · tập 908</span></span><div class="chips"><span class="chip">Production</span><span class="chip">Color grading</span></div></figcaption></figure>
+      <figure><div class="vid v16"><video data-loop src="f-drama2.mp4" poster="f-drama2.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Web drama<span class="it">SVM Group · tập 904</span></span><div class="chips"><span class="chip">Production</span><span class="chip">Edit</span></div></figcaption></figure>
+      <figure><div class="vid v16"><video data-loop src="f-mv.mp4" poster="f-mv.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">parody MV</span></span><div class="chips"><span class="chip">Music-sync edit</span><span class="chip">Sound design</span></div></figcaption></figure>
+      <figure><div class="vid v16"><video data-loop src="f-trailer.mp4" poster="f-trailer.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">official trailer</span></span><div class="chips"><span class="chip">Trailer edit</span><span class="chip">Title design</span></div></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 05 FREELANCE -->
+<section class="slide" id="freelance" data-num="04" data-name="Freelance">
+  <div class="wrap">
+    <div class="head">
+      <div class="sec"><span class="it">(04)</span><span class="cap">Freelance</span></div>
+      <h2>Dự án ngoài: hợp tác agency và thương hiệu</h2>
+      <p>Xây kênh TikTok, quay dựng cho khách hàng, làm nội dung cùng agency cho nhiều nhãn hàng: phòng gym, bất động sản, sự kiện, bảo hiểm.</p>
+    </div>
+    <div class="row r3 phones">
+      <figure><div class="vid v9"><video data-loop src="x-ares.mp4" poster="x-ares.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Ares Fitness<span class="it">brand</span></span><div class="chips"><span class="chip">Brand edit</span></div></figcaption></figure>
+      <figure><div class="vid v9"><video data-loop src="x-realestate.mp4" poster="x-realestate.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Bất động sản<span class="it">launch film</span></span><div class="chips"><span class="chip">2D animation</span></div></figcaption></figure>
+      <figure><div class="vid v9"><video data-loop src="x-event.mp4" poster="x-event.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Sự kiện<span class="it">highlight</span></span><div class="chips"><span class="chip">Event highlight</span></div></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 06 KINH NGHIỆM -->
+<section class="slide exp" id="experience" data-num="05" data-name="Kinh nghiệm">
+  <div class="wrap">
+    <div class="head">
+      <div class="sec"><span class="it" style="font-size:44px">Experience</span></div>
+      <h2>Sáu năm đứng sau máy quay và timeline</h2>
+    </div>
+    <ul class="tl">
+      <li><span class="y">2019</span><b>Media Staff</b><span>Quảng cáo dịch vụ, đào tạo nội bộ, giải trí. Cộng tác với nghệ sĩ Quang Thắng, hỗ trợ chương trình Việc Tử Tế.</span></li>
+      <li><span class="y">2020</span><b>Fanpage giải trí</b><span>Xây fanpage, chạy ads, viết content và định hướng phát triển.</span></li>
+      <li><span class="y">2022</span><b>SVM Group</b><span>Đứng kênh, chịu trách nhiệm sản xuất phim.</span></li>
+      <li><span class="y">2023</span><b>Journey · Alogic</b><span>Video quảng cáo công nghệ cho công ty nước ngoài. Leader team Organic.</span></li>
+      <li><span class="y">2025</span><b>Crossian</b><span>Editor video ads, video AI.</span></li>
+      <li><span class="y">Nay</span><b>Freelance</b><span>Build kênh TikTok, quay dựng, hợp tác agency.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 07 KỸ NĂNG -->
+<section class="slide" id="skills" data-num="05" data-name="Kỹ năng">
+  <div class="wrap">
+    <div class="head"><div class="sec"><span class="it">Skills &amp; tools</span></div><h2>Làm được gì trong một dự án video</h2></div>
+    <div class="skills">
+      <ul class="sk">
+        <li><b>Ý tưởng &amp; kịch bản</b><span>Lên concept, hook, kịch bản cho ads và kênh TikTok</span></li>
+        <li><b>Quay phim</b><span>Máy ảnh chuyên nghiệp và điện thoại, quay sản phẩm</span></li>
+        <li><b>Editing</b><span>Nhịp dựng, hook, phụ đề, dựng theo nhạc</span></li>
+        <li><b>Color grading</b><span>Chỉnh màu cho sản phẩm, phim và MV</span></li>
+        <li><b>2D animation</b><span>Motion text, graphics, title cho video</span></li>
+        <li><b>Sound design</b><span>SFX, nhạc nền, mix âm thanh</span></li>
+        <li><b>AI video</b><span>Sản xuất video ads có dùng AI</span></li>
+      </ul>
+      <div class="tools">
+        <div><div class="cap" style="margin-bottom:10px">Phần mềm</div>
+          <div class="list"><span>Premiere Pro</span><span>After Effects</span><span>CapCut</span><span>Photoshop</span></div></div>
+        <div><div class="cap" style="margin-bottom:10px">Ngôn ngữ</div><div class="list"><span>Tiếng Anh giao tiếp</span></div></div>
+        <div class="edu"><span class="cap">Học vấn</span><b>Đại học Quốc tế Bắc Hà</b><span>Cử nhân Kỹ thuật Điện tử Truyền thông · 2014 – 2018</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 LIÊN HỆ -->
+<section class="slide" id="contact" data-num="06" data-name="Liên hệ">
+  <div class="wrap">
+    <div class="contact">
+      <div class="l">
+        <div class="cap">(06) Liên hệ</div>
+        <h2>Nguyễn Duy<br>Việt Tuấn</h2>
+        <div class="it" style="font-size:clamp(24px,2.6vw,34px)">video producer &amp; editor</div>
+        <p style="color:#c9d3e6;max-width:44ch;margin:8px 0 0">Nhận dự án quay dựng, video ads, xây kênh TikTok và hợp tác agency.</p>
+      </div>
+      <div class="r">
+        <div class="ci"><span class="it">Email</span><div class="v"><strong id="em">nguyenduyviettuan@gmail.com</strong><button class="copy" data-copy="em">Sao chép</button></div></div>
+        <div class="ci"><span class="it">Điện thoại</span><div class="v"><strong id="ph">0397 103 917</strong><button class="copy" data-copy="ph">Sao chép</button></div></div>
+        <div class="ci"><span class="it">Khu vực</span><div class="v"><strong>Hà Nội, Việt Nam</strong></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer class="bar">
+  <button class="nav" id="prev" aria-label="Slide trước"><svg viewBox="0 0 16 16"><path d="M10 2 4 8l6 6"/></svg></button>
+  <nav class="tlbar" id="tlbar" aria-label="Các phần"></nav>
+  <div style="display:flex;align-items:center;gap:12px"><span class="count" id="count">01 / 09</span>
+  <button class="nav" id="next" aria-label="Slide sau"><svg viewBox="0 0 16 16"><path d="M6 2l6 6-6 6"/></svg></button></div>
+</footer>
+
+<script>
+(function(){
+  const track=document.getElementById('track');
+  const slides=[...document.querySelectorAll('.slide')];
+  const bar=document.getElementById('tlbar');
+  const reel=document.getElementById('reel'), playBtn=document.getElementById('playReel');
+  let cur=0;
+  const pad=n=>String(n).padStart(2,'0');
+  slides.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.innerHTML='<i></i><span>'+s.dataset.name+'</span>';
+    b.setAttribute('aria-label',s.dataset.name);
+    b.addEventListener('click',()=>go(i));
+    bar.appendChild(b);
+  });
+  const btns=[...bar.children];
+  const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // gắn thứ tự xuất hiện cho từng phần tử trong slide
+  slides.forEach(s=>{
+    let k=0;
+    s.querySelectorAll('h1,h2,.hero .role').forEach(el=>{el.classList.add('m');el.style.setProperty('--i',k++);});
+    s.querySelectorAll('.cap:not(.cat),.sec,.head p,.head .aside,.hero p,.hero .meta,.reel,figure,.chan,.stat,.note,.tl li,.sk li,.tools>div,.ci,.contact .l>.it,.contact .l>p').forEach(el=>{
+      if(el.closest('.top')) return; el.classList.add('a'); el.style.setProperty('--i',k++); });
+    s.querySelectorAll('.chip').forEach(el=>{ const p=el.closest('.a'); el.style.setProperty('--i',p?p.style.getPropertyValue('--i'):0); });
+  });
+  function countUp(s){
+    s.querySelectorAll('.n[data-to]').forEach((el,j)=>{
+      const to=+el.dataset.to, dec=+el.dataset.dec, suf=el.dataset.suf, t0=performance.now()+350+j*140, D=1900;
+      const set=v=>{ el.firstChild.nodeValue=v.toFixed(dec)+suf; };
+      if(RM){ set(to); return; }
+      set(0);
+      const step=now=>{ const p=Math.min(1,Math.max(0,(now-t0)/D)); set(to*(1-Math.pow(1-p,4))); if(p<1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    });
+  }
+  function go(i){
+    i=Math.max(0,Math.min(slides.length-1,i));
+    cur=i;
+    slides.forEach((s,k)=>{ s.classList.remove('in'); s.classList.toggle('cur',k===i); }); void track.offsetWidth;
+    slides[i].classList.add('in'); countUp(slides[i]);
+    ['nowName','nowNum'].forEach(id=>{ const e=document.getElementById(id); e.classList.remove('swap'); void e.offsetWidth; e.classList.add('swap'); });
+    track.style.transform='translateX('+(-i*100)+'%)';
+    slides.forEach((s,k)=>{
+      const on=k===i;
+      s.inert=!on; s.setAttribute('aria-hidden',on?'false':'true');
+      s.querySelectorAll('video[data-loop]').forEach(v=>{ if(on){ const p=v.play(); if(p&&p.catch)p.catch(()=>{}); } else v.pause(); });
+      if(on) s.scrollTop=0;
+    });
+    if(i!==0 && !reel.paused){ reel.pause(); }
+    btns.forEach((b,k)=>{ b.setAttribute('aria-current',k===i?'true':'false'); b.classList.toggle('done',k<i); });
+    document.getElementById('nowNum').textContent='('+slides[i].dataset.num+')';
+    document.getElementById('nowName').textContent=slides[i].dataset.name;
+    document.getElementById('count').textContent=pad(i+1)+' / '+pad(slides.length);
+    document.getElementById('prev').disabled=i===0;
+    document.getElementById('next').disabled=i===slides.length-1;
+    try{ history.replaceState(null,'','#'+slides[i].id); }catch(e){}
+  }
+  document.getElementById('prev').addEventListener('click',()=>go(cur-1));
+  document.getElementById('next').addEventListener('click',()=>go(cur+1));
+  document.addEventListener('keydown',e=>{
+    if(e.target.closest && e.target.closest('input,textarea')) return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); go(cur+1); }
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(cur-1); }
+  });
+  let sx=0,sy=0,st=0;
+  const stage=document.getElementById('stage');
+  stage.addEventListener('touchstart',e=>{ const t=e.touches[0]; sx=t.clientX; sy=t.clientY; st=Date.now(); },{passive:true});
+  stage.addEventListener('touchend',e=>{
+    const t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)*1.4 && Date.now()-st<800) go(cur+(dx<0?1:-1));
+  },{passive:true});
+  playBtn.addEventListener('click',()=>{ reel.controls=true; playBtn.hidden=true; const p=reel.play(); if(p&&p.catch)p.catch(()=>{}); });
+  reel.addEventListener('ended',()=>{ playBtn.hidden=false; reel.controls=false; });
+  document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',()=>{
+    const el=document.getElementById(b.dataset.copy), txt=el.textContent.trim();
+    const done=()=>{ const o=b.textContent; b.textContent='Đã chép'; setTimeout(()=>b.textContent=o,1500); };
+    const sel=()=>{ const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try{ navigator.clipboard.writeText(txt).then(done,sel); }catch(e){ sel(); }
+  }));
+  document.querySelectorAll('.snd').forEach(b=>b.addEventListener('click',()=>{
+    const v=document.getElementById(b.dataset.target); v.muted=!v.muted;
+    b.setAttribute('aria-pressed',String(!v.muted)); b.textContent=v.muted?'Bật tiếng':'Tắt tiếng';
+    if(!v.muted){ v.currentTime=0; const p=v.play(); if(p&&p.catch)p.catch(()=>{}); }
+  }));
+  // timecode chạy như màn hình dựng (25 fps)
+  const tcEl=document.getElementById('tc'), T0=performance.now();
+  setInterval(()=>{ const f=Math.floor((performance.now()-T0)/40), p=n=>String(n).padStart(2,'0');
+    tcEl.textContent=p(Math.floor(f/90000))+':'+p(Math.floor(f/1500)%60)+':'+p(Math.floor(f/25)%60)+':'+p(f%25); },40);
+  const start=slides.findIndex(s=>'#'+s.id===location.hash);
+  go(start>=0?start:0);
+})();
+</script>
+
+</html>
