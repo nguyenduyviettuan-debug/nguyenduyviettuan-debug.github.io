@@ -571,6 +571,11 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
   });
   let sx=0,sy=0,st=0;
   const stage=document.getElementById('stage');
+  // trình duyệt tự cuộn khung khi mở link #anchor hoặc khi focus phần tử: luôn giữ về 0, chỉ dùng transform
+  const lock=()=>{ if(stage.scrollLeft||stage.scrollTop){ stage.scrollLeft=0; stage.scrollTop=0; } };
+  stage.addEventListener('scroll',lock);
+  window.addEventListener('hashchange',()=>{ lock(); const k=slides.findIndex(s=>'#'+s.id===location.hash); if(k>=0&&k!==cur) go(k); });
+  window.addEventListener('load',lock);
   stage.addEventListener('touchstart',e=>{ const t=e.touches[0]; sx=t.clientX; sy=t.clientY; st=Date.now(); },{passive:true});
   stage.addEventListener('touchend',e=>{
     const t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
