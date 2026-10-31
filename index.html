@@ -32,7 +32,11 @@ button{font:inherit;color:inherit}
 .top .who{font-weight:700;font-size:14px;white-space:nowrap}
 .top .now{display:flex;align-items:baseline;gap:10px;min-width:0}
 .top .now .it{font-size:20px}
-.top .now span:last-child{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .now #nowName{font-weight:700;font-size:14px;white-space:nowrap}
+.top .now .sub{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tlbar button.grp{margin-left:10px}
+.sec{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.sec .it{font-size:22px}
 
 /* sân khấu */
 .stage{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
@@ -244,19 +248,19 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 
 <header class="top">
   <div class="who">Nguyễn Duy Việt Tuấn</div>
-  <div class="now" aria-live="polite"><span class="it" id="nowNum">(00)</span><span id="nowName">Showreel</span></div>
+  <div class="now" aria-live="polite"><span class="it" id="nowNum">(I)</span><span id="nowName">Showreel</span><span id="nowSub" class="sub"></span></div>
   <div class="cap">Portfolio 2019 — 2026<span class="tc-live"><span class="rec"></span><span id="tc">00:00:00:00</span></span></div>
 </header>
 <main class="stage" id="stage">
 <div class="track" id="track">
 
 <!-- 00 SHOWREEL -->
-<section class="slide" id="showreel" data-num="00" data-name="Showreel">
+<section class="slide" id="showreel" data-num="I" data-name="Showreel" data-short="Showreel">
   <div class="wrap">
     <div class="hero">
       <div>
         <figure class="portrait"><img src="tuan.jpg" alt="Ảnh chân dung Nguyễn Duy Việt Tuấn" width="640" height="800"></figure>
-        <div class="cap">Video Producer · Hà Nội</div>
+        <div class="sec"><span class="it">(I)</span><span class="cap">Showreel · Video Producer · Hà Nội</span></div>
         <h1>Nguyễn Duy<br>Việt Tuấn</h1>
         <div class="it role">video producer &amp; editor</div>
         <p>Hơn 6 năm làm video: quảng cáo sản phẩm, video ads AI, xây kênh TikTok cho F&amp;B và thương hiệu, phim ngắn và MV. Từ ý tưởng, kịch bản, quay đến dựng, màu và âm thanh.</p>
@@ -265,7 +269,7 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
       <div class="reel">
         <div class="vid v16">
           <video id="reel" src="showreel.mp4" poster="showreel.jpg" preload="metadata" playsinline></video>
-          <button class="play" id="playReel" aria-label="Phát showreel có tiếng"><i></i>Xem showreel · 60s</button>
+          <button class="play" id="playReel" aria-label="Phát showreel có tiếng"><i></i>Xem showreel · 56s</button>
         </div>
         <div class="tc"><span>Showreel 2026 · 1920×1080</span><span>Bấm → để xem từng phần</span></div>
       </div>
@@ -274,9 +278,9 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- SỐ LIỆU -->
-<section class="slide" id="numbers" data-num="00" data-name="Số liệu">
+<section class="slide" id="numbers" data-num="II" data-name="Số liệu" data-short="Số liệu">
   <div class="wrap">
-    <div class="head"><div class="sec"><span class="it">By the numbers</span></div>
+    <div class="head"><div class="sec"><span class="it">(II)</span><span class="cap">Số liệu · By the numbers</span></div>
       <h2>Những con số từ các kênh và dự án đã làm</h2></div>
     <div class="stats">
       <div class="stat"><div class="n" data-to="6" data-dec="0" data-suf="">6<em>+</em></div><span class="it">năm</span><p>Làm sản xuất video, từ 2019 đến nay</p></div>
@@ -289,10 +293,10 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- 01 JOURNEY -->
-<section class="slide" id="journey" data-num="01" data-name="Performance Ads · Journey">
+<section class="slide" id="journey" data-num="III" data-name="Performance Ads" data-sub="Journey Official" data-part="1/3" data-short="Journey">
   <div class="wrap">
     <div class="head">
-      <div class="sec"><span class="it">(01)</span><span class="cap">Performance Ads</span></div>
+      <div class="sec"><span class="it">(III)</span><span class="cap">Performance Ads · 1/3 · Journey Official</span></div>
       <h2>Quảng cáo sản phẩm công nghệ cho Journey Official</h2>
       <div class="aside"><b>107K followers</b>video top 6.5M view</div>
       <p>Video ads cho phụ kiện công nghệ của Journey và Alogic (thị trường nước ngoài): hook, product demo, ASMR. Kiêm leader team Organic làm nội dung TikTok, Instagram · 2023 – 2025.</p>
@@ -311,10 +315,10 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- 02 CROSSIAN -->
-<section class="slide" id="crossian" data-num="01" data-name="Performance Ads · Crossian">
+<section class="slide" id="crossian" data-num="III" data-name="Performance Ads" data-sub="Crossian · AI ads" data-part="2/3" data-short="Crossian">
   <div class="wrap">
     <div class="head">
-      <div class="sec"><span class="it">(01)</span><span class="cap">Performance Ads</span></div>
+      <div class="sec"><span class="it">(III)</span><span class="cap">Performance Ads · 2/3 · Crossian</span></div>
       <h2>Video ads AI tại Crossian</h2>
       <div class="aside"><b>Editor</b>2025 – 2026</div>
       <p>Dựng video quảng cáo hiệu suất có dùng AI cho các sản phẩm của Crossian, cùng MV thương hiệu 4K và phim sự kiện cuối năm.</p>
@@ -337,10 +341,10 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- AI LAB -->
-<section class="slide" id="ailab" data-num="01" data-name="AI Lab">
+<section class="slide" id="ailab" data-num="III" data-name="Performance Ads" data-sub="AI Lab" data-part="3/3" data-short="AI Lab">
   <div class="wrap">
     <div class="head">
-      <div class="sec"><span class="it">(01)</span><span class="cap">AI Lab · Gemini Veo</span></div>
+      <div class="sec"><span class="it">(III)</span><span class="cap">Performance Ads · 3/3 · AI Lab (Gemini Veo)</span></div>
       <h2>Video AI: từ prompt đến bản dựng hoàn chỉnh</h2>
       <div class="aside"><b>Prompt → Veo → hậu kỳ</b>tháng 10/2026</div>
       <p>Tạo cảnh bằng Gemini (Veo), sau đó làm hậu kỳ như một video thật: chọn đoạn đẹp, cắt bỏ lỗi AI, chỉnh màu, thêm chữ, nhạc và SFX.</p>
@@ -364,10 +368,10 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- 03 TIKTOK -->
-<section class="slide" id="tiktok" data-num="02" data-name="TikTok Channels">
+<section class="slide" id="tiktok" data-num="IV" data-name="Kênh TikTok" data-short="TikTok">
   <div class="wrap">
     <div class="head">
-      <div class="sec"><span class="it">(02)</span><span class="cap">TikTok Channels · 2025 – 2026</span></div>
+      <div class="sec"><span class="it">(IV)</span><span class="cap">Kênh TikTok · 2025 – 2026</span></div>
       <h2>6 kênh TikTok: lên ý tưởng, quay, dựng và phát triển kênh</h2>
       <div class="aside"><b>F&amp;B · Lifestyle · Brand</b>số liệu tại trang kênh</div>
     </div>
@@ -401,10 +405,10 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- 04 FILM & MV -->
-<section class="slide" id="film" data-num="03" data-name="Film & Music Video">
+<section class="slide" id="film" data-num="V" data-name="Phim & MV" data-short="Phim & MV">
   <div class="wrap">
     <div class="head">
-      <div class="sec"><span class="it">(03)</span><span class="cap">Film &amp; Music Video</span></div>
+      <div class="sec"><span class="it">(V)</span><span class="cap">Phim &amp; MV · Film &amp; Music Video</span></div>
       <h2>Web drama cho SVM Group, MV parody với Hài Quang Thắng</h2>
       <div class="aside"><b>SVM Group</b>2022 – 2023</div>
       <p>Đứng kênh và chịu trách nhiệm sản xuất phim cho SVM Group. Trước đó cộng tác sản xuất video cùng nghệ sĩ Quang Thắng và hỗ trợ ê-kíp chương trình Việc Tử Tế.</p>
@@ -423,10 +427,10 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- 05 FREELANCE -->
-<section class="slide" id="freelance" data-num="04" data-name="Freelance">
+<section class="slide" id="freelance" data-num="VI" data-name="Freelance" data-short="Freelance">
   <div class="wrap">
     <div class="head">
-      <div class="sec"><span class="it">(04)</span><span class="cap">Freelance</span></div>
+      <div class="sec"><span class="it">(VI)</span><span class="cap">Freelance · Agency &amp; brand</span></div>
       <h2>Dự án ngoài: hợp tác agency và thương hiệu</h2>
       <p>Xây kênh TikTok, quay dựng cho khách hàng, làm nội dung cùng agency cho nhiều nhãn hàng: phòng gym, bất động sản, sự kiện, bảo hiểm.</p>
     </div>
@@ -442,10 +446,10 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- 06 KINH NGHIỆM -->
-<section class="slide exp" id="experience" data-num="05" data-name="Kinh nghiệm">
+<section class="slide exp" id="experience" data-num="VII" data-name="Kinh nghiệm" data-short="Kinh nghiệm">
   <div class="wrap">
     <div class="head">
-      <div class="sec"><span class="it" style="font-size:44px">Experience</span></div>
+      <div class="sec"><span class="it">(VII)</span><span class="cap">Kinh nghiệm · Experience</span></div>
       <h2>Sáu năm đứng sau máy quay và timeline</h2>
     </div>
     <ul class="tl">
@@ -460,9 +464,9 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- 07 KỸ NĂNG -->
-<section class="slide" id="skills" data-num="05" data-name="Kỹ năng">
+<section class="slide" id="skills" data-num="VIII" data-name="Kỹ năng" data-short="Kỹ năng">
   <div class="wrap">
-    <div class="head"><div class="sec"><span class="it">Skills &amp; tools</span></div><h2>Làm được gì trong một dự án video</h2></div>
+    <div class="head"><div class="sec"><span class="it">(VIII)</span><span class="cap">Kỹ năng · Skills &amp; tools</span></div><h2>Làm được gì trong một dự án video</h2></div>
     <div class="skills">
       <ul class="sk">
         <li><b>Ý tưởng &amp; kịch bản</b><span>Lên concept, hook, kịch bản cho ads và kênh TikTok</span></li>
@@ -484,12 +488,12 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- 08 LIÊN HỆ -->
-<section class="slide" id="contact" data-num="06" data-name="Liên hệ">
+<section class="slide" id="contact" data-num="IX" data-name="Liên hệ" data-short="Liên hệ">
   <div class="wrap">
     <div class="contact">
       <div class="l">
         <figure class="portrait big"><img src="tuan.jpg" alt="Ảnh chân dung Nguyễn Duy Việt Tuấn" width="640" height="800" loading="lazy"></figure>
-        <div class="cap">(06) Liên hệ</div>
+        <div class="sec"><span class="it">(IX)</span><span class="cap">Liên hệ · Contact</span></div>
         <h2>Nguyễn Duy<br>Việt Tuấn</h2>
         <div class="it" style="font-size:clamp(24px,2.6vw,34px)">video producer &amp; editor</div>
         <p style="color:#c9d3e6;max-width:44ch;margin:8px 0 0">Nhận dự án quay dựng, video ads, xây kênh TikTok và hợp tác agency.</p>
@@ -509,7 +513,7 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 <footer class="bar">
   <button class="nav" id="prev" aria-label="Slide trước"><svg viewBox="0 0 16 16"><path d="M10 2 4 8l6 6"/></svg></button>
   <nav class="tlbar" id="tlbar" aria-label="Các phần"></nav>
-  <div style="display:flex;align-items:center;gap:12px"><span class="count" id="count">01 / 09</span>
+  <div style="display:flex;align-items:center;gap:12px"><span class="count" id="count">Trang 01 / 11</span>
   <button class="nav" id="next" aria-label="Slide sau"><svg viewBox="0 0 16 16"><path d="M6 2l6 6-6 6"/></svg></button></div>
 </footer>
 
@@ -523,8 +527,10 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
   const pad=n=>String(n).padStart(2,'0');
   slides.forEach((s,i)=>{
     const b=document.createElement('button');
-    b.innerHTML='<i></i><span>'+s.dataset.name+'</span>';
-    b.setAttribute('aria-label',s.dataset.name);
+    const lab=s.dataset.num+(s.dataset.part?'.'+s.dataset.part.split('/')[0]:'')+' '+s.dataset.short;
+    b.innerHTML='<i></i><span>'+lab+'</span>';
+    b.setAttribute('aria-label',lab);
+    if(i>0 && slides[i-1].dataset.num!==s.dataset.num) b.classList.add('grp');
     b.addEventListener('click',()=>go(i));
     bar.appendChild(b);
   });
@@ -565,7 +571,8 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
     btns.forEach((b,k)=>{ b.setAttribute('aria-current',k===i?'true':'false'); b.classList.toggle('done',k<i); });
     document.getElementById('nowNum').textContent='('+slides[i].dataset.num+')';
     document.getElementById('nowName').textContent=slides[i].dataset.name;
-    document.getElementById('count').textContent=pad(i+1)+' / '+pad(slides.length);
+    const sd=slides[i].dataset; document.getElementById('nowSub').textContent=sd.sub?('· '+sd.sub+'  —  '+sd.part):'';
+    document.getElementById('count').textContent='Trang '+pad(i+1)+' / '+pad(slides.length);
     document.getElementById('prev').disabled=i===0;
     document.getElementById('next').disabled=i===slides.length-1;
     try{ history.replaceState(null,'','#'+slides[i].id); }catch(e){}
