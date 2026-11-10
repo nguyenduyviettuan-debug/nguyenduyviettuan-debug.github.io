@@ -30,17 +30,31 @@ button{font:inherit;color:inherit}
 .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px;
   padding-left:var(--gut-l);padding-right:var(--gut-r);border-bottom:1px solid var(--line);flex:0 0 auto}
 .top .who{font-weight:700;font-size:14px;white-space:nowrap}
-.top .now{display:flex;align-items:baseline;gap:10px;min-width:0}
-.top .now .it{font-size:20px}
-.top .now #nowName{font-weight:700;font-size:14px;white-space:nowrap}
+.top .now{display:flex;align-items:center;gap:12px;min-width:0}
+.top .now #nowNum{font-weight:800;font-size:24px;line-height:1;color:var(--pastel);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.top .now #nowName{font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;padding-left:12px;border-left:2px solid var(--pastel)}
 .top .now .sub{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.tlbar button.grp{margin-left:10px}
+/* số mục: số thường, đậm, lớn + tiêu đề in hoa đậm bên cạnh */
+.sec{display:flex;align-items:center;gap:16px}
+.sec .no{font-weight:800;font-size:clamp(40px,4.2vw,60px);line-height:.85;letter-spacing:-.04em;color:var(--pastel);font-variant-numeric:tabular-nums}
+.sec .st{display:flex;flex-direction:column;gap:4px;padding-left:16px;border-left:2px solid var(--pastel)}
+.sec .st b{font-size:clamp(15px,1.4vw,19px);font-weight:800;letter-spacing:.08em;text-transform:uppercase;line-height:1.15}
+.sec .st .cap{font-size:11px}
+/* đầu trang: số + tab phần con */
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:14px 24px;flex-wrap:wrap}
+.tabs{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(14,30,68,.4);max-width:100%;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;background:transparent;padding:9px 16px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.05em;
+  cursor:pointer;color:var(--muted);white-space:nowrap;transition:background-color .5s var(--ease),color .5s var(--ease)}
+.tabs button:hover{color:var(--paper)}
+.tabs button[aria-selected="true"]{background:var(--pastel);color:var(--ink)}
+.tabs button b{font-variant-numeric:tabular-nums;margin-right:6px;opacity:.6}
+.pane{display:flex;flex-direction:column;gap:clamp(18px,3vh,32px)}
+.pane[hidden]{display:none}
 .cvl{gap:8px}
 .cvl a{text-decoration:none;color:var(--paper);display:inline-block}
 .lang{color:var(--paper);text-decoration:none;font-weight:700;font-size:11px;letter-spacing:.14em;border:1px solid var(--line);padding:4px 8px;margin-left:14px}
 .lang:hover{background:var(--navy)}
-.sec{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
-.sec .it{font-size:22px}
 
 /* sân khấu */
 .stage{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
@@ -51,8 +65,7 @@ button{font:inherit;color:inherit}
 .wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(18px,3vh,32px);min-height:100%}
 .head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 32px;align-items:end}
 .head h2{margin:0;font-size:clamp(28px,4.2vw,52px);line-height:1.05;font-weight:800;letter-spacing:-.01em;text-wrap:balance}
-.head .sec{grid-column:1/-1;display:flex;gap:10px;align-items:baseline}
-.head .sec .it{font-size:22px}
+.head .sec{grid-column:1/-1}
 .head p{margin:0;max-width:62ch;color:#c9d3e6}
 .head .aside{text-align:right;font-size:13px;color:var(--muted)}
 .head .aside b{display:block;color:var(--paper);font-size:15px}
@@ -145,6 +158,11 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .tl span{font-size:13px;color:#c9d3e6}
 .tl ul{padding:0;margin:0}
 .exp{background:var(--navy)}
+.exp .tl{margin-top:64px}
+.exp .stats{flex:0 0 auto;border-top-color:#3c5288;margin-top:8px}
+.exp .stat{border-left-color:#3c5288;padding-top:20px}
+.exp .stat .n{font-size:clamp(36px,4.4vw,64px)}
+.exp .stat .it{font-size:22px}
 
 /* kỹ năng */
 .skills{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);flex:1;align-content:center}
@@ -177,13 +195,17 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .nav:hover{background:var(--navy)}
 .nav:disabled{opacity:.3;cursor:default}
 .nav svg{width:16px;height:16px;fill:none;stroke:var(--paper);stroke-width:2}
-.tlbar{display:flex;gap:3px;min-width:0}
-.tlbar button{flex:1;min-width:0;border:0;background:transparent;padding:0;cursor:pointer;display:flex;flex-direction:column;gap:6px;text-align:left}
-.tlbar button i{display:block;height:6px;background:var(--line)}
-.tlbar button.done i{background:#3c5288}
-.tlbar button[aria-current="true"] i{background:var(--pastel)}
-.tlbar button span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 8 ô bằng nhau; trang có tab thì ô tự lấp dần theo tab đang xem */
+.tlbar{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;min-width:0}
+.tlbar button{min-width:0;border:0;background:transparent;padding:0;cursor:pointer;display:flex;flex-direction:column;gap:7px;text-align:left}
+.tlbar button i{position:relative;display:block;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.tlbar button i::after{content:"";position:absolute;inset:0;border-radius:3px;background:var(--pastel);transform:scaleX(var(--p,0));transform-origin:left;
+  transition:transform .8s var(--ease-io),background-color .8s var(--ease-io)}
+.tlbar button.done i::after{background:#4a64a0}
+.tlbar button span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tlbar button span b{font-weight:800;color:var(--paper);margin-right:6px;font-variant-numeric:tabular-nums}
 .tlbar button[aria-current="true"] span{color:var(--paper)}
+.tlbar button[aria-current="true"] span b{color:var(--pastel)}
 .count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 
 @media (max-width:1000px){
@@ -203,6 +225,8 @@ figcaption .t .it{font-size:17px;margin-left:4px}
   .r3{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
   .tl{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tlbar button span{display:none}
+  .tlbar{gap:4px}
+  .sec .no{font-size:36px}
   .top .who{display:none}
   .contact{margin-block:0}
   .tc-live{display:none}
@@ -237,7 +261,6 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 .sk li b{transition:color .6s var(--ease)}
 .sk li:hover{padding-left:8px}
 .sk li:hover b{color:var(--pastel)}
-.tlbar button i{transition:background-color .8s var(--ease-io)}
 .nav,.copy{transition:background-color .4s var(--ease)}
 #nowName.swap,#nowNum.swap{animation:label .6s var(--ease) both}
 .tc-live{font-variant-numeric:tabular-nums;color:var(--pastel);margin-left:14px}
@@ -252,19 +275,19 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 
 <header class="top">
   <div class="who">Nguyễn Duy Việt Tuấn</div>
-  <div class="now" aria-live="polite"><span class="it" id="nowNum">(I)</span><span id="nowName">Showreel</span><span id="nowSub" class="sub"></span></div>
+  <div class="now" aria-live="polite"><span id="nowNum">01</span><span id="nowName">Showreel</span><span id="nowSub" class="sub"></span></div>
   <div class="cap">Portfolio 2019 — 2026<span class="tc-live"><span class="rec"></span><span id="tc">00:00:00:00</span></span><a class="lang" href="https://nguyenduyviettuan-debug.github.io/en.html" target="_blank" rel="noopener" lang="en">EN</a></div>
 </header>
 <main class="stage" id="stage">
 <div class="track" id="track">
 
 <!-- 00 SHOWREEL -->
-<section class="slide" id="showreel" data-num="I" data-name="Showreel" data-short="Showreel">
+<section class="slide" id="showreel" data-name="Showreel">
   <div class="wrap">
     <div class="hero">
       <div>
         <figure class="portrait"><img src="tuan.jpg" alt="Ảnh chân dung Nguyễn Duy Việt Tuấn" width="640" height="800"></figure>
-        <div class="sec"><span class="it">(I)</span><span class="cap">Showreel · Video Producer · Hà Nội</span></div>
+        <div class="sec"><span class="no">01</span><span class="st"><b>Showreel</b><span class="cap">Video Producer · Hà Nội</span></span></div>
         <h1>Nguyễn Duy<br>Việt Tuấn</h1>
         <div class="it role">video producer &amp; editor</div>
         <p>Hơn 6 năm làm video: quảng cáo sản phẩm, video ads AI, xây kênh TikTok cho F&amp;B và thương hiệu, phim ngắn và MV. Từ ý tưởng, kịch bản, quay đến dựng, màu và âm thanh.</p>
@@ -281,26 +304,12 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
   </div>
 </section>
 
-<!-- SỐ LIỆU -->
-<section class="slide" id="numbers" data-num="II" data-name="Số liệu" data-short="Số liệu">
+<!-- 02 PERFORMANCE ADS: Journey / Crossian / AI Lab -->
+<section class="slide" id="ads" data-name="Performance Ads">
   <div class="wrap">
-    <div class="head"><div class="sec"><span class="it">(II)</span><span class="cap">Số liệu · By the numbers</span></div>
-      <h2>Những con số từ các kênh và dự án đã làm</h2></div>
-    <div class="stats">
-      <div class="stat"><div class="n" data-to="6" data-dec="0" data-suf="">6<em>+</em></div><span class="it">năm</span><p>Làm sản xuất video, từ 2019 đến nay</p></div>
-      <div class="stat"><div class="n" data-to="200" data-dec="0" data-suf="K">200K<em>+</em></div><span class="it">followers</span><p>Xây dựng trên 6 kênh TikTok</p></div>
-      <div class="stat"><div class="n" data-to="90" data-dec="0" data-suf="M">90M<em>+</em></div><span class="it">lượt xem</span><p>Cộng từ các video top của các kênh</p></div>
-      <div class="stat"><div class="n" data-to="2.9" data-dec="1" data-suf="M">2.9M<em>+</em></div><span class="it">lượt thích</span><p>Tổng lượt thích trên TikTok</p></div>
-    </div>
-    <p class="note">Số liệu lấy từ trang TikTok của từng kênh, tháng 10/2026.</p>
-  </div>
-</section>
-
-<!-- 01 JOURNEY -->
-<section class="slide" id="journey" data-num="III" data-name="Performance Ads" data-sub="Journey Official" data-part="1/3" data-short="Journey">
-  <div class="wrap">
+    <div class="sechead"><div class="sec"><span class="no">02</span><span class="st"><b>Performance Ads</b><span class="cap">Journey · Crossian · AI Lab</span></span></div></div>
+   <div class="pane" id="journey" data-tab="Journey Official">
     <div class="head">
-      <div class="sec"><span class="it">(III)</span><span class="cap">Performance Ads · 1/3 · Journey Official</span></div>
       <h2>Quảng cáo sản phẩm công nghệ cho Journey Official</h2>
       <div class="aside"><b>107K followers</b>video top 6.5M view</div>
       <p>Video ads cho phụ kiện công nghệ của Journey và Alogic (thị trường nước ngoài): hook, product demo, ASMR. Kiêm leader team Organic làm nội dung TikTok, Instagram · 2023 – 2025.</p>
@@ -315,14 +324,9 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
       <figure><div class="vid v9"><video data-loop src="j-loc8.mp4" poster="j-loc8.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">LOC8 Motion<span class="it">demo</span></span><div class="chips"><span class="chip">Pacing &amp; text</span></div></figcaption></figure>
     </div>
-  </div>
-</section>
-
-<!-- 02 CROSSIAN -->
-<section class="slide" id="crossian" data-num="III" data-name="Performance Ads" data-sub="Crossian · AI ads" data-part="2/3" data-short="Crossian">
-  <div class="wrap">
+   </div>
+   <div class="pane" id="crossian" data-tab="Crossian · AI ads" hidden>
     <div class="head">
-      <div class="sec"><span class="it">(III)</span><span class="cap">Performance Ads · 2/3 · Crossian</span></div>
       <h2>Video ads AI tại Crossian</h2>
       <div class="aside"><b>Editor</b>2025 – 2026</div>
       <p>Dựng video quảng cáo hiệu suất có dùng AI cho các sản phẩm của Crossian, cùng MV thương hiệu 4K và phim sự kiện cuối năm.</p>
@@ -341,14 +345,9 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
       <figure><div class="vid v16"><video data-loop src="c-banana.mp4" poster="c-banana.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Banana Land<span class="it">year-end event film</span></span><div class="chips"><span class="chip">2D graphics</span><span class="chip">Edit</span></div></figcaption></figure>
     </div>
-  </div>
-</section>
-
-<!-- AI LAB -->
-<section class="slide" id="ailab" data-num="III" data-name="Performance Ads" data-sub="AI Lab" data-part="3/3" data-short="AI Lab">
-  <div class="wrap">
+   </div>
+   <div class="pane" id="ailab" data-tab="AI Lab · Gemini Veo" hidden>
     <div class="head">
-      <div class="sec"><span class="it">(III)</span><span class="cap">Performance Ads · 3/3 · AI Lab (Gemini Veo)</span></div>
       <h2>Video AI: từ prompt đến bản dựng hoàn chỉnh</h2>
       <div class="aside"><b>Prompt → Veo → hậu kỳ</b>tháng 10/2026</div>
       <p>Tạo cảnh bằng Gemini (Veo), sau đó làm hậu kỳ như một video thật: chọn đoạn đẹp, cắt bỏ lỗi AI, chỉnh màu, thêm chữ, nhạc và SFX.</p>
@@ -368,14 +367,15 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
           <figcaption><span class="t">Concept ad<span class="it">8s, đã hậu kỳ</span></span><div class="chips"><span class="chip">Cắt lỗi AI</span><span class="chip">Text + SFX</span></div></figcaption></figure>
       </div>
     </div>
+   </div>
   </div>
 </section>
 
 <!-- 03 TIKTOK -->
-<section class="slide" id="tiktok" data-num="IV" data-name="Kênh TikTok" data-short="TikTok">
+<section class="slide" id="tiktok" data-name="Kênh TikTok">
   <div class="wrap">
     <div class="head">
-      <div class="sec"><span class="it">(IV)</span><span class="cap">Kênh TikTok · 2025 – 2026</span></div>
+      <div class="sec"><span class="no">03</span><span class="st"><b>Kênh TikTok</b><span class="cap">F&amp;B · Lifestyle · Brand · 2025 – 2026</span></span></div>
       <h2>6 kênh TikTok: lên ý tưởng, quay, dựng và phát triển kênh</h2>
       <div class="aside"><b>F&amp;B · Lifestyle · Brand</b>số liệu tại trang kênh</div>
     </div>
@@ -408,52 +408,14 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
   </div>
 </section>
 
-<!-- 04 FILM & MV -->
-<section class="slide" id="film" data-num="V" data-name="Phim & MV" data-short="Phim & MV">
-  <div class="wrap">
-    <div class="head">
-      <div class="sec"><span class="it">(V)</span><span class="cap">Phim &amp; MV · Film &amp; Music Video</span></div>
-      <h2>Web drama cho SVM Group, MV parody với Hài Quang Thắng</h2>
-      <div class="aside"><b>SVM Group</b>2022 – 2023</div>
-      <p>Đứng kênh và chịu trách nhiệm sản xuất phim cho SVM Group. Trước đó cộng tác sản xuất video cùng nghệ sĩ Quang Thắng và hỗ trợ ê-kíp chương trình Việc Tử Tế.</p>
-    </div>
-    <div class="film">
-      <figure><div class="vid v16"><video data-loop src="f-drama1.mp4" poster="f-drama1.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Web drama<span class="it">SVM Group · tập 908</span></span><div class="chips"><span class="chip">Production</span><span class="chip">Color grading</span></div></figcaption></figure>
-      <figure><div class="vid v16"><video data-loop src="f-drama2.mp4" poster="f-drama2.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Web drama<span class="it">SVM Group · tập 904</span></span><div class="chips"><span class="chip">Production</span><span class="chip">Edit</span></div></figcaption></figure>
-      <figure><div class="vid v16"><video data-loop src="f-mv.mp4" poster="f-mv.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">parody MV</span></span><div class="chips"><span class="chip">Music-sync edit</span><span class="chip">Sound design</span></div></figcaption></figure>
-      <figure><div class="vid v16"><video data-loop src="f-trailer.mp4" poster="f-trailer.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">official trailer</span></span><div class="chips"><span class="chip">Trailer edit</span><span class="chip">Title design</span></div></figcaption></figure>
-    </div>
-  </div>
-</section>
 
-<!-- 05 FREELANCE -->
-<section class="slide" id="freelance" data-num="VI" data-name="Freelance" data-short="Freelance">
-  <div class="wrap">
-    <div class="head">
-      <div class="sec"><span class="it">(VI)</span><span class="cap">Freelance · Agency &amp; brand</span></div>
-      <h2>Dự án ngoài: hợp tác agency và thương hiệu</h2>
-      <p>Xây kênh TikTok, quay dựng cho khách hàng, làm nội dung cùng agency cho nhiều nhãn hàng: phòng gym, bất động sản, sự kiện, bảo hiểm.</p>
-    </div>
-    <div class="row r3 phones">
-      <figure><div class="vid v9"><video data-loop src="x-ares.mp4" poster="x-ares.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Ares Fitness<span class="it">brand</span></span><div class="chips"><span class="chip">Brand edit</span></div></figcaption></figure>
-      <figure><div class="vid v9"><video data-loop src="x-realestate.mp4" poster="x-realestate.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Bất động sản<span class="it">launch film</span></span><div class="chips"><span class="chip">2D animation</span></div></figcaption></figure>
-      <figure><div class="vid v9"><video data-loop src="x-event.mp4" poster="x-event.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Sự kiện<span class="it">highlight</span></span><div class="chips"><span class="chip">Event highlight</span></div></figcaption></figure>
-    </div>
-  </div>
-</section>
 
-<!-- 06 KINH NGHIỆM -->
-<section class="slide" id="u50" data-num="VII" data-name="Dự án 2026" data-sub="Lifestyle U50" data-part="1/4" data-short="U50">
+<!-- 04 DỰ ÁN 2026 -->
+<section class="slide" id="p2026" data-name="Dự án 2026">
   <div class="wrap">
+    <div class="sechead"><div class="sec"><span class="no">04</span><span class="st"><b>Dự án 2026</b><span class="cap">Lifestyle · Fashion AI · Mỹ phẩm · Roblox</span></span></div></div>
+   <div class="pane" id="u50" data-tab="Lifestyle U50">
     <div class="head">
-      <div class="sec"><span class="it">(VII)</span><span class="cap">Dự án 2026 · 1/4 · Lifestyle U50</span></div>
       <h2>Vlog &amp; biến hình cho kênh lifestyle U50</h2>
       <div class="aside"><b>25+ video</b>tháng 10 – 11/2026</div>
       <p>Dựng vlog một ngày (dậy sớm, tập, đi chợ, nấu ăn) và video biến hình trước/sau từ footage iPhone 4K HDR: cắt theo beat, zoom reframe, sub tiếng Việt, hiệu ứng chuyển cảnh.</p>
@@ -468,13 +430,9 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
       <figure><div class="vid v9"><video data-loop src="n-u50-th1.mp4" poster="n-u50-th1.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Biến hình tổng hợp<span class="it">4 bộ đồ</span></span><div class="chips"><span class="chip">Speed ramp</span><span class="chip">Color</span></div></figcaption></figure>
       </div>
-  </div>
-</section>
-
-<section class="slide" id="fashion" data-num="VII" data-name="Dự án 2026" data-sub="Thời trang nam · AI model" data-part="2/4" data-short="Fashion AI">
-  <div class="wrap">
+   </div>
+   <div class="pane" id="fashion" data-tab="Thời trang nam · AI" hidden>
     <div class="head">
-      <div class="sec"><span class="it">(VII)</span><span class="cap">Dự án 2026 · 2/4 · Thời trang nam · AI model</span></div>
       <h2>Video affiliate thời trang nam với người mẫu AI</h2>
       <div class="aside"><b>40+ video</b>TikTok Shop</div>
       <p>Từ ảnh sản phẩm tạo người mẫu AI che mặt và cảnh quay bằng Google Flow / Veo, dựng video dọc có hook, phụ đề, nhạc trend, nhiều bản hook để test quảng cáo.</p>
@@ -489,13 +447,9 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
       <figure><div class="vid v9"><video data-loop src="n-fa-gemini.mp4" poster="n-fa-gemini.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Bản Gemini Pro<span class="it">30s</span></span><div class="chips"><span class="chip">Prompt design</span><span class="chip">Hook variants</span></div></figcaption></figure>
       </div>
-  </div>
-</section>
-
-<section class="slide" id="beauty" data-num="VII" data-name="Dự án 2026" data-sub="Mỹ phẩm · Việt hoá" data-part="3/4" data-short="Mỹ phẩm">
-  <div class="wrap">
+   </div>
+   <div class="pane" id="beauty" data-tab="Mỹ phẩm · Việt hoá" hidden>
     <div class="head">
-      <div class="sec"><span class="it">(VII)</span><span class="cap">Dự án 2026 · 3/4 · Mỹ phẩm · Việt hoá</span></div>
       <h2>Việt hoá video review mỹ phẩm nước ngoài</h2>
       <div class="aside"><b>Azelaic Acid 12%</b>tháng 11/2026</div>
       <p>Lấy video review tiếng Tagalog / Anh / Trung, xoá chữ và watermark cũ, lồng giọng Việt bằng AI khớp miệng, làm lại phụ đề, chữ động và nhạc nền.</p>
@@ -510,13 +464,9 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
       <figure><div class="vid v9"><video data-loop src="n-mp-c53.mp4" poster="n-mp-c53.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Review 53s<span class="it">đã xoá chữ cũ</span></span><div class="chips"><span class="chip">Text removal</span><span class="chip">Subtitle</span></div></figcaption></figure>
       </div>
-  </div>
-</section>
-
-<section class="slide" id="roblox" data-num="VII" data-name="Dự án 2026" data-sub="Roblox TTS Story" data-part="4/4" data-short="Roblox">
-  <div class="wrap">
+   </div>
+   <div class="pane" id="roblox" data-tab="Roblox TTS Story" hidden>
     <div class="head">
-      <div class="sec"><span class="it">(VII)</span><span class="cap">Dự án 2026 · 4/4 · Roblox TTS Story</span></div>
       <h2>Roblox TTS Story — video YouTube 16:9 dài 32 phút</h2>
       <div class="aside"><b>Premiere Pro</b>project nhiều lớp</div>
       <p>Dựng từ kịch bản + voice từng nhân vật: nhân vật Roblox trên nền ảnh thật, chuyển động theo note, chữ thoại Graphic sửa được, SFX và nhạc từ kho của team, đối chiếu kịch bản ra Excel.</p>
@@ -527,13 +477,54 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
       <figure><div class="vid v16"><video data-loop src="n-rb-2.mp4" poster="n-rb-2.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Bedroom<span class="it">thoại nhân vật</span></span><div class="chips"><span class="chip">TTS story</span><span class="chip">Premiere layered</span></div></figcaption></figure>
       </div>
+   </div>
   </div>
 </section>
+<!--/p2026-->
 
-<section class="slide exp" id="experience" data-num="VIII" data-name="Kinh nghiệm" data-short="Kinh nghiệm">
+<!-- 05 PHIM, MV & FREELANCE -->
+<section class="slide" id="films" data-name="Phim, MV &amp; Freelance" data-short="Phim &amp; Freelance">
+  <div class="wrap">
+    <div class="sechead"><div class="sec"><span class="no">05</span><span class="st"><b>Phim, MV &amp; Freelance</b><span class="cap">SVM Group · Quang Thắng · Agency</span></span></div></div>
+   <div class="pane" id="film" data-tab="Phim &amp; MV">
+    <div class="head">
+      <h2>Web drama cho SVM Group, MV parody với Hài Quang Thắng</h2>
+      <div class="aside"><b>SVM Group</b>2022 – 2023</div>
+      <p>Đứng kênh và chịu trách nhiệm sản xuất phim cho SVM Group. Trước đó cộng tác sản xuất video cùng nghệ sĩ Quang Thắng và hỗ trợ ê-kíp chương trình Việc Tử Tế.</p>
+    </div>
+    <div class="film">
+      <figure><div class="vid v16"><video data-loop src="f-drama1.mp4" poster="f-drama1.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Web drama<span class="it">SVM Group · tập 908</span></span><div class="chips"><span class="chip">Production</span><span class="chip">Color grading</span></div></figcaption></figure>
+      <figure><div class="vid v16"><video data-loop src="f-drama2.mp4" poster="f-drama2.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Web drama<span class="it">SVM Group · tập 904</span></span><div class="chips"><span class="chip">Production</span><span class="chip">Edit</span></div></figcaption></figure>
+      <figure><div class="vid v16"><video data-loop src="f-mv.mp4" poster="f-mv.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">parody MV</span></span><div class="chips"><span class="chip">Music-sync edit</span><span class="chip">Sound design</span></div></figcaption></figure>
+      <figure><div class="vid v16"><video data-loop src="f-trailer.mp4" poster="f-trailer.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">official trailer</span></span><div class="chips"><span class="chip">Trailer edit</span><span class="chip">Title design</span></div></figcaption></figure>
+    </div>
+   </div>
+   <div class="pane" id="freelance" data-tab="Freelance · Agency" hidden>
+    <div class="head">
+      <h2>Dự án ngoài: hợp tác agency và thương hiệu</h2>
+      <p>Xây kênh TikTok, quay dựng cho khách hàng, làm nội dung cùng agency cho nhiều nhãn hàng: phòng gym, bất động sản, sự kiện, bảo hiểm.</p>
+    </div>
+    <div class="row r3 phones">
+      <figure><div class="vid v9"><video data-loop src="x-ares.mp4" poster="x-ares.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Ares Fitness<span class="it">brand</span></span><div class="chips"><span class="chip">Brand edit</span></div></figcaption></figure>
+      <figure><div class="vid v9"><video data-loop src="x-realestate.mp4" poster="x-realestate.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Bất động sản<span class="it">launch film</span></span><div class="chips"><span class="chip">2D animation</span></div></figcaption></figure>
+      <figure><div class="vid v9"><video data-loop src="x-event.mp4" poster="x-event.jpg" muted loop playsinline preload="none"></video></div>
+        <figcaption><span class="t">Sự kiện<span class="it">highlight</span></span><div class="chips"><span class="chip">Event highlight</span></div></figcaption></figure>
+    </div>
+   </div>
+  </div>
+</section>
+<!--/films-->
+
+<section class="slide exp" id="experience" data-name="Kinh nghiệm">
   <div class="wrap">
     <div class="head">
-      <div class="sec"><span class="it">(VIII)</span><span class="cap">Kinh nghiệm · Experience</span></div>
+      <div class="sec"><span class="no">06</span><span class="st"><b>Kinh nghiệm &amp; số liệu</b><span class="cap">Experience · By the numbers</span></span></div>
       <h2>Sáu năm đứng sau máy quay và timeline</h2>
     </div>
     <ul class="tl">
@@ -544,13 +535,20 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
       <li><span class="y">2025</span><b>Crossian</b><span>Editor video ads, video AI.</span></li>
       <li><span class="y">2026</span><b>Freelance</b><span>Vlog lifestyle U50, thời trang nam AI, Việt hoá mỹ phẩm, Roblox story. Build kênh TikTok, hợp tác agency.</span></li>
     </ul>
+    <div class="stats">
+      <div class="stat"><div class="n" data-to="6" data-dec="0" data-suf="">6<em>+</em></div><span class="it">năm</span><p>Làm sản xuất video, từ 2019 đến nay</p></div>
+      <div class="stat"><div class="n" data-to="200" data-dec="0" data-suf="K">200K<em>+</em></div><span class="it">followers</span><p>Xây dựng trên 6 kênh TikTok</p></div>
+      <div class="stat"><div class="n" data-to="90" data-dec="0" data-suf="M">90M<em>+</em></div><span class="it">lượt xem</span><p>Cộng từ các video top của các kênh</p></div>
+      <div class="stat"><div class="n" data-to="2.9" data-dec="1" data-suf="M">2.9M<em>+</em></div><span class="it">lượt thích</span><p>Tổng lượt thích trên TikTok</p></div>
+    </div>
+    <p class="note">Số liệu lấy từ trang TikTok của từng kênh, tháng 10/2026.</p>
   </div>
 </section>
 
 <!-- 07 KỸ NĂNG -->
-<section class="slide" id="skills" data-num="IX" data-name="Kỹ năng" data-short="Kỹ năng">
+<section class="slide" id="skills" data-name="Kỹ năng">
   <div class="wrap">
-    <div class="head"><div class="sec"><span class="it">(IX)</span><span class="cap">Kỹ năng · Skills &amp; tools</span></div><h2>Làm được gì trong một dự án video</h2></div>
+    <div class="head"><div class="sec"><span class="no">07</span><span class="st"><b>Kỹ năng</b><span class="cap">Skills &amp; tools</span></span></div><h2>Làm được gì trong một dự án video</h2></div>
     <div class="skills">
       <ul class="sk">
         <li><b>Ý tưởng &amp; kịch bản</b><span>Lên concept, hook, kịch bản cho ads và kênh TikTok</span></li>
@@ -572,12 +570,12 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 </section>
 
 <!-- 08 LIÊN HỆ -->
-<section class="slide" id="contact" data-num="X" data-name="Liên hệ" data-short="Liên hệ">
+<section class="slide" id="contact" data-name="Liên hệ">
   <div class="wrap">
     <div class="contact">
       <div class="l">
         <figure class="portrait big"><img src="tuan.jpg" alt="Ảnh chân dung Nguyễn Duy Việt Tuấn" width="640" height="800" loading="lazy"></figure>
-        <div class="sec"><span class="it">(X)</span><span class="cap">Liên hệ · Contact</span></div>
+        <div class="sec"><span class="no">08</span><span class="st"><b>Liên hệ</b><span class="cap">Contact</span></span></div>
         <h2>Nguyễn Duy<br>Việt Tuấn</h2>
         <div class="it" style="font-size:clamp(24px,2.6vw,34px)">video producer &amp; editor</div>
         <p style="color:#c9d3e6;max-width:44ch;margin:8px 0 0">Nhận dự án quay dựng, video ads, xây kênh TikTok và hợp tác agency.</p>
@@ -601,7 +599,7 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 <footer class="bar">
   <button class="nav" id="prev" aria-label="Slide trước"><svg viewBox="0 0 16 16"><path d="M10 2 4 8l6 6"/></svg></button>
   <nav class="tlbar" id="tlbar" aria-label="Các phần"></nav>
-  <div style="display:flex;align-items:center;gap:12px"><span class="count" id="count">Trang 01 / 15</span>
+  <div style="display:flex;align-items:center;gap:12px"><span class="count" id="count">Trang 01 / 08</span>
   <button class="nav" id="next" aria-label="Slide sau"><svg viewBox="0 0 16 16"><path d="M6 2l6 6-6 6"/></svg></button></div>
 </footer>
 
@@ -611,25 +609,37 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
   const slides=[...document.querySelectorAll('.slide')];
   const bar=document.getElementById('tlbar');
   const reel=document.getElementById('reel'), playBtn=document.getElementById('playReel');
-  let cur=0;
   const pad=n=>String(n).padStart(2,'0');
+  let cur=0, tab=0;
+  const panes=slides.map(s=>[...s.querySelectorAll('.pane')]);
+  // tab phần con: tạo từ data-tab của từng .pane
   slides.forEach((s,i)=>{
-    const b=document.createElement('button');
-    const lab=s.dataset.num+(s.dataset.part?'.'+s.dataset.part.split('/')[0]:'')+' '+s.dataset.short;
-    b.innerHTML='<i></i><span>'+lab+'</span>';
-    b.setAttribute('aria-label',lab);
-    if(i>0 && slides[i-1].dataset.num!==s.dataset.num) b.classList.add('grp');
-    b.addEventListener('click',()=>go(i));
+    if(!panes[i].length) return;
+    const tl=document.createElement('div'); tl.className='tabs'; tl.setAttribute('role','tablist');
+    panes[i].forEach((p,k)=>{
+      const b=document.createElement('button'); b.type='button'; b.setAttribute('role','tab');
+      b.innerHTML='<b>'+pad(k+1)+'</b>'+p.dataset.tab;
+      b.addEventListener('click',()=>go(i,k));
+      p.setAttribute('role','tabpanel'); tl.appendChild(b);
+    });
+    s.querySelector('.sechead').appendChild(tl);
+  });
+  // thanh dưới: các ô bằng nhau
+  slides.forEach((s,i)=>{
+    const b=document.createElement('button'); b.type='button';
+    b.innerHTML='<i></i><span><b>'+pad(i+1)+'</b>'+(s.dataset.short||s.dataset.name)+'</span>';
+    b.setAttribute('aria-label',pad(i+1)+' '+s.dataset.name);
+    b.addEventListener('click',()=>go(i,0));
     bar.appendChild(b);
   });
   const btns=[...bar.children];
   const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // gắn thứ tự xuất hiện cho từng phần tử trong slide
+  // thứ tự xuất hiện: đếm riêng cho phần chung và cho từng pane
   slides.forEach(s=>{
-    let k=0;
-    s.querySelectorAll('h1,h2,.hero .role').forEach(el=>{el.classList.add('m');el.style.setProperty('--i',k++);});
+    const ctr=new Map(), nx=el=>{ const key=el.closest('.pane')||s; const k=ctr.get(key)||0; ctr.set(key,k+1); return k; };
+    s.querySelectorAll('h1,h2,.hero .role').forEach(el=>{el.classList.add('m');el.style.setProperty('--i',nx(el));});
     s.querySelectorAll('.portrait,.cap:not(.cat),.sec,.head p,.head .aside,.hero p,.hero .meta,.reel,figure,.chan,.stat,.note,.tl li,.sk li,.tools>div,.ci,.contact .l>.it,.contact .l>p').forEach(el=>{
-      if(el.closest('.top')) return; el.classList.add('a'); el.style.setProperty('--i',k++); });
+      if(el.closest('.top')||(el.closest('.sec')&&!el.classList.contains('sec'))) return; el.classList.add('a'); el.style.setProperty('--i',nx(el)); });
     s.querySelectorAll('.chip').forEach(el=>{ const p=el.closest('.a'); el.style.setProperty('--i',p?p.style.getPropertyValue('--i'):0); });
   });
   function countUp(s){
@@ -642,47 +652,63 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
       requestAnimationFrame(step);
     });
   }
-  function go(i){
+  function go(i,t){
     i=Math.max(0,Math.min(slides.length-1,i));
-    cur=i;
-    slides.forEach((s,k)=>{ s.classList.remove('in'); s.classList.toggle('cur',k===i); }); void track.offsetWidth;
-    slides[i].classList.add('in'); countUp(slides[i]);
-    ['nowName','nowNum'].forEach(id=>{ const e=document.getElementById(id); e.classList.remove('swap'); void e.offsetWidth; e.classList.add('swap'); });
-    track.style.transform='translateX('+(-i*100)+'%)';
+    const np=panes[i].length; t=np?Math.max(0,Math.min(np-1,t||0)):0;
+    const newSlide=i!==cur||!slides[i].classList.contains('in');
+    cur=i; tab=t;
+    if(newSlide){
+      slides.forEach((s,k)=>{ s.classList.remove('in'); s.classList.toggle('cur',k===i); }); void track.offsetWidth;
+      slides[i].classList.add('in'); countUp(slides[i]);
+      ['nowName','nowNum'].forEach(id=>{ const e=document.getElementById(id); e.classList.remove('swap'); void e.offsetWidth; e.classList.add('swap'); });
+      track.style.transform='translateX('+(-i*100)+'%)';
+    }
+    // pane đang xem (hiện lại pane thì animation tự chạy lại)
+    panes[i].forEach((p,k)=>{ p.hidden=k!==t; });
+    const tl=slides[i].querySelector('.tabs');
+    if(tl) [...tl.children].forEach((b,k)=>{ b.setAttribute('aria-selected',k===t?'true':'false'); b.tabIndex=k===t?0:-1;
+      if(k===t&&tl.scrollWidth>tl.clientWidth) tl.scrollLeft=b.offsetLeft-tl.clientWidth/2+b.offsetWidth/2; });
     slides.forEach((s,k)=>{
       const on=k===i;
       s.inert=!on; s.setAttribute('aria-hidden',on?'false':'true');
-      s.querySelectorAll('video[data-loop]').forEach(v=>{ if(on){ const p=v.play(); if(p&&p.catch)p.catch(()=>{}); } else v.pause(); });
+      s.querySelectorAll('video[data-loop]').forEach(v=>{ const vis=on&&!v.closest('.pane[hidden]');
+        if(vis){ const p=v.play(); if(p&&p.catch)p.catch(()=>{}); } else v.pause(); });
       if(on) s.scrollTop=0;
     });
     if(i!==0 && !reel.paused){ reel.pause(); }
-    btns.forEach((b,k)=>{ b.setAttribute('aria-current',k===i?'true':'false'); b.classList.toggle('done',k<i); });
-    document.getElementById('nowNum').textContent='('+slides[i].dataset.num+')';
+    btns.forEach((b,k)=>{ const p=k<i?1:k>i?0:(np?(t+1)/np:1);
+      b.querySelector('i').style.setProperty('--p',p); b.setAttribute('aria-current',k===i?'true':'false'); b.classList.toggle('done',k<i); });
+    document.getElementById('nowNum').textContent=pad(i+1);
     document.getElementById('nowName').textContent=slides[i].dataset.name;
-    const sd=slides[i].dataset; document.getElementById('nowSub').textContent=sd.sub?('· '+sd.sub+'  —  '+sd.part):'';
+    document.getElementById('nowSub').textContent=np?(panes[i][t].dataset.tab+'  ·  '+(t+1)+'/'+np):'';
     document.getElementById('count').textContent='Trang '+pad(i+1)+' / '+pad(slides.length);
-    document.getElementById('prev').disabled=i===0;
+    document.getElementById('prev').disabled=i===0&&t===0;
     document.getElementById('next').disabled=i===slides.length-1;
-    try{ history.replaceState(null,'','#'+slides[i].id); }catch(e){}
+    try{ history.replaceState(null,'','#'+(np?panes[i][t].id:slides[i].id)); }catch(e){}
   }
-  document.getElementById('prev').addEventListener('click',()=>go(cur-1));
-  document.getElementById('next').addEventListener('click',()=>go(cur+1));
+  // → đi qua từng tab rồi mới sang trang sau; ← ngược lại
+  const next=()=>{ if(tab<panes[cur].length-1) go(cur,tab+1); else go(cur+1,0); };
+  const prev=()=>{ if(tab>0) go(cur,tab-1); else if(cur>0) go(cur-1,Math.max(0,panes[cur-1].length-1)); };
+  document.getElementById('prev').addEventListener('click',prev);
+  document.getElementById('next').addEventListener('click',next);
   document.addEventListener('keydown',e=>{
     if(e.target.closest && e.target.closest('input,textarea')) return;
-    if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); go(cur+1); }
-    if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(cur-1); }
+    if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); next(); }
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prev(); }
   });
+  const find=h=>{ for(let i=0;i<slides.length;i++){ if('#'+slides[i].id===h) return [i,0]; const k=panes[i].findIndex(p=>'#'+p.id===h); if(k>=0) return [i,k]; } return null; };
   let sx=0,sy=0,st=0;
   const stage=document.getElementById('stage');
   // trình duyệt tự cuộn khung khi mở link #anchor hoặc khi focus phần tử: luôn giữ về 0, chỉ dùng transform
   const lock=()=>{ if(stage.scrollLeft||stage.scrollTop){ stage.scrollLeft=0; stage.scrollTop=0; } };
   stage.addEventListener('scroll',lock);
-  window.addEventListener('hashchange',()=>{ lock(); const k=slides.findIndex(s=>'#'+s.id===location.hash); if(k>=0&&k!==cur) go(k); });
-  window.addEventListener('load',lock);
+  window.addEventListener('hashchange',()=>{ lock(); const f=find(location.hash); if(f&&(f[0]!==cur||f[1]!==tab)) go(f[0],f[1]); });
+  window.addEventListener('load',()=>{ lock(); slides[cur].scrollTop=0; requestAnimationFrame(()=>{ slides[cur].scrollTop=0; }); });
   stage.addEventListener('touchstart',e=>{ const t=e.touches[0]; sx=t.clientX; sy=t.clientY; st=Date.now(); },{passive:true});
   stage.addEventListener('touchend',e=>{
     const t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
-    if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)*1.4 && Date.now()-st<800) go(cur+(dx<0?1:-1));
+    if(e.target.closest && e.target.closest('.tabs')) return;
+    if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)*1.4 && Date.now()-st<800) (dx<0?next:prev)();
   },{passive:true});
   playBtn.addEventListener('click',()=>{ reel.controls=true; playBtn.hidden=true; const p=reel.play(); if(p&&p.catch)p.catch(()=>{}); });
   reel.addEventListener('ended',()=>{ playBtn.hidden=false; reel.controls=false; });
@@ -701,8 +727,8 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
   const tcEl=document.getElementById('tc'), T0=performance.now();
   setInterval(()=>{ const f=Math.floor((performance.now()-T0)/40), p=n=>String(n).padStart(2,'0');
     tcEl.textContent=p(Math.floor(f/90000))+':'+p(Math.floor(f/1500)%60)+':'+p(Math.floor(f/25)%60)+':'+p(f%25); },40);
-  const start=slides.findIndex(s=>'#'+s.id===location.hash);
-  go(start>=0?start:0);
+  const f0=find(location.hash);
+  go(f0?f0[0]:0,f0?f0[1]:0);
 })();
 </script>
 
