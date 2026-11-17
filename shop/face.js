@@ -38,7 +38,9 @@
     return loading;
   }
 
-  const layer = document.createElement('canvas'); let tone = null, frameNo = 0;
+  const layer = document.createElement('canvas'); let tone = null, frameNo = 0, lastTime = -1, segRuns = 0;
+  const dot = document.createElement('canvas'); dot.width = dot.height = 1;
+  const dotCtx = dot.getContext('2d', { willReadFrequently: true });
   const redraw = () => { if (source === 'photo') drawPhoto(); };
 
   /* Tách vùng tóc / da / quần áo quanh đầu — dùng để đo vị trí tai và biết tóc có phủ lên tai không */
@@ -64,7 +66,7 @@
       const hx = hair.getContext('2d'), id = hx.createImageData(mw, mh);
       for (let i = 0; i < data.length; i++) if (data[i] !== 3) id.data[i * 4 + 3] = 255;   // mọi thứ không phải da mặt: tóc, nền, áo
       hx.putImageData(id, 0, 0);
-      seg = { data, mw, mh, R, hair, src, version: ++segNo };
+      seg = { data, mw, mh, R, hair, src, version: ++segNo }; segRuns++;
     } catch (e) { /* giữ kết quả cũ */ }
   }
 
@@ -124,7 +126,9 @@
       if ((eyewear || earring) && window.Wear3D) {
         loadSeg();
         if (Wear3D.ready(redraw)) {
-          if (segmenter && (source === 'photo' ? (!seg || seg.src !== src) : frameNo++ % 8 === 0)) runSeg(src, sw0, sh0, lm);
+          // Tai đứng yên so với đầu nên chỉ cần đo vài lần lúc đầu, sau đó thỉnh thoảng đo lại (bước này nặng nhất)
+          const live = source === 'camera';
+          if (segmenter && (live ? frameNo % (segRuns < 4 ? 6 : 90) === 0 : (!seg || seg.src !== src))) runSeg(src, sw0, sh0, lm);
           // Phụ kiện vẽ lên một lớp riêng ở đúng độ phân giải của ảnh gốc rồi mới phóng lên,
           // để sản phẩm mềm nét bằng ảnh (ảnh nhỏ bị phóng to thì kính cũng mờ theo, không bị "dán" lên)
           const k = Math.max(1, W / crop.sw), lw = Math.round(W / k), lh = Math.round(H / k);
@@ -141,7 +145,7 @@
               return i < 0 || j < 0 || i >= seg.mw || j >= seg.mh ? -1 : seg.data[j * seg.mw + i];
             },
           } : null;
-          const rw = Math.min(1400, lw * 2), rh = Math.round(rw * lh / lw);
+          const rw = live ? Math.min(720, lw) : Math.min(1400, lw * 2), rh = Math.round(rw * lh / lw);
           const out = Wear3D.render({
             pts, conns: meshConns, W, H, rw, rh, seg: segv, debug: !!window.__wearDebug,
             glasses: eyewear ? Object.assign({ color: look.eyewear.color }, eyewear) : null,
@@ -159,12 +163,10 @@
               L.restore();
             });
             // Nhuộm nhẹ theo màu ánh sáng trên da để kim loại không lạc tông với ảnh
-            if (!tone || frameNo % 12 === 1) {
-              const [sx, sy] = P(425);
+            if (!tone || (live && frameNo % 45 === 0)) {   // lấy màu da ở má qua một khung vẽ 1 điểm ảnh riêng, không đọc ngược khung vẽ chính
               try {
-                const d = ctx.getImageData(Math.round(flip ? W - sx : sx) - 3, Math.round(sy) - 3, 7, 7).data; let r = 0, g = 0, b = 0;
-                for (let q = 0; q < d.length; q += 4) { r += d[q]; g += d[q + 1]; b += d[q + 2]; }
-                tone = [r, g, b].map(v => Math.round(v / (d.length / 4)));
+                dotCtx.drawImage(src, lm[425].x * sw0 - 4, lm[425].y * sh0 - 4, 8, 8, 0, 0, 1, 1);
+                tone = Array.from(dotCtx.getImageData(0, 0, 1, 1).data.slice(0, 3));
               } catch (e) { tone = [200, 170, 150]; }
             }
             L.setTransform(1, 0, 0, 1, 0, 0); L.globalCompositeOperation = 'source-atop';
@@ -172,7 +174,7 @@
             L.globalCompositeOperation = 'source-over';
             ctx.save();
             ctx.imageSmoothingQuality = 'high';
-            ctx.shadowColor = 'rgba(30,15,8,.38)'; ctx.shadowBlur = faceW * 0.03; ctx.shadowOffsetY = faceW * 0.014;   // bóng đổ lên da
+            if (!live) { ctx.shadowColor = 'rgba(30,15,8,.38)'; ctx.shadowBlur = faceW * 0.03; ctx.shadowOffsetY = faceW * 0.014; }   // bóng đổ lên da (bỏ khi chạy camera vì làm mờ bóng rất tốn)
             ctx.drawImage(layer, 0, 0, W, H);
             ctx.restore();
           }
@@ -191,6 +193,8 @@
   function tick() {
     raf = requestAnimationFrame(tick);
     if (!video || video.readyState < 2 || !landmarker) return;
+    if (video.currentTime === lastTime) return;        // màn hình quét nhanh hơn camera: khung hình chưa đổi thì không làm lại
+    lastTime = video.currentTime; frameNo++;
     let lm = null;
     try { const res = landmarker.detectForVideo(video, performance.now()); lm = res.faceLandmarks && res.faceLandmarks[0]; } catch (e) { /* bỏ qua khung lỗi */ }
     paint(video, video.videoWidth, video.videoHeight, cover(video.videoWidth, video.videoHeight), lm, true);
@@ -202,6 +206,8 @@
     paint(photo, photo.naturalWidth, photo.naturalHeight, photoCrop, photoLm, false);
   }
 
+  function newFace() { seg = null; segRuns = 0; tone = null; lastTime = -1; if (window.Wear3D) Wear3D.reset(); }   // người mới: bỏ số đo tai cũ
+
   function stop() {
     cancelAnimationFrame(raf); raf = 0;
     if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
@@ -210,9 +216,9 @@
   }
 
   async function startCamera() {
-    stop();
+    stop(); newFace();
     onStatus('Đang mở camera…');
-    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 960 }, height: { ideal: 1280 } }, audio: false });
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 720 }, height: { ideal: 960 } }, audio: false });
     video.srcObject = stream; await video.play();
     source = 'camera';
     onStatus('Đang chuẩn bị gương…');
@@ -221,7 +227,7 @@
   }
 
   async function usePhoto(file) {
-    stop();
+    stop(); newFace();
     onStatus('Đang đọc ảnh…');
     const img = new Image();
     img.src = URL.createObjectURL(file);

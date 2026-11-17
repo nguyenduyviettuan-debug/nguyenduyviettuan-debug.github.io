@@ -299,5 +299,6 @@
     };
   }
 
-  window.Wear3D = { ready, render };
+  const reset = () => ears.forEach(e => { e.version = -1; e.found = false; e.covered = false; e.h = 62; });
+  window.Wear3D = { ready, render, reset };
 })();
