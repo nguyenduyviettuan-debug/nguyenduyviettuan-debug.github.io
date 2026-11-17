@@ -38,9 +38,10 @@
     return loading;
   }
 
-  const layer = document.createElement('canvas'); let tone = null, frameNo = 0, lastTime = -1, segRuns = 0;
-  const dot = document.createElement('canvas'); dot.width = dot.height = 1;
-  const dotCtx = dot.getContext('2d', { willReadFrequently: true });
+  const layer = document.createElement('canvas'); let frameNo = 0, lastTime = -1, segRuns = 0;
+  const pixC = document.createElement('canvas'); pixC.width = pixC.height = 4;
+  const pix = pixC.getContext('2d', { willReadFrequently: true });
+  const shade = document.createElement('canvas'); let light = { set: false, key: 0 };
   const redraw = () => { if (source === 'photo') drawPhoto(); };
 
   /* Tách vùng tóc / da / quần áo quanh đầu — dùng để đo vị trí tai và biết tóc có phủ lên tai không */
@@ -128,6 +129,16 @@
         if (Wear3D.ready(redraw)) {
           // Tai đứng yên so với đầu nên chỉ cần đo vài lần lúc đầu, sau đó thỉnh thoảng đo lại (bước này nặng nhất)
           const live = source === 'camera';
+          if (!light.set || (live && frameNo % 45 === 0)) {   // ước lượng ánh sáng của cảnh từ chính khung hình
+            try {
+              pix.drawImage(src, 0, 0, sw0, sh0, 0, 0, 4, 4);
+              const d = pix.getImageData(0, 0, 4, 4).data, avg = (a, b) => [0, 1, 2].map(q => { let t = 0; for (let i = a; i < b; i++) t += d[i * 4 + q]; return t / (b - a); });
+              const cheek = i => { pix.drawImage(src, lm[i].x * sw0 - 5, lm[i].y * sh0 - 5, 10, 10, 0, 0, 1, 1); const c = pix.getImageData(0, 0, 1, 1).data; return 0.3 * c[0] + 0.6 * c[1] + 0.1 * c[2]; };
+              const top = avg(0, 8), bottom = avg(8, 16), a = cheek(205), b = cheek(425);
+              light = { set: true, top, bottom, key: Math.max(-1, Math.min(1, (b - a) / (a + b + 1) * 4)) };
+            } catch (e) { light = { set: true, top: [225, 222, 218], bottom: [120, 108, 100], key: -0.3 }; }
+            Wear3D.setLight(light);
+          }
           if (segmenter && (live ? frameNo % (segRuns < 4 ? 6 : 90) === 0 : (!seg || seg.src !== src))) runSeg(src, sw0, sh0, lm);
           // Phụ kiện vẽ lên một lớp riêng ở đúng độ phân giải của ảnh gốc rồi mới phóng lên,
           // để sản phẩm mềm nét bằng ảnh (ảnh nhỏ bị phóng to thì kính cũng mờ theo, không bị "dán" lên)
@@ -163,18 +174,17 @@
               L.restore();
             });
             // Nhuộm nhẹ theo màu ánh sáng trên da để kim loại không lạc tông với ảnh
-            if (!tone || (live && frameNo % 45 === 0)) {   // lấy màu da ở má qua một khung vẽ 1 điểm ảnh riêng, không đọc ngược khung vẽ chính
-              try {
-                dotCtx.drawImage(src, lm[425].x * sw0 - 4, lm[425].y * sh0 - 4, 8, 8, 0, 0, 1, 1);
-                tone = Array.from(dotCtx.getImageData(0, 0, 1, 1).data.slice(0, 3));
-              } catch (e) { tone = [200, 170, 150]; }
-            }
-            L.setTransform(1, 0, 0, 1, 0, 0); L.globalCompositeOperation = 'source-atop';
-            L.fillStyle = `rgba(${tone[0]},${tone[1]},${tone[2]},.08)`; L.fillRect(0, 0, lw, lh);
-            L.globalCompositeOperation = 'source-over';
+            // Bóng đổ mềm của phụ kiện lên da: thu nhỏ lớp phụ kiện rồi phóng lại (tự mờ), lệch về phía ngược đèn
+            const sw = Math.max(8, Math.round(lw / 6)), sh = Math.max(8, Math.round(lh / 6));
+            if (shade.width !== sw || shade.height !== sh) { shade.width = sw; shade.height = sh; }
+            const S = shade.getContext('2d');
+            S.globalCompositeOperation = 'source-over'; S.clearRect(0, 0, sw, sh); S.imageSmoothingQuality = 'high'; S.drawImage(layer, 0, 0, sw, sh);
+            S.globalCompositeOperation = 'source-in'; S.fillStyle = '#1c0e08'; S.fillRect(0, 0, sw, sh);
+            ctx.save(); ctx.globalAlpha = 0.34; ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(shade, -light.key * faceW * 0.012, faceW * 0.018, W, H);
+            ctx.restore();
             ctx.save();
             ctx.imageSmoothingQuality = 'high';
-            if (!live) { ctx.shadowColor = 'rgba(30,15,8,.38)'; ctx.shadowBlur = faceW * 0.03; ctx.shadowOffsetY = faceW * 0.014; }   // bóng đổ lên da (bỏ khi chạy camera vì làm mờ bóng rất tốn)
             ctx.drawImage(layer, 0, 0, W, H);
             ctx.restore();
           }
@@ -206,7 +216,7 @@
     paint(photo, photo.naturalWidth, photo.naturalHeight, photoCrop, photoLm, false);
   }
 
-  function newFace() { seg = null; segRuns = 0; tone = null; lastTime = -1; if (window.Wear3D) Wear3D.reset(); }   // người mới: bỏ số đo tai cũ
+  function newFace() { seg = null; segRuns = 0; light = { set: false, key: 0 }; lastTime = -1; if (window.Wear3D) Wear3D.reset(); }   // người mới: bỏ số đo tai cũ
 
   function stop() {
     cancelAnimationFrame(raf); raf = 0;

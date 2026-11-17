@@ -7,7 +7,7 @@
   const OVAL = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109];
   const SKIN = 3;   // nhãn "da mặt" của bộ tách vùng (gồm cả tai)
   let T = null, loading = null;
-  let renderer, scene, cam, group, occMat, faceGeo, headMesh, metal, lensMat, glareMat, padMat;
+  let renderer, scene, cam, group, occMat, faceGeo, headMesh, metal, lensMat, glareMat, padMat, pmrem, keyLight, envRT = null, pendingLight = null;
   const G = { front: null, key: '', hinges: null, temple: [], templeKey: [] };
   const ears = [-1, 1].map(sg => ({ sg, version: -1, root: null, lobe: null, h: 62, found: false, covered: false, upper: null, slab: null, ring: null, ringKey: '' }));
   let tris = false;
@@ -23,7 +23,62 @@
     const m = new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts, !!closed, 'catmullrom', 0.5), closed ? 120 : 40, r, 10, !!closed), mat || metal);
     m.renderOrder = 1; return m;
   };
+  /* Thanh dẹt uốn theo đường cong: tiết diện elip, nửa trục `a` theo hướng `ref`, nửa trục `b` theo hướng vuông góc.
+     Gọng kính thật là thanh kim loại dẹt chứ không phải ống tròn. */
+  const bar = (pts, a, b, ref, closed, mat) => {
+    const curve = new T.CatmullRomCurve3(pts, !!closed, 'catmullrom', 0.5), n = closed ? 120 : 48, R = 12;
+    const pos = [], nor = [], idx = []; let side = null;
+    for (let i = 0; i <= n; i++) {
+      const t = closed ? (i % n) / n : i / n, p = curve.getPointAt(t), tg = curve.getTangentAt(t);
+      let sd = tg.clone().cross(ref); if (sd.lengthSq() < 0.03 && side) sd = side.clone(); sd.normalize(); side = sd;
+      const up = sd.clone().cross(tg).normalize();
+      for (let j = 0; j < R; j++) {
+        const an = j / R * Math.PI * 2, c = Math.cos(an), s = Math.sin(an);
+        pos.push(p.x + up.x * c * a + sd.x * s * b, p.y + up.y * c * a + sd.y * s * b, p.z + up.z * c * a + sd.z * s * b);
+        const nx = up.x * c / a + sd.x * s / b, ny = up.y * c / a + sd.y * s / b, nz = up.z * c / a + sd.z * s / b, l = Math.hypot(nx, ny, nz);
+        nor.push(nx / l, ny / l, nz / l);
+      }
+    }
+    for (let i = 0; i < n; i++) for (let j = 0; j < R; j++) {
+      const a0 = i * R + j, a1 = i * R + (j + 1) % R, b0 = a0 + R, b1 = a1 + R;
+      idx.push(a0, a1, b0, a1, b1, b0);   // mặt quay ra ngoài
+    }
+    const g = new T.BufferGeometry();
+    g.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new T.Float32BufferAttribute(nor, 3)); g.setIndex(idx);
+    const m = new T.Mesh(g, mat || metal); m.renderOrder = 1; return m;
+  };
   const ball = (r, mat) => { const m = new T.Mesh(new T.SphereGeometry(r, 24, 16), mat || metal); m.renderOrder = 1; return m; };
+
+  /* Ánh sáng lấy từ khung hình: màu nửa trên / nửa dưới của ảnh làm trần và sàn, bên má sáng hơn là phía có đèn.
+     Kim loại phản chiếu môi trường này nên ăn màu với căn phòng thật thay vì một phòng chụp cố định.
+     L: { top: [r,g,b], bottom: [r,g,b] (0–255), key: −1 (đèn bên trái ảnh) … 1 (bên phải) } hoặc null để dùng mặc định */
+  function setLight(L) {
+    if (!T) { pendingLight = L; return; }
+    const lin = c => c.map(v => Math.pow(v / 255, 2.2));
+    const top = lin(L ? L.top : [225, 222, 218]), bot = lin(L ? L.bottom : [120, 108, 100]), key = L ? L.key : -0.3;
+    const lum = c => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    const ex = Math.min(1.6, Math.max(0.55, (lum(top) + lum(bot)) / 2 / 0.22));          // ảnh tối thì đèn yếu theo
+    const tl = lum(top) || 1, lamp = top.map(v => 0.45 + 0.55 * v / tl);                 // màu đèn: trắng pha màu trần
+    const ew = 128, eh = 64, d = new Float32Array(ew * eh * 4);
+    const uk = 0.75 - key * 0.11, uf = 0.75 + key * 0.13;                                // vị trí đèn chính và đèn phụ quanh phía máy ảnh
+    for (let y = 0; y < eh; y++) for (let x = 0; x < ew; x++) {
+      const t = y / (eh - 1), u = x / ew, k = Math.min(1, Math.max(0, (t - 0.35) / 0.3)), front = u > 0.5 ? 1 : 0.45;
+      const c = [0, 1, 2].map(q => (bot[q] * 0.45 * (1 - k) + top[q] * 1.15 * k) * front);
+      let box = 0;
+      if (t > 0.58 && t < 0.9) { if (Math.abs(u - uk) < 0.07) box = 11; else if (Math.abs(u - uf) < 0.045) box = 4; }
+      if (t > 0.5 && t < 0.535) box = Math.max(box, 1.2);
+      const i = (y * ew + x) * 4;
+      for (let q = 0; q < 3; q++) d[i + q] = c[q] + box * lamp[q] * ex;
+      d[i + 3] = 1;
+    }
+    const et = new T.DataTexture(d, ew, eh, T.RGBAFormat, T.FloatType);
+    et.mapping = T.EquirectangularReflectionMapping; et.colorSpace = T.LinearSRGBColorSpace;
+    et.magFilter = et.minFilter = T.LinearFilter; et.needsUpdate = true;
+    const rt = pmrem.fromEquirectangular(et); et.dispose();
+    if (envRT) envRT.dispose();
+    envRT = rt; scene.environment = rt.texture;
+    keyLight.position.set(key * 0.9, 1, 1.2); keyLight.intensity = 2.2 * ex; keyLight.color.setRGB(lamp[0], lamp[1], lamp[2]);
+  }
 
   function init() {
     renderer = new T.WebGLRenderer({ alpha: true, antialias: true });
@@ -32,22 +87,10 @@
     scene = new T.Scene();
     cam = new T.OrthographicCamera(0, 1, 0, -1, -4000, 4000);
 
-    // Môi trường phản chiếu kiểu phòng chụp (dải sáng mạnh trên nền tối) — thứ làm kim loại trông ra kim loại
-    const ew = 128, eh = 64, d = new Float32Array(ew * eh * 4);
-    for (let y = 0; y < eh; y++) for (let x = 0; x < ew; x++) {
-      const t = y / (eh - 1), u = x / ew;                                   // t: 0 = dưới sàn, 1 = trần
-      let v = t > 0.5 ? 0.12 + (t - 0.5) * 0.9 : 0.03 + t * 0.18;
-      if (t > 0.6 && t < 0.88 && ((u > 0.06 && u < 0.2) || (u > 0.56 && u < 0.68))) v = 11;   // hai hộp đèn
-      if (t > 0.5 && t < 0.54) v = 1.4;                                                       // dải sáng ngang chân trời
-      if (t > 0.92) v = 1.6;                                                                   // trần sáng
-      const i = (y * ew + x) * 4; d[i] = v; d[i + 1] = v * 0.98; d[i + 2] = v * 0.95; d[i + 3] = 1;
-    }
-    const et = new T.DataTexture(d, ew, eh, T.RGBAFormat, T.FloatType);
-    et.mapping = T.EquirectangularReflectionMapping; et.colorSpace = T.LinearSRGBColorSpace;
-    et.magFilter = et.minFilter = T.LinearFilter; et.needsUpdate = true;
-    const pm = new T.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(et).texture; pm.dispose(); et.dispose();
-    scene.add(new T.HemisphereLight(0xffffff, 0x9a8a80, 0.5));
-    const key = new T.DirectionalLight(0xffffff, 2.5); key.position.set(-0.5, 1, 1.2); scene.add(key);
+    pmrem = new T.PMREMGenerator(renderer);
+    scene.add(new T.HemisphereLight(0xffffff, 0x9a8a80, 0.4));
+    keyLight = new T.DirectionalLight(0xffffff, 2.2); scene.add(keyLight);
+    setLight(null);
 
     occMat = new T.MeshBasicMaterial({ colorWrite: false, side: T.DoubleSide });      // vật che: chỉ ghi độ sâu
     faceGeo = new T.BufferGeometry();
@@ -63,7 +106,7 @@
       e.ring = new T.Group(); e.ring.matrixAutoUpdate = false; scene.add(e.ring);
     });
 
-    metal = new T.MeshStandardMaterial({ color: 0xd4d7da, metalness: 1, roughness: 0.22 });
+    metal = new T.MeshStandardMaterial({ color: 0xd4d7da, metalness: 1, roughness: 0.2, side: T.DoubleSide });
     lensMat = new T.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.07, roughness: 0.05, depthWrite: false, side: T.DoubleSide });
     padMat = new T.MeshStandardMaterial({ color: 0xf4f1ec, transparent: true, opacity: 0.75, roughness: 0.3 });
     // vệt loá trên tròng kính
@@ -73,6 +116,7 @@
     gx.fillStyle = gg; gx.fillRect(0, 0, 64, 64);
     glareMat = new T.MeshBasicMaterial({ map: new T.CanvasTexture(gc), transparent: true, depthWrite: false, side: T.DoubleSide, toneMapped: false });
     G.front = new T.Group(); group.add(G.front);
+    if (pendingLight) setLight(pendingLight);
   }
 
   /* ───────── Kính ───────── */
@@ -87,7 +131,7 @@
         const x = sg * cx + a * ux * (1 - (d.taper || 0.1) * uy) + sg * a * 0.04 * uy, y = b * uy;   // đáy tròng hẹp hơn đỉnh
         ring.push(V(x, y, z0)); i ? shape.lineTo(x, y) : shape.moveTo(x, y);
       }
-      front.add(tube(ring, rim, true));
+      front.add(bar(ring, rim * 0.95, rim * 0.62, V(0, 0, 1), true));                                // vành tròng: dẹt, dày theo chiều sâu
       const geo = new T.ShapeGeometry(shape), uv = geo.attributes.uv, ps = geo.attributes.position;
       for (let i = 0; i < uv.count; i++) uv.setXY(i, (ps.getX(i) - sg * cx + a) / (2 * a), 1 - (ps.getY(i) + b) / (2 * b));
       [lensMat, glareMat].forEach((m, k) => { const l = new T.Mesh(geo, m); l.position.z = z0 - k * 0.05; l.renderOrder = 2 + k; front.add(l); });
@@ -95,10 +139,10 @@
       front.add(tube([V(sg * (d.bridge / 2 + 1.2), b * 0.2, z0), V(sg * (d.bridge / 2 - 1), b * 0.36, z0 + 4), pad], 0.45));
       const pm = ball(1, padMat); pm.scale.set(1.5, 3.6, 2.4); pm.position.copy(pad); front.add(pm);
       const ey = -b * 0.55, ex = cx + a;                                                              // đầu càng tới bản lề
-      front.add(tube([V(sg * (ex - 1.5), ey, z0), V(sg * (ex + 3.5), ey, z0 + 0.5), V(sg * (ex + 5.5), ey, z0 + 3), V(sg * (ex + 6), ey, z0 + 7)], 1.05));
-      const hb = ball(1); hb.scale.set(1.3, 2, 1.6); hb.position.set(sg * (ex + 6), ey, z0 + 7); front.add(hb);   // khối bản lề
+      front.add(bar([V(sg * (ex - 1.5), ey, z0), V(sg * (ex + 3.5), ey, z0 + 0.5), V(sg * (ex + 5.5), ey, z0 + 3), V(sg * (ex + 6), ey, z0 + 7)], 1.5, 0.6, V(0, 1, 0)));
+      const hb = new T.Mesh(new T.BoxGeometry(2, 3.6, 3), metal); hb.renderOrder = 1; hb.position.set(sg * (ex + 6), ey, z0 + 7.5); front.add(hb);   // khối bản lề
     });
-    front.add(tube([V(-d.bridge / 2 - 0.6, -b * 0.42, z0), V(0, -b * 0.52, z0 - 0.8), V(d.bridge / 2 + 0.6, -b * 0.42, z0)], rim));   // cầu mũi
+    front.add(bar([V(-d.bridge / 2 - 0.6, -b * 0.42, z0), V(0, -b * 0.52, z0 - 0.8), V(d.bridge / 2 + 0.6, -b * 0.42, z0)], rim * 0.9, rim * 0.65, V(0, 0, 1)));   // cầu mũi
     front.position.y = 4;       // tâm tròng thấp hơn đồng tử vài mm
     front.rotation.x = 0.13;    // mặt kính ngả nhẹ vào má như khi đeo
     front.updateMatrix();
@@ -108,15 +152,15 @@
   /* ───────── Khuyên tai — gốc toạ độ ở lỗ xỏ; x ra ngoài, y xuống, z ra sau ───────── */
   function buildEarring(m, color) {
     const g = new T.Group();
-    const mt = new T.MeshStandardMaterial({ color: m.metal || '#d4d7da', metalness: 1, roughness: 0.2 });
+    const mt = new T.MeshStandardMaterial({ color: m.metal || '#d4d7da', metalness: 1, roughness: 0.2, side: T.DoubleSide });
     if (m.type === 'hoop-bow') {                    // khoen tròn ôm dái tai, đính nơ ở mặt ngoài
       const r = (m.size || 11) / 2 - 0.75;
       const ring = new T.Mesh(new T.TorusGeometry(r, 0.75, 14, 56), mt); ring.position.y = r; ring.renderOrder = 1; g.add(ring);
       const bow = new T.Group(); bow.position.set(r + 0.8, r * 0.75, 0); g.add(bow);
       const k = (m.size || 11) / 11, P2 = (z, y) => V(0, y * k, z * k);
       [-1, 1].forEach(s => {
-        bow.add(tube([P2(0, 0), P2(2.8 * s, -2.5), P2(5.9 * s, -1.7), P2(6.3 * s, 0.9), P2(3.2 * s, 1.3)], 0.5, true, mt));   // cánh nơ
-        bow.add(tube([P2(0, 0), P2(1.7 * s, 3.1), P2(3.3 * s, 6)], 0.5, false, mt));                                          // đuôi nơ
+        bow.add(bar([P2(0, 0), P2(2.8 * s, -2.5), P2(5.9 * s, -1.7), P2(6.3 * s, 0.9), P2(3.2 * s, 1.3)], 1.0 * k, 0.4 * k, V(1, 0, 0), true, mt));   // cánh nơ: dải dẹt
+        bow.add(bar([P2(0, 0), P2(1.7 * s, 3.1), P2(3.3 * s, 6)], 1.0 * k, 0.4 * k, V(1, 0, 0), false, mt));                                         // đuôi nơ
       });
       bow.add(ball(1.05 * k, mt));
     } else {                                        // khuyên thả: chốt, dây, hạt
@@ -265,9 +309,9 @@
         if (G.templeKey[k] === tk + key) return;
         G.templeKey[k] = tk + key;
         if (G.temple[k]) { group.remove(G.temple[k]); G.temple[k].geometry.dispose(); }
-        G.temple[k] = tube([h, V(sg * (Math.abs(h.x) + (out - Math.abs(h.x)) * 0.6), h.y + (end.y - h.y) * 0.2, h.z + (zt - h.z) * 0.5),
+        G.temple[k] = bar([h, V(sg * (Math.abs(h.x) + (out - Math.abs(h.x)) * 0.6), h.y + (end.y - h.y) * 0.2, h.z + (zt - h.z) * 0.5),
           V(sg * out, h.y + (end.y - h.y) * 0.5, zt), mid.clone().lerp(end, 0.8), end,          // điểm kề cuối giữ càng thẳng cho tới khi chạm tai
-          V(end.x, end.y + 1, end.z + 7), V(end.x - sg * 1.5, end.y + 9, end.z + 14), V(end.x - sg * 3.5, end.y + 18, end.z + 18)], 1.0);
+          V(end.x, end.y + 1, end.z + 7), V(end.x - sg * 1.5, end.y + 9, end.z + 14), V(end.x - sg * 3.5, end.y + 18, end.z + 18)], 1.45, 0.55, V(0, 1, 0));   // càng kính: thanh dẹt, bản cao 3 mm
         group.add(G.temple[k]);
       });
     }
@@ -300,5 +344,5 @@
   }
 
   const reset = () => ears.forEach(e => { e.version = -1; e.found = false; e.covered = false; e.h = 62; });
-  window.Wear3D = { ready, render, reset };
+  window.Wear3D = { ready, render, reset, setLight };
 })();
