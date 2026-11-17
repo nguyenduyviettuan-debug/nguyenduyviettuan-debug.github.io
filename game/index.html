@@ -611,7 +611,8 @@ PACKS.na={id:'na',kind:'CÔ GÁI BÁN HÀNG RONG',top:'Nữ hoàng thời trang'
  EMO:[['🧺','💤','😮‍💨','🥺'],['📱','💪','🧋','💄'],['💅','🥂','😎','📈']]};
 
 /* ---------------- MƯỚP: mèo hoang → mèo hoàng gia triệu fan ---------------- */
-PACKS.muop={id:'muop',kind:'CHÚ MÈO HOANG',top:'Mèo hoàng gia',petShow:1,draw:drawMuop,
+PACKS.muop={id:'muop',kind:'CHÚ MÈO HOANG',top:'Mèo hoàng gia',petShow:1,draw:drawMuop,commute:false,noTruck:1,rideNew:'CHỖ NGỒI ĐI DẠO MỚI',
+ PH:['🌅 Sáng sớm','☀️ Ban ngày','🌆 Chiều tối','🌙 Ban đêm'],
  names:['Mướp','Mun','Vằn','Bơ','Miu','Mỡ'],
  origins:['mèo hoang ở bãi rác','mèo con bị bỏ trong thùng giấy','mèo lạc ngoài chợ cá'],
  goals:['có một cái ổ thật ấm','được ăn pa-tê mỗi ngày','có một người để dụi đầu','tìm lại mùi hương quen thuộc năm xưa'],
@@ -627,7 +628,7 @@ PACKS.muop={id:'muop',kind:'CHÚ MÈO HOANG',top:'Mèo hoàng gia',petShow:1,dra
   giay:{n:'Đồ chơi',t:['Nắp chai','Cuộn len','Chuột bông','Cần câu mèo','Tháp leo 5 tầng','Công viên mèo riêng'],e:['🔘','🧶','🐭','🎣','🗼','🎢']},
   pk:{n:'Bát ăn',t:['Vỏ hộp cá','Bát nhựa','Bát sứ','Pa-tê nhập khẩu','Cá hồi tươi mỗi ngày','Cá hồi dát vàng'],e:['🥫','🥣','🍚','🍲','🍣','🍱']},
   pet:{n:'Ổ nằm',t:['Chưa có','Thùng giấy','Giỏ mây','Nệm bông','Sofa riêng','Ngai nhung hoàng gia'],e:['➖','📦','🧺','🛏️','🛋️','👑']},
-  xe:{n:'Phương tiện',t:['Đi bộ','Xe đẩy siêu thị','Giỏ xe đạp','Yên sau xe máy','Xe riêng có tài xế','Trực thăng riêng'],e:['🐾','🛒','🚲','🛵','🚙','🚁']},
+  xe:{n:'Đi dạo',t:['Tự lết bộ','Thùng giấy có dây kéo','Giỏ mây cô chủ xách','Balo phi hành gia','Xe đẩy thú cưng','Xe kéo nhung hoàng gia'],e:['🐾','📦','🧺','🎒','🛒','🛷']},
   nha:{n:'Nhà',t:['Bãi rác','Gầm cầu thang','Quán cà phê mèo','Căn hộ cô chủ','Biệt thự có vườn','Cung điện mèo'],e:['🗑️','🪜','☕','🏢','🏡','🏰']}},
  HOME:[
   {sky:'linear-gradient(#0b1026,#27304f)',gr:'#44403c',it:[['🌙',440,370,50],['🗑️',290,62,170],['📦',160,66,90],['🐀',70,70,44],['🥫',440,66,40]]},
@@ -639,14 +640,15 @@ PACKS.muop={id:'muop',kind:'CHÚ MÈO HOANG',top:'Mèo hoàng gia',petShow:1,dra
   {ph:0,min:0,bg:'home',pose:'jog',icon:'🐀',label:'Dậy sớm rình chuột',emo:['🐀','👀']},
   {ph:0,min:3,bg:'sofa',pose:'stay',icon:'☀️',label:'Tắm nắng bên cửa sổ',emo:['☀️','😌','💤']},
   {ph:0,min:6,bg:'spa',pose:'stay',icon:'🛁',label:'Đi spa thú cưng',emo:['🫧','😾','✨']},
-  {ph:1,min:0,max:1,bg:'market',pose:'walk',icon:'🐟',label:'Đi xin ăn ngoài chợ cá',emo:['🐟','🥺']},
-  {ph:1,min:2,max:2,bg:'cafe',pose:'walk',icon:'☕',label:'"Đi làm" ở quán cà phê: cho khách vuốt',emo:['😽','💤']},
-  {ph:1,min:3,max:4,bg:'sofa',pose:'walk',icon:'🧶',label:'Trông nhà cho cô chủ',emo:['🧶','🙀','😼']},
-  {ph:1,min:5,max:5,bg:'live',pose:'stay',icon:'📱',label:'Quay clip triệu view',emo:['📸','😹']},
-  {ph:1,min:6,max:7,bg:'studio',pose:'stay',icon:'📸',label:'Chụp ảnh quảng cáo',emo:['📸','✨','😼']},
-  {ph:1,min:8,bg:'runway',pose:'walk',icon:'🏆',label:'Đi thảm đỏ, ký tặng bằng dấu chân',emo:['🐾','🏆']},
+  {ph:1,min:0,max:1,bg:'market',pose:'walk',icon:'🐟',label:'Lượn chợ cá xin ăn',emo:['🐟','🥺']},
+  {ph:1,min:2,max:2,bg:'cafe',pose:'walk',icon:'☕',label:'Nằm ườn ở quán cà phê cho khách vuốt',emo:['😽','💤']},
+  {ph:1,min:3,max:4,bg:'sofa',pose:'walk',icon:'🧶',label:'Vờn cuộn len, rình chim ngoài cửa sổ',emo:['🧶','🐦','😼']},
+  {ph:1,min:5,max:5,bg:'live',pose:'stay',icon:'📱',label:'Bị cô chủ dí điện thoại quay clip',emo:['📸','😹','🙄']},
+  {ph:1,min:6,max:7,bg:'studio',pose:'stay',icon:'📸',label:'Tạo dáng trước ống kính',emo:['📸','✨','😼']},
+  {ph:1,min:8,bg:'runway',pose:'walk',icon:'🏆',label:'Dạo thảm đỏ, in dấu chân lên bảng',emo:['🐾','🏆']},
   {ph:2,min:0,bg:'alley',pose:'walk',icon:'🌙',label:'Lang thang hẻm tối',emo:['👀','🐾']},
   {ph:2,min:1,bg:'roof',pose:'stay',icon:'🌕',label:'Trèo mái nhà ngắm trăng',emo:['🌕','🎵']},
+  {ph:2,min:1,bg:'road',pose:'ride',icon:'🧺',label:'Được chở đi dạo phố',emo:['😌','👀'],ok:()=>shownXe>0},
   {ph:2,min:2,bg:'park',pose:'jog',icon:'🦋',label:'Đuổi bướm ở công viên',emo:['🦋','😹']},
   {ph:2,min:3,bg:'sofa',pose:'lift',icon:'🛋️',label:'Quậy tung sofa',gf:1,emo:['😼','💥']},
   {ph:2,min:5,bg:'roof',pose:'stay',icon:'💕',label:'Hẹn hò trên mái nhà',unlock:'Có bạn mèo',npc:'🐈',emo:['💕','😽']},
@@ -664,7 +666,7 @@ PACKS.muop={id:'muop',kind:'CHÚ MÈO HOANG',top:'Mèo hoàng gia',petShow:1,dra
   {t:'Mèo hàng xóm tới giành lãnh thổ!',bg:'roof',at:['roof','home','park'],npc:'🐈‍⬛',say:'Khu này của tao! 😾',ok:awake},
   {t:'Bác sĩ thú y gọi tên… tiêm phòng!',bg:'spa',at:['spa','sofa'],npc:'💉',sm:1,ok:()=>S.stage>=3},
   {t:'Clip mới bị chê "hết thời"!',bg:'live',at:['live','studio','runway','party'],npc:'📉',sm:1,ok:()=>S.stage>=5},
-  {t:'Xe hỏng giữa đường!',bg:'road',at:['road'],npc:'💥',sm:1}],
+  {t:'Đang đi dạo thì lật giỏ, văng ra giữa đường!',bg:'road',at:['road'],npc:'💥',sm:1}],
  CHOICES:[
   {bg:'market',at:['market','alley','home','park'],npc:'👧',say:'Về với tớ nha, tớ chỉ có cơm nguội thôi…',q:'Một cô bé nghèo và một bà chủ giàu cùng muốn nuôi {n}.',a:['Theo cô bé',{k:3,c:.02,clue:.25,t:'Cơm nguội mà ấm lạ.'}],b:['Theo bà chủ',{k:-1,c:.1,t:'Pa-tê ngon, nhưng ít ai vuốt ve.'}],ok:()=>S.stage<5&&awake()},
   {bg:'market',at:['market'],npc:'🐟',sm:1,q:'Một con cá rơi khỏi sạp, không ai để ý.',a:['Ngoạm rồi chạy',{k:-1,c:.08,risk:.4,t:'No một bữa!',tf:'Ăn nguyên cái chổi vào mông…'}],b:['Ngồi nhìn và kêu',{k:1,c:.03,t:'Cô bán cá mủi lòng, cho hẳn cái đầu.'}]},
@@ -780,15 +782,15 @@ const cut=fn=>(cutQ=cutQ.then(fn).catch(e=>console.error(e)));
 
 async function rideCut(o,n,by){   // lên xe mới: chạy xe cũ một đoạn rồi "đổi đời" sang xe mới
   lock=true;$('#npc').className='abs';rideOn(o);cap(`${ITEMS.xe.e[o]} ${ITEMS.xe.t[o]}… lần cuối cùng!`,1300);await sleep(1300);
-  flash();sfx.vroom();shownXe=n;rideOn(n);confetti(30);
-  cap(`${ITEMS.xe.e[n]} XE MỚI: <b>${ITEMS.xe.t[n]}</b>${by?' · quà của <b>'+esc(by)+'</b>':''}`,2800);say('Brừm brừm!! 😆');
+  flash();PK.commute===false?sfx.reveal(2):sfx.vroom();shownXe=n;rideOn(n);confetti(30);
+  cap(`${ITEMS.xe.e[n]} ${PK.rideNew||'XE MỚI'}: <b>${ITEMS.xe.t[n]}</b>${by?' · quà của <b>'+esc(by)+'</b>':''}`,2800);say(PK.commute===false?'Êm quá… purrr 😽':'Brừm brừm!! 😆');
   await sleep(2800);rideOff();render();lock=false;
 }
 async function moveCut(o,n,by){   // có nhà mới: xe tải chuyển nhà, đổi hẳn bối cảnh
-  lock=true;$('#npc').className='abs';setBackdrop('home',o);$('#shade').style.background='transparent';resetActor(195);cap(`🚚 CHUYỂN NHÀ: tạm biệt ${ITEMS.nha.t[o]}…`,1500);
-  const tr=$('#truck');tr.classList.remove('go');void tr.offsetWidth;tr.classList.add('go');sfx.vroom();await sleep(1400);
+  lock=true;$('#npc').className='abs';setBackdrop('home',o);$('#shade').style.background='transparent';resetActor(195);cap(`${PK.noTruck?'🐾 ĐỔI CHỖ Ở':'🚚 CHUYỂN NHÀ'}: tạm biệt ${ITEMS.nha.t[o]}…`,1500);
+  const tr=$('#truck');tr.classList.remove('go');void tr.offsetWidth;if(!PK.noTruck){tr.classList.add('go');sfx.vroom()}await sleep(1400);
   await wipe(()=>{setBackdrop('home');resetActor(-150)});tr.classList.remove('go');
-  cap(`${ITEMS.nha.e[n]} NHÀ MỚI: <b>${ITEMS.nha.t[n]}</b>${by?' · quà của <b>'+esc(by)+'</b>':''}`,3000);confetti(40);sfx.reveal(4);
+  cap(`${ITEMS.nha.e[n]} ${PK.noTruck?'CHỖ Ở MỚI':'NHÀ MỚI'}: <b>${ITEMS.nha.t[n]}</b>${by?' · quà của <b>'+esc(by)+'</b>':''}`,3000);confetti(40);sfx.reveal(4);
   await walkTo(195,1300);$('#actor').classList.remove('walk');$('#actor').classList.add('jump');say('Nhà mới của mình đây sao… 😭');
   await sleep(1600);applyBase();lock=false;
 }
@@ -807,14 +809,14 @@ function applyBase(){
   const n=$('#npc');if(b.npc){n.className='abs on';$('#npce').textContent=b.npc;$('#npcsay').textContent=''}else n.className='abs';
   if(b.pose=='ride')rideOn(shownXe);else if(b.pose=='sleep'||b.pose=='lift')$('#actor').classList.add(b.pose);
   $('#shade').style.background=SHADE[b.ph??1];
-  $('#tag').innerHTML=b.label?`${b.label}<small>${PH[b.ph]} · ngày ${dayNo()}/${CFG.days}</small>`:'';
+  $('#tag').innerHTML=b.label?`${b.label}<small>${(PK.PH||PH)[b.ph]} · ngày ${dayNo()}/${CFG.days}</small>`:'';
 }
-function pickAct(ph){const L=ACTS.filter(a=>a.ph==ph&&S.stage>=a.min&&S.stage<=(a.max??9));return ph==2?pick(L.slice(-3)):L[L.length-1]}
+function pickAct(ph){const L=ACTS.filter(a=>a.ph==ph&&S.stage>=a.min&&S.stage<=(a.max??9)&&(!a.ok||a.ok()));return ph==2?pick(L.slice(-3)):L[L.length-1]}
 async function runPhase(ph,key){
   const a=pickAct(ph), fresh=()=>key===lifeKey&&!S.ended&&started;
   const swap=async b=>{while(lock||story){await sleep(300);if(!fresh())return false}
     await cut(async()=>{if(!fresh()||story)return;setBase(b);lock=true;await wipe(applyBase);lock=false;render()});return fresh()};
-  if(ph==1&&a.pose!='ride'){   // đi làm: chạy xe tới chỗ làm trước đã
+  if(ph==1&&a.pose!='ride'&&PK.commute!==false){   // đi làm: chạy xe tới chỗ làm trước đã
     if(!await swap({ph,bg:'road',pose:'ride',emo:['🎶','😌'],label:`${ITEMS.xe.e[shownXe]} ${shownXe?'Chạy '+ITEMS.xe.t[shownXe].toLowerCase():'Cuốc bộ'} đi làm`}))return;
     if(shownXe)sfx.vroom(); await sleep(Math.min(11000,dayLen()*60)); if(!fresh())return}
   if(!await swap({ph,bg:a.bg,pose:a.pose,npc:a.npc||(a.gf?PK.comp():''),emo:a.emo,label:a.icon+' '+a.label}))return;
