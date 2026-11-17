@@ -34,6 +34,21 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
 @keyframes roadmove{from{transform:translateX(0)}to{transform:translateX(540px)}}
 #scene.ride #ground{background-image:repeating-linear-gradient(90deg,#fff9 0 40px,#0000 40px 90px)!important;background-size:90px 6px!important;background-repeat:repeat-x!important;background-position:0 40px;animation:lane .5s linear infinite}
 @keyframes lane{to{background-position:90px 40px}}
+#shade{inset:0;pointer-events:none;z-index:1;transition:background 1s}
+#tag{left:164px;top:8px;width:264px;z-index:4;text-align:center;font-size:13px;font-weight:800;background:var(--panel);border-radius:12px;padding:5px 8px;line-height:1.3;backdrop-filter:blur(4px)}
+#tag:empty{display:none}
+#tag small{display:block;font-size:10.5px;opacity:.75;font-weight:700}
+#actor.sleep #flip{transform:translateY(95px) rotate(-90deg)}
+#actor.sleep #char{animation:none}
+#actor.lift #char{animation:jump .9s infinite}
+#ladder{left:14px;right:14px;top:66px;z-index:5;display:none;background:#1e1b4bf2;border:2px solid #fde047;border-radius:14px;padding:8px}
+#ladder.on{display:block;animation:evin .4s}
+#ladder h4{font-size:12.5px;color:#fde047;text-align:center;margin-bottom:6px}
+#ladder .row{display:flex;gap:4px}
+#ladder .it{flex:1;min-width:0;text-align:center;border:2px solid var(--c);border-radius:10px;padding:3px 1px 4px;font-size:9px;line-height:1.2;background:#0006}
+#ladder .it u{display:block;text-decoration:none;font-size:26px}
+#ladder .it.cur{background:#fff3}
+#ladder .it.vip{box-shadow:0 0 14px var(--c)}
 #park{left:10px;bottom:52px;font-size:72px;line-height:1;z-index:1}
 #truck{left:560px;bottom:50px;font-size:120px;line-height:1;z-index:3;display:none}
 #truck.go{display:block;animation:truck 1.5s linear forwards}
@@ -66,7 +81,7 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
 #say{position:absolute;left:112px;top:-4px;width:max-content;max-width:190px;background:#fff;color:#111;font-size:13px;font-weight:600;padding:6px 10px;border-radius:14px 14px 14px 2px;opacity:0;transition:opacity .3s;z-index:6;box-shadow:0 4px 12px #0006}
 #say.on{opacity:1}
 #say.sl{left:auto;right:112px;border-radius:14px 14px 2px 14px}
-#npc{right:50px;bottom:48px;font-size:130px;line-height:1;z-index:2;display:none}
+#npc{right:50px;bottom:56px;font-size:108px;line-height:1;z-index:2;display:none}
 #npc.on{display:block;animation:evin .4s}
 #npc.sm{font-size:84px;right:120px}
 #npcsay{position:absolute;right:86px;top:-36px;width:max-content;max-width:210px;background:#fff;color:#111;font-size:13px;font-weight:700;padding:6px 10px;border-radius:14px 14px 2px 14px;line-height:1.25;box-shadow:0 4px 12px #0006}
@@ -208,11 +223,11 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
   <div id="scene" class="abs">
     <div id="sky" class="abs"></div><div id="props" class="abs" style="inset:0"></div>
     <div id="road" class="abs">🌳🏠🌴🏢🌳🏪🌳🏠🌴🏢🌳🏪</div>
-    <div id="ground" class="abs"></div>
+    <div id="ground" class="abs"></div><div id="shade" class="abs"></div>
     <div id="park" class="abs"></div><div id="truck" class="abs">🚚</div>
     <div id="actor" class="abs"><div id="flip"><div id="char"></div></div><div id="veh"></div><div id="pet"></div><div id="emote"></div><div id="say"></div></div>
     <div id="npc" class="abs"><span id="npce"></span><div id="npcsay"></div></div>
-    <div id="board" class="abs"></div>
+    <div id="board" class="abs"></div><div id="tag" class="abs"></div><div id="ladder" class="abs"></div>
     <div id="clue" class="abs"><h4 id="clueh"></h4>
       <div id="photo"><svg viewBox="0 0 92 70"><rect width="92" height="70" fill="#c9b28a"/><rect y="52" width="92" height="18" fill="#7a8b5a"/><rect x="6" y="6" width="50" height="46" fill="#e9dcc0" stroke="#5b4630"/><rect x="24" y="26" width="14" height="26" fill="#5b4630"/><rect x="10" y="12" width="9" height="9" fill="#8fb3c9"/><rect x="43" y="12" width="9" height="9" fill="#8fb3c9"/><path d="M2 52V20M2 20h4M60 52V20" stroke="#222" stroke-width="2"/><circle cx="74" cy="24" r="6" fill="#e8b98f"/><rect x="67" y="30" width="14" height="24" rx="3" fill="#1f2937"/><circle cx="66" cy="36" r="4" fill="#f2c9a0"/><rect x="62" y="40" width="8" height="9" rx="2" fill="#ef4444"/><text x="64" y="66" font-size="6" fill="#3b2f24" font-family="serif">L.G 2005</text></svg><div id="tiles"></div></div>
       <div id="cluetx"></div></div>
@@ -257,7 +272,7 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
       <button data-a="ff" id="bff">⏩ Tua ×10</button><button data-a="mute" id="bmute">🔊 Âm thanh</button>
       <button data-a="end">🏁 Kết thúc ngay</button><button data-a="reset">♻️ Nhân vật mới</button>
     </div>
-    <small>Tham số URL: <b>?min=45</b> thời lượng 1 đời (phút) · <b>?scale=1</b> độ đông của phòng · <b>?speed=1</b> tốc độ lên đời · <b>?live=1</b> ẩn bảng này · <b>?ws=ws://localhost:8787</b> nhận sự kiện TikTok thật.</small>
+    <small>Tham số URL: <b>?min=45</b> thời lượng 1 đời (phút) · <b>?days=30</b> số ngày trong 1 đời · <b>?scale=1</b> độ đông của phòng · <b>?speed=1</b> tốc độ lên đời · <b>?live=1</b> ẩn bảng này · <b>?ws=ws://localhost:8787</b> nhận sự kiện TikTok thật.</small>
   </div>
 </div>
 
@@ -269,6 +284,7 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
 const P=new URLSearchParams(location.search);
 const CFG={
   minutes:+P.get('min')||45,         // thời lượng một "đời"
+  days:+P.get('days')||30,            // một đời chia thành bao nhiêu "ngày" (45 phút / 30 ngày = 90 giây mỗi ngày)
   scale:+P.get('scale')||1,          // phòng càng đông thì để càng lớn
   speed:+P.get('speed')||1,          // nhân tốc độ lên đời (phòng vắng thì tăng lên)
   rates:[0,.55,.28,.12,.04,.01],     // tỉ lệ Thường..Huyền thoại
@@ -306,7 +322,41 @@ const STORY={
  rain:{sky:'linear-gradient(#334155,#64748b)',gr:'#374151',it:[['🌧️',160,300,110],['🌧️',330,330,90],['🏪',310,62,200],['💡',130,66,90]]},
  alley:{sky:'linear-gradient(#020617,#1e1b4b)',gr:'#111827',it:[['🌙',190,350,46],['🏚️',10,62,200],['🏮',250,270,60],['🗑️',460,66,56]]},
  market:{sky:'linear-gradient(#fde68a,#fdba74)',gr:'#78716c',it:[['⛱️',300,66,170],['🏪',0,62,190],['🍉',210,66,46],['🧺',260,66,46]]},
- road:{sky:'linear-gradient(#93c5fd,#e0f2fe)',gr:'#4b5563',it:[['☁️',180,320,70],['🌳',30,66,150],['🌳',400,66,130],['⚠️',240,66,60]]}};
+ road:{sky:'linear-gradient(#93c5fd,#e0f2fe)',gr:'#4b5563',it:[['☁️',180,320,70],['🌳',30,66,150],['🌳',400,66,130],['⚠️',240,66,60]]},
+ park:{sky:'linear-gradient(#fdba74,#bae6fd)',gr:'#4d7c0f',it:[['🌅',190,250,110,.9],['🌳',10,66,170],['🌳',390,66,150],['⛲',230,66,80]]},
+ gym:{sky:'linear-gradient(#1f2937,#4b5563)',gr:'#111827',it:[['💪',60,250,70,.8],['⏱️',400,270,50],['🏋️',330,66,170],['🥤',250,66,44]]},
+ golf:{sky:'linear-gradient(#7dd3fc,#ecfccb)',gr:'#65a30d',it:[['☀️',70,330,60],['🌲',10,66,150],['🌲',440,66,120],['⛳',350,66,130]]},
+ shop:{sky:'linear-gradient(#fce7f3,#fbcfe8)',gr:'#9f1239',it:[['🏬',250,62,260],['👗',60,150,70],['👜',150,150,56],['🛍️',30,66,70]]},
+ boss:{sky:'linear-gradient(#bae6fd,#e0f2fe)',gr:'#334155',it:[['🏙️',120,170,280,.85],['📈',30,260,70],['🪴',10,66,80],['🖥️',330,80,110]]},
+ tower:{sky:'linear-gradient(#f59e0b,#be185d 60%,#312e81)',gr:'#1e293b',it:[['🌆',90,150,330,.85],['🚁',380,350,60],['🥂',330,70,60]]},
+ fair:{sky:'linear-gradient(#312e81,#be185d)',gr:'#3f3f46',it:[['🎆',60,330,70],['🎡',240,62,260],['🎪',20,66,140],['🎈',200,200,50]]},
+ cinema:{sky:'linear-gradient(#0f172a,#1e1b4b)',gr:'#450a0a',it:[['🎬',190,250,150],['📽️',30,280,60],['🍿',300,70,80],['💺',20,66,70],['💺',440,66,70]]},
+ beach:{sky:'linear-gradient(#38bdf8,#bae6fd)',gr:'#fde68a',it:[['☀️',420,350,64],['🌊',0,96,130],['🌊',180,96,130],['🌊',360,96,130],['🌴',400,66,190],['🏖️',20,66,130]]},
+ pub:{sky:'linear-gradient(#78350f,#b45309)',gr:'#451a03',it:[['🏮',60,320,60],['🏮',420,330,60],['🍲',230,76,84],['🍻',320,84,60],['🦐',180,90,40]]},
+ bar:{sky:'linear-gradient(#1e1b4b,#86198f)',gr:'#0f172a',it:[['🪩',210,330,110],['🎶',60,260,50],['✨',430,280,44],['🍾',330,70,70],['🍸',260,74,60]]},
+ yacht:{sky:'linear-gradient(#fb923c,#f472b6 60%,#7dd3fc)',gr:'#0369a1',it:[['🌅',30,230,130],['🛥️',170,40,330],['🥂',120,80,50]]}};
+/* Sinh hoạt hằng ngày: ph = buổi (0 sáng, 1 đi làm, 2 tối), min/max = mốc đời được làm. Lên đời thì hoạt động xịn dần. */
+const ACTS=[
+ {ph:0,min:0,bg:'home',pose:'jog',icon:'🏃',label:'Dậy sớm chạy bộ quanh nhà',emo:['💦','😤']},
+ {ph:0,min:2,bg:'park',pose:'jog',icon:'🌳',label:'Chạy bộ ở công viên',emo:['💦','🎧']},
+ {ph:0,min:4,bg:'gym',pose:'lift',icon:'🏋️',label:'Đi tập gym',emo:['🏋️','💪','😤']},
+ {ph:0,min:7,bg:'golf',pose:'walk',icon:'⛳',label:'Chơi golf buổi sáng',emo:['⛳','🏌️','😎']},
+ {ph:1,min:0,max:0,bg:'market',pose:'walk',icon:'📦',label:'Bốc vác thuê ngoài chợ',emo:['📦','😮‍💨','💦']},
+ {ph:1,min:1,max:2,bg:'road',pose:'ride',icon:'🛵',label:'Chạy giao hàng cả ngày',emo:['📦','📱']},
+ {ph:1,min:3,max:4,bg:'office',pose:'stay',icon:'🖥️',label:'Làm việc văn phòng',emo:['⌨️','📞','☕']},
+ {ph:1,min:5,max:5,bg:'shop',pose:'walk',icon:'🏬',label:'Trông shop của riêng mình',emo:['🛍️','💵','📦']},
+ {ph:1,min:6,max:7,bg:'boss',pose:'stay',icon:'🏙️',label:'Điều hành công ty',emo:['📈','📞','✍️']},
+ {ph:1,min:8,bg:'tower',pose:'stay',icon:'🚁',label:'Họp cổ đông trên tầng thượng',emo:['💼','🤝','📈']},
+ {ph:2,min:0,bg:'street',pose:'stay',icon:'🍜',label:'Ăn mì tôm vỉa hè',emo:['🍜','😋']},
+ {ph:2,min:1,bg:'cafe',pose:'stay',icon:'🧋',label:'Trà đá với bạn',npc:'🧔',emo:['🧋','😄']},
+ {ph:2,min:2,bg:'fair',pose:'walk',icon:'🎡',label:'Đi chơi hội chợ',gf:1,emo:['🎡','🍭','🎯']},
+ {ph:2,min:2,bg:'cinema',pose:'stay',icon:'🎬',label:'Đi xem phim',gf:1,emo:['🍿','😂','😱']},
+ {ph:2,min:3,bg:'date',pose:'stay',icon:'💕',label:'Hẹn hò với bạn gái',unlock:'Có bạn gái',npc:'👩',emo:['💕','🥰','🌹']},
+ {ph:2,min:5,bg:'beach',pose:'walk',icon:'🏖️',label:'Du lịch biển',gf:1,emo:['🏖️','🥥','📸']},
+ {ph:2,min:6,bg:'pub',pose:'stay',icon:'🍻',label:'Đi nhậu với đối tác',npc:'🤵',emo:['🍻','🥴','🦐']},
+ {ph:2,min:7,bg:'bar',pose:'lift',icon:'🍸',label:'Lên bar quẩy',gf:1,emo:['🍸','🪩','🕺']},
+ {ph:2,min:8,bg:'yacht',pose:'stay',icon:'🛥️',label:'Mở tiệc trên du thuyền',gf:1,emo:['🥂','🌊','📸']},
+ {ph:3,min:0,bg:'home',pose:'sleep',icon:'💤',label:'Về nhà ngủ',emo:['💤']}];
 const CRISES=[
  {t:'Chủ trọ gõ cửa đòi tiền nhà!',bg:'home',npc:'👵',say:'Tiền nhà tháng này đâu?! 💢',ok:()=>S.eq.nha<=2},
  {t:'Mưa dột ướt hết đồ đạc!',bg:'home',npc:'🌧️',sm:1,ok:()=>S.eq.nha<=2},
@@ -397,8 +447,8 @@ const save=()=>store.set('ld_save2',S);
 /* =====================================================================
    VẼ NHÂN VẬT (SVG ghép lớp; tay chân tách riêng để cử động khi đi)
    ===================================================================== */
-function drawChar(){
-  const {toc,ao,giay,pk}=S.eq, sk=S.ch.skin, st=S.stage, tee=S.ch.tee;
+function drawChar(eq=S.eq,st=S.stage){
+  const {toc,ao,giay,pk}=eq, sk=S.ch.skin, tee=S.ch.tee;
   const sleeve=[sk,sk,'#f8fafc','#1f2937','#fafaf9','#f59e0b'][ao], pants=['#6b7280','#374151','#1e3a8a','#111827','#e7e5e4','#92400e'][ao];
   const shoe=['#facc15','#e5e7eb','#ef4444','#3f2a1d','#22d3ee','#fbbf24'][giay], legH=ao==0?40:74;
   let s=`<svg viewBox="0 0 200 320" width="100%" height="100%" style="overflow:visible"><defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fef08a"/><stop offset=".5" stop-color="#f59e0b"/><stop offset="1" stop-color="#fde047"/></linearGradient><radialGradient id="aura"><stop offset="0" stop-color="#fde047" stop-opacity=".7"/><stop offset="1" stop-color="#fde047" stop-opacity="0"/></radialGradient></defs>`;
@@ -442,8 +492,8 @@ function drawChar(){
 /* =====================================================================
    SÂN KHẤU: bối cảnh, di chuyển, cảnh chuyển
    ===================================================================== */
-function setBackdrop(key){
-  const b=key=='home'?HOME[S.eq.nha]:STORY[key];
+function setBackdrop(key,idx){
+  const b=key=='home'?HOME[idx??S.eq.nha]:STORY[key];
   $('#sky').style.background=b.sky; $('#ground').style.background=b.gr;
   $('#props').innerHTML=b.it.map(i=>`<span style="left:${i[1]}px;bottom:${i[2]}px;font-size:${i[3]}px;opacity:${i[4]||1}">${i[0]}</span>`).join('');
   $('#park').style.display=key=='home'?'':'none';
@@ -451,45 +501,86 @@ function setBackdrop(key){
 async function wipe(fn){const w=$('#wipe');w.classList.add('on');await sleep(330);fn();await sleep(140);w.classList.remove('on');await sleep(330)}
 let capT;function cap(t,ms=2500){const c=$('#cap');c.innerHTML=t;c.classList.add('on');clearTimeout(capT);capT=setTimeout(()=>c.classList.remove('on'),ms)}
 const actorX=()=>parseFloat($('#actor').style.left)||195;
-function resetActor(x=195){const a=$('#actor');a.style.transition='none';a.style.left=x+'px';a.classList.remove('walk','left','ride','jump');$('#scene').classList.remove('ride');void a.offsetWidth}
-function walkTo(x,ms){const a=$('#actor'),c=actorX();ms=ms||Math.abs(x-c)*9+200;a.classList.toggle('left',x<c);a.classList.add('walk');a.style.transition=`left ${ms}ms linear`;a.style.left=x+'px';return sleep(ms)}
+function resetActor(x=195){const a=$('#actor');a.style.transition='none';a.style.left=x+'px';a.classList.remove('walk','left','ride','jump','sleep','lift');$('#scene').classList.remove('ride');void a.offsetWidth}
+function walkTo(x,ms,pp=9){const a=$('#actor'),c=actorX();ms=ms||Math.abs(x-c)*pp+200;a.classList.toggle('left',x<c);a.classList.add('walk');a.style.transition=`left ${ms}ms linear`;a.style.left=x+'px';return sleep(ms)}
 function rideOn(t){resetActor(195);$('#scene').classList.add('ride');const a=$('#actor');
   $('#road').style.animationDuration=[4,3,2.2,1.5,1.1,.7][t]+'s';
   if(t){a.classList.add('ride');$('#veh').textContent=ITEMS.xe.e[t]}else a.classList.add('walk','left')}
-function rideOff(){resetActor(195)}
+function rideOff(){applyBase()}
 function emote(e,ms=2000){const m=$('#emote');m.textContent=e;m.classList.add('on');setTimeout(()=>m.classList.remove('on'),ms)}
 function pop(){const a=$('#actor');a.classList.remove('pop');void a.offsetWidth;a.classList.add('pop');setTimeout(()=>a.classList.remove('pop'),650)}
 const cut=fn=>(cutQ=cutQ.then(fn).catch(e=>console.error(e)));
 
 async function rideCut(o,n,by){   // lên xe mới: chạy xe cũ một đoạn rồi "đổi đời" sang xe mới
-  lock=true;rideOn(o);cap(`${ITEMS.xe.e[o]} ${ITEMS.xe.t[o]}… lần cuối cùng!`,1300);await sleep(1300);
+  lock=true;$('#npc').className='abs';rideOn(o);cap(`${ITEMS.xe.e[o]} ${ITEMS.xe.t[o]}… lần cuối cùng!`,1300);await sleep(1300);
   flash();sfx.vroom();shownXe=n;rideOn(n);confetti(30);
   cap(`${ITEMS.xe.e[n]} XE MỚI: <b>${ITEMS.xe.t[n]}</b>${by?' · quà của <b>'+esc(by)+'</b>':''}`,2800);say('Brừm brừm!! 😆');
   await sleep(2800);rideOff();render();lock=false;
 }
 async function moveCut(o,n,by){   // có nhà mới: xe tải chuyển nhà, đổi hẳn bối cảnh
-  lock=true;resetActor(195);cap(`🚚 CHUYỂN NHÀ: tạm biệt ${ITEMS.nha.t[o]}…`,1500);
+  lock=true;$('#npc').className='abs';setBackdrop('home',o);$('#shade').style.background='transparent';resetActor(195);cap(`🚚 CHUYỂN NHÀ: tạm biệt ${ITEMS.nha.t[o]}…`,1500);
   const tr=$('#truck');tr.classList.remove('go');void tr.offsetWidth;tr.classList.add('go');sfx.vroom();await sleep(1400);
   await wipe(()=>{setBackdrop('home');resetActor(-150)});tr.classList.remove('go');
   cap(`${ITEMS.nha.e[n]} NHÀ MỚI: <b>${ITEMS.nha.t[n]}</b>${by?' · quà của <b>'+esc(by)+'</b>':''}`,3000);confetti(40);sfx.reveal(4);
   await walkTo(195,1300);$('#actor').classList.remove('walk');$('#actor').classList.add('jump');say('Nhà mới của mình đây sao… 😭');
-  await sleep(1600);resetActor(195);lock=false;
+  await sleep(1600);applyBase();lock=false;
 }
 function storyIn(d){story=true;lock=true;
-  return wipe(()=>{resetActor(70);setBackdrop(d.bg);const n=$('#npc');n.className='abs on'+(d.sm?' sm':'');$('#npce').textContent=d.npc;$('#npcsay').textContent=d.say||''})}
-async function storyOut(){await sleep(1700);await wipe(()=>{$('#npc').className='abs';setBackdrop('home');resetActor(195)});story=false;lock=false;render()}
+  return wipe(()=>{resetActor(70);setBackdrop(d.bg);$('#shade').style.background='transparent';$('#tag').innerHTML='⚡ Có biến!<small>cả phòng quyết định ở ô bên dưới</small>';const n=$('#npc');n.className='abs on'+(d.sm?' sm':'');$('#npce').textContent=d.npc;$('#npcsay').textContent=d.say||''})}
+async function storyOut(){await sleep(1700);await wipe(applyBase);story=false;lock=false;render()}
 
-/* Sinh hoạt thường ngày: nhân vật không đứng yên mà đi lại, đi làm, làm trò */
+/* Một ngày của nhân vật: sáng thể dục → đi làm → tối đi chơi → đêm ngủ và mơ.
+   Mỗi buổi kéo dài 1/4 ngày nên mọi thứ diễn ra chậm, đủ để người xem theo dõi. */
+const PH=['🌅 Buổi sáng','☀️ Giờ làm','🌆 Buổi tối','🌙 Ban đêm'], SHADE=['rgba(255,170,60,.12)','transparent','rgba(50,20,90,.22)','rgba(6,10,40,.6)'];
+const dayLen=()=>CFG.minutes*60/CFG.days, dayNo=()=>Math.min(CFG.days,(S.t/dayLen()|0)+1), phaseNo=()=>Math.min(3,(S.t%dayLen())/dayLen()*4|0);
+let base={bg:'home',pose:'walk'},baseId=0,lifeKey='',dreamOn=false,jogDir=0,idleAt=0;
+function setBase(b){base=b;baseId++}
+function applyBase(){
+  const b=base;resetActor(b.npc?110:195);setBackdrop(b.bg);
+  const n=$('#npc');if(b.npc){n.className='abs on';$('#npce').textContent=b.npc;$('#npcsay').textContent=''}else n.className='abs';
+  if(b.pose=='ride')rideOn(shownXe);else if(b.pose=='sleep'||b.pose=='lift')$('#actor').classList.add(b.pose);
+  $('#shade').style.background=SHADE[b.ph??1];
+  $('#tag').innerHTML=b.label?`${b.label}<small>${PH[b.ph]} · ngày ${dayNo()}/${CFG.days}</small>`:'';
+}
+function pickAct(ph){const L=ACTS.filter(a=>a.ph==ph&&S.stage>=a.min&&S.stage<=(a.max??9));return ph==2?pick(L.slice(-3)):L[L.length-1]}
+async function runPhase(ph,key){
+  const a=pickAct(ph), fresh=()=>key===lifeKey&&!S.ended&&started;
+  const swap=async b=>{while(lock||story){await sleep(300);if(!fresh())return false}
+    await cut(async()=>{if(!fresh()||story)return;setBase(b);lock=true;await wipe(applyBase);lock=false;render()});return fresh()};
+  if(ph==1&&a.pose!='ride'){   // đi làm: chạy xe tới chỗ làm trước đã
+    if(!await swap({ph,bg:'road',pose:'ride',emo:['🎶','😌'],label:`${ITEMS.xe.e[shownXe]} ${shownXe?'Chạy '+ITEMS.xe.t[shownXe].toLowerCase():'Cuốc bộ'} đi làm`}))return;
+    if(shownXe)sfx.vroom(); await sleep(Math.min(8000,dayLen()*60)); if(!fresh())return}
+  if(!await swap({ph,bg:a.bg,pose:a.pose,npc:a.npc||(a.gf&&S.stage>=3?'👩':''),emo:a.emo,label:a.icon+' '+a.label}))return;
+  if(ph==3&&ff==1){await sleep(Math.min(5000,dayLen()*50));if(fresh()&&!story)cut(dreamCut)}
+}
+async function idleStep(){
+  const b=base,my=baseId,a=$('#actor'),ok=()=>my===baseId&&!lock&&!S.ended;
+  if(b.pose=='walk'){await walkTo(rnd(40,b.npc?220:340),0,16);if(!ok())return;a.classList.remove('walk');
+    if(b.emo&&Math.random()<.7)emote(pick(b.emo),2200);else if(Math.random()<.5)say(pick(SAY[tier3()]));idleAt=performance.now()+rnd(2500,4500)}
+  else if(b.pose=='jog'){jogDir^=1;await walkTo(jogDir?350:30,0,8);if(!ok())return;if(Math.random()<.5)emote(pick(b.emo||['💦']),1500)}
+  else{if(b.emo)emote(pick(b.emo),2400);if(Math.random()<.3)say(pick(SAY[tier3()]));idleAt=performance.now()+rnd(3500,6000)}
+}
 async function life(){
   for(;;){
-    await sleep(rnd(1400,3200)); if(!started||!S||S.ended||lock||busy)continue;
-    const r=Math.random();
-    if(r<.22){rideOn(shownXe);cap(`${esc(S.ch.name)} ${shownXe?'chạy '+ITEMS.xe.t[shownXe].toLowerCase():'cuốc bộ'} đi làm…`,3600);if(shownXe)sfx.vroom();
-      await sleep(3800);if(lock)continue;rideOff()}
-    else if(r<.7){await walkTo(rnd(50,340));if(lock)continue;$('#actor').classList.remove('walk')}
-    else if(r<.85){emote(pick(EMO[tier3()]),2200);const a=$('#actor');a.classList.add('jump');await sleep(1600);if(lock)continue;a.classList.remove('jump')}
-    else say(pick(SAY[tier3()]));
+    await sleep(600); if(!started||!S||S.ended||lock||story)continue;
+    const k=dayNo()+'-'+phaseNo(); if(k!==lifeKey){lifeKey=k;runPhase(phaseNo(),k);continue}
+    if(performance.now()>=idleAt)await idleStep();
   }
+}
+/* Tủ đồ: cho người xem thấy mỗi loại quà có những bậc nào, bậc nào là VIP */
+function ladder(slot){
+  const L=$('#ladder'); if(!slot){L.className='abs';return} const it=ITEMS[slot];
+  L.innerHTML=`<h4>✨ ${it.n.toUpperCase()}: 5 bậc, quà nào cũng có thể quay ra</h4><div class="row">${[1,2,3,4,5].map(t=>`<div class="it${t==S.eq[slot]?' cur':''}${t==5?' vip':''}" style="--c:${RC[t]}"><u>${it.e[t]}</u>${it.t[t]}<br><b style="color:${RC[t]}">${t==5?'VIP · ':''}${RN[t]}${t==S.eq[slot]?' ✓':''}</b></div>`).join('')}</div>`;
+  L.className='abs on';
+}
+/* Giấc mơ mỗi đêm: cho xem thử phiên bản "VIP PRO" của nhân vật khi có đủ đồ Huyền Thoại */
+async function dreamCut(){
+  if(S.ended||story)return; lock=true; const slot=SLOTS[dayNo()%SLOTS.length];
+  await wipe(()=>{dreamOn=true;resetActor(195);$('#npc').className='abs';setBackdrop('home',5);$('#shade').style.background='radial-gradient(circle,#0000 45%,#a855f7aa)';
+    $('#tag').innerHTML=`💭 ${esc(S.ch.name)} đang mơ…<small>phiên bản VIP PRO</small>`;render();ladder(slot)});
+  cap(`💭 ${esc(S.ch.name)} mơ thấy mình có đủ đồ <b>Huyền Thoại</b>… Quay trúng là thành thật!`,7000);sfx.reveal(5);
+  await sleep(7500);
+  await wipe(()=>{dreamOn=false;ladder();render();applyBase()});lock=false;
 }
 
 /* =====================================================================
@@ -500,9 +591,9 @@ function render(){
   $('#who').textContent=`${c.name} · #${c.no}`; $('#title').textContent=STAGES[i];
   $('#prog i').style.width=(i>=9?100:Math.min(100,S.prog*100))+'%';
   $('#next').innerHTML=i>=9?'<b>ĐỈNH CAO</b>':`Mốc tới: <b>${mask(STAGES[i+1])}</b>`;
-  $('#goal').textContent=S.patron?`👑 Người đỡ đầu: ${S.patron.u} · Ước mơ của ${c.name}: ${c.goal}`:`🎯 Cả phòng cùng nuôi ${c.name} từ tay trắng lên TỶ PHÚ · Ước mơ: ${c.goal}`;
-  $('#char').innerHTML=drawChar();
-  $('#pet').textContent=S.eq.pet?ITEMS.pet.e[S.eq.pet]:''; $('#park').textContent=shownXe?ITEMS.xe.e[shownXe]:'';
+  $('#goal').textContent=S.patron?`👑 Người đỡ đầu: ${S.patron.u} · Ước mơ của ${c.name}: ${c.goal}`:`⏳ Còn ${CFG.days-dayNo()+1} ngày để cả phòng nuôi ${c.name} lên TỶ PHÚ · Ước mơ: ${c.goal}`;
+  $('#char').innerHTML=dreamOn?drawChar({toc:5,ao:5,giay:5,pk:5},9):drawChar();
+  $('#pet').textContent=dreamOn?'🐉':S.eq.pet?ITEMS.pet.e[S.eq.pet]:''; $('#park').textContent=dreamOn?'🏎️':shownXe?ITEMS.xe.e[shownXe]:'';
   $('#slots').innerHTML=SLOTS.map(s=>{const t=S.eq[s],it=ITEMS[s];
     return `<div class="slot" id="sl_${s}" style="--c:${RC[t]}"><div class="e">${it.e[t]}</div><div class="l${S.by[s]?' by':''}">${S.by[s]?'🎁 '+esc(S.by[s]):t?it.t[t]:it.n}</div>${t<5?`<div class="nx">${it.e[t+1]}</div>`:''}</div>`}).join('');
   drawTodo();
@@ -530,7 +621,7 @@ function drawTodo(){
 function tickHud(){
   const w=worth(); if(Math.abs(w-shownWorth)>1){shownWorth+=(w-shownWorth)*.18; if(Math.abs(w-shownWorth)<w*.001+1)shownWorth=w}
   $('#worth').textContent=fm(shownWorth);
-  const left=Math.max(0,CFG.minutes*60-S.t); $('#timer').textContent='⏳ '+String(left/60|0).padStart(2,'0')+':'+String(left%60|0).padStart(2,'0');
+  $('#timer').textContent=`📅 Ngày ${dayNo()}/${CFG.days}`;
   requestAnimationFrame(tickHud);
 }
 function floatTx(t,bad){const d=document.createElement('div');d.className='float'+(bad?' bad':'');d.textContent=t;d.style.left=rnd(150,300)+'px';d.style.top=rnd(250,320)+'px';$('#stage').append(d);setTimeout(()=>d.remove(),1300);
@@ -552,10 +643,17 @@ function addProg(p,label){   // p = phần chặng đường lên đời (1 = đ
   S.prog=Math.max(0,S.prog+p); let up=false;
   while(S.prog>=1&&S.stage<9){S.prog-=1;S.stage++;up=true}
   if(up){const i=S.stage;confetti(60);pop();
-    banner('⬆️ LÊN ĐỜI!',`${esc(S.ch.name)} giờ là <b style="color:#fde047;font-size:20px">${STAGES[i]}</b>`+(i<9?`<br><i style="opacity:.8">Gợi ý chặng tới: “${esc(tx(TEASE[i+1]))}”</i>`:''),3000,sfx.fanfare);
+    const un=ACTS.filter(a=>a.min==i).map(a=>a.icon+' '+(a.unlock||a.label)), gift=levelGift();
+    banner('⬆️ LÊN ĐỜI!',`${esc(S.ch.name)} giờ là <b style="color:#fde047;font-size:20px">${STAGES[i]}</b>`
+      +(un.length?`<br>🔓 Mở khoá: <b>${un.join(' · ')}</b>`:'')+(gift?`<br>🎁 Quà lên đời: <b>${gift}</b>`:'')
+      +(i<9?`<br><i style="opacity:.8">Chặng tới: “${esc(tx(TEASE[i+1]))}”</i>`:''),4200,sfx.fanfare);
     const top=Object.entries(S.contrib).sort((a,b)=>b[1]-a[1])[0];
     say(top?`Lên ${STAGES[i]} rồi! Công lớn nhất là của ${top[0]} 🙏`:pick(SAY[tier3()]))}
   return money;
+}
+function levelGift(){   // lên đời thì đồ đạc cũng phải ra dáng: món cùi nhất được nâng lên cho xứng với mốc mới
+  const f=Math.min(4,Math.ceil(S.stage/2)), low=SLOTS.filter(s=>S.eq[s]<f).sort((a,b)=>S.eq[a]-S.eq[b])[0];
+  if(!low)return''; S.eq[low]=f; delete S.by[low]; if(low=='xe')shownXe=f; return ITEMS[low].e[f]+' '+ITEMS[low].t[f];
 }
 function giveClue(){
   if(S.clues>=6)return false;
@@ -635,7 +733,8 @@ async function showChange(res,job,fast){   // cho người xem THẤY món quà 
   if(!res.upg)return; const it=ITEMS[res.slot],by=job.free?'':job.user;
   if(res.slot=='xe'){if(story||fast>1){shownXe=res.r;render()}else await cut(()=>rideCut(res.old,res.r,by))}
   else if(res.slot=='nha'){if(story){}else if(fast>1)setBackdrop('home');else await cut(()=>moveCut(res.old,res.r,by))}
-  else{cap(`✨ ${it.n} mới: <b>${it.t[res.r]}</b>${by?' · quà của <b>'+esc(by)+'</b>':''}`,1900);if(!fast)await sleep(1000)}
+  else{cap(`✨ ${it.n} mới: <b>${it.t[res.r]}</b>${by?' · quà của <b>'+esc(by)+'</b>':''}`,2600);
+    if(!fast&&!dreamOn){ladder(res.slot);await sleep(2600);if(!dreamOn)ladder()}}
 }
 async function reveal(res,job,fast){
   const g=$('#gacha'),egg=$('#egg'),card=$('#card'),it=ITEMS[res.slot];
@@ -729,7 +828,7 @@ function intro(auto){
   const c=S.ch,el=$('#intro');
   el.innerHTML=`<div class="tag">NHÂN VẬT HÔM NAY · #${c.no}</div><h1>${c.name}, ${c.age} tuổi</h1>
    <p>Hiện là <b>${c.origin}</b>, trong túi còn đúng <b>12.000đ</b>.<br><span class="q">Ước mơ: ${c.goal}.</span></p>
-   <p>Cả phòng có <b>${CFG.minutes} phút</b> để nuôi ${c.name} từ tay trắng lên <b>Tỷ phú</b>.<br>🧩 Và tìm ra bí mật của nửa tấm ảnh cũ ${c.name} luôn mang theo…</p>
+   <p>Cả phòng có <b>${CFG.days} ngày</b> (${CFG.minutes} phút) để nuôi ${c.name} từ tay trắng lên <b>Tỷ phú</b>.<br>🧩 Và tìm ra bí mật của nửa tấm ảnh cũ ${c.name} luôn mang theo…</p>
    <div class="steps"><div><u>❤️</u><b>Thả tim</b><br>giúp ${c.name} làm việc</div><div><u>💬</u><b>Bình luận</b><br>chọn số phận cho ${c.name}</div><div><u>🎁</u><b>Tặng quà</b><br>mở rương đồ, xe, nhà</div></div>
    <button id="go">▶ Bắt đầu</button>`;
   el.classList.add('on'); started=false;
@@ -805,8 +904,8 @@ function fit(){
 function boot(fresh){
   const sv=fresh?null:store.get('ld_save2',null);
   if(sv&&sv.ch&&!sv.ended&&sv.quest&&sv.jarN){S=sv;shownXe=S.eq.xe}else newChar();
-  ev=null;story=false;lock=false;$('#npc').className='abs';
-  setBackdrop('home');resetActor(195);render();save();intro(!!fresh);
+  ev=null;story=false;lock=false;dreamOn=false;lifeKey='';ladder();
+  setBase({bg:'home',pose:'walk'});applyBase();render();save();intro(!!fresh);
 }
 addEventListener('resize',fit);fit();
 boot(false);tickHud();life();
