@@ -55,24 +55,28 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
 #slots{left:0;top:550px;width:540px;height:86px;display:flex;gap:6px;padding:8px 10px;background:#0d1330}
 .slot{flex:1;border-radius:12px;background:#161d45;border:2px solid var(--c,#334);position:relative;text-align:center;padding-top:5px;box-shadow:0 0 10px -2px var(--c,transparent) inset}
 .slot .e{font-size:30px;line-height:1.1}
-.slot .l{font-size:9.5px;opacity:.75;white-space:nowrap}
+.slot .l{font-size:9.5px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px}
+.slot .l.by{color:#fde68a;opacity:1}
+#art{inset:0;display:none}#art img,#art video{width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block}
+#scene.hasart #art{display:block}#scene.hasart #house,#scene.hasart #veh,#scene.hasart #char,#scene.hasart #pet,#scene.hasart #ground{display:none}
 .slot .nx{position:absolute;right:-4px;top:-7px;font-size:15px;filter:brightness(0) invert(.75);background:#000a;border-radius:8px;padding:1px 3px}
 .slot .nx::after{content:"?";position:absolute;right:-2px;bottom:-4px;font-size:10px;font-weight:900;color:#fde047;filter:none}
 .slot.new{animation:slotnew .9s}
 @keyframes slotnew{20%{transform:scale(1.35) translateY(-10px);background:#fff3}}
 /* ---------- quest / pity ---------- */
-#mid{left:0;top:636px;width:540px;height:124px;padding:8px 12px;background:#0b1020}
-.bar{position:relative;height:30px;border-radius:10px;background:#1a2150;overflow:hidden;margin-bottom:6px;border:1px solid #fff1}
+#mid{left:0;top:636px;width:540px;height:132px;padding:8px 12px;background:#0b1020}
+.bar{position:relative;height:26px;border-radius:9px;background:#1a2150;overflow:hidden;margin-bottom:5px;border:1px solid #fff1}
 .bar i{position:absolute;left:0;top:0;bottom:0;width:0;transition:width .3s}
-.bar span{position:absolute;inset:0;display:flex;align-items:center;padding:0 10px;font-size:13px;font-weight:700;gap:6px;white-space:nowrap;text-shadow:0 1px 2px #000}
+.bar span{position:absolute;inset:0;display:flex;align-items:center;padding:0 10px;font-size:12.5px;font-weight:700;gap:6px;white-space:nowrap;text-shadow:0 1px 2px #000}
 .bar span em{margin-left:auto;font-style:normal;font-variant-numeric:tabular-nums}
 #qbar i{background:linear-gradient(90deg,#16a34a,#4ade80)}
 #pbar i{background:linear-gradient(90deg,#7c3aed,#c084fc)}
-#omen{height:24px;font-size:12.5px;font-weight:700;color:#e9d5ff;display:flex;align-items:center;gap:6px}
+#jbar i{background:linear-gradient(90deg,#be123c,#fb7185)}
+#omen{height:20px;font-size:12px;white-space:nowrap;font-weight:700;color:#e9d5ff;display:flex;align-items:center;gap:6px}
 #omen.on{animation:glow 1.2s infinite}
 @keyframes glow{50%{text-shadow:0 0 12px #c084fc;color:#fff}}
 /* ---------- bottom ---------- */
-#bottom{left:0;top:760px;width:540px;height:200px;padding:8px 12px;background:linear-gradient(#0d1330,#080b1c)}
+#bottom{left:0;top:768px;width:540px;height:192px;padding:8px 12px;background:linear-gradient(#0d1330,#080b1c)}
 #legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:12px}
 #legend div{background:#ffffff0d;border-radius:8px;padding:4px 8px;white-space:nowrap}
 #legend b{color:#fde68a}
@@ -166,7 +170,7 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
     <div id="next"></div>
   </div>
   <div id="scene" class="abs">
-    <div id="house" class="abs"></div><div id="ground" class="abs"></div>
+    <div id="art" class="abs"></div><div id="house" class="abs"></div><div id="ground" class="abs"></div>
     <div id="veh" class="abs"></div><div id="char" class="abs"></div><div id="pet" class="abs"></div>
     <div id="say" class="abs"></div>
     <div id="board" class="abs"></div>
@@ -182,14 +186,15 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
   <div id="slots" class="abs"></div>
   <div id="mid" class="abs">
     <div class="bar" id="qbar"><i></i><span></span></div>
+    <div class="bar" id="jbar"><i></i><span></span></div>
     <div class="bar" id="pbar"><i></i><span></span></div>
     <div id="omen"></div>
   </div>
   <div id="bottom" class="abs">
     <div id="legend">
-      <div>❤️ Thả tim → <b>làm nhiệm vụ</b></div><div>💬 Bình luận <b>1 / 2</b> → chọn số phận</div>
+      <div>❤️ Thả tim → <b>nhiệm vụ + đầy hũ tim</b></div><div>💬 Bình luận <b>1 / 2</b> → chọn số phận</div>
       <div>➕ Follow / chia sẻ → <b>+1 lượt quay</b></div><div>🎁 1 xu → <b>1 lượt quay</b></div>
-      <div>🥈 10 xu → Rương Bạc <b>chắc Hiếm</b></div><div>🥇 100 xu → Rương Vàng <b>chắc Sử Thi</b></div>
+      <div>🥈 10 xu → Rương Bạc <b>chắc Hiếm</b></div><div>🥇 100 xu → Rương Vàng + <b>tri ân</b></div>
     </div>
     <div id="pool"></div>
     <div id="ends"></div>
@@ -312,7 +317,7 @@ function newChar(){
     quirk:p(['xui kinh niên','nghiện trà sữa','ngủ 4 tiếng mỗi ngày','sợ chó','hay cười một mình','nói chuyện với cây']),
     skin:p(['#f2c9a0','#e8b48a','#d9a077']),tee:p(['#ef4444','#22c55e','#3b82f6','#f97316','#a855f7'])};
   S={ch,prog:.024,eq:Object.fromEntries(SLOTS.map(s=>[s,0])),stage:0,karma:0,clues:0,spins:0,pity:0,qdone:0,quest:null,omen:null,
-     contrib:{},t:0,nextEv:rnd(40,60),evFlip:0,ended:false,pool:[]};
+     contrib:{},gifts:{},by:{},seen:{},nseen:0,patron:null,jar:0,jarN:Math.round(200*CFG.scale),t:0,nextEv:rnd(40,60),evFlip:0,ended:false,pool:[]};
   const pool=SLOTS.slice().sort(()=>r()-.5).slice(0,3); S.pool=pool;
   newQuest(); Q=[]; ev=null; shownWorth=0;
 }
@@ -382,21 +387,24 @@ function drawChar(){
 function render(){
   const c=S.ch,w=worth(),i=S.stage;
   $('#who').textContent=`${c.name} · #${c.no}`; $('#title').textContent=STAGES[i];
-  $('#goal').textContent=`${c.age} tuổi, ${c.origin} · Ước mơ: ${c.goal}`;
+  $('#goal').textContent=S.patron?`👑 Người đỡ đầu: ${S.patron.u} · Ước mơ: ${c.goal}`:`${c.age} tuổi, ${c.origin} · Ước mơ: ${c.goal}`;
+  drawArt();
   $('#prog i').style.width=(i>=9?100:Math.min(100,S.prog*100))+'%';
   $('#next').innerHTML=i>=9?'<b>ĐỈNH CAO</b>':`Tiếp theo: <b>${mask(STAGES[i+1])}</b> <span>“${esc(tx(TEASE[i+1]))}”</span>`;
   $('#scene').style.background=SKY[S.eq.nha]; $('#house').textContent=ITEMS.nha.e[S.eq.nha];
   $('#veh').textContent=S.eq.xe?ITEMS.xe.e[S.eq.xe]:''; $('#pet').textContent=S.eq.pet?ITEMS.pet.e[S.eq.pet]:'';
   $('#char').innerHTML=drawChar();
   $('#slots').innerHTML=SLOTS.map(s=>{const t=S.eq[s],it=ITEMS[s];
-    return `<div class="slot" id="sl_${s}" style="--c:${RC[t]}"><div class="e">${it.e[t]}</div><div class="l">${it.n}${t?' ★'+t:''}</div>${t<5?`<div class="nx">${it.e[t+1]}</div>`:''}</div>`}).join('');
+    return `<div class="slot" id="sl_${s}" style="--c:${RC[t]}"><div class="e">${it.e[t]}</div><div class="l${S.by[s]?' by':''}">${S.by[s]?'🎁 '+esc(S.by[s]):it.n+(t?' ★'+t:'')}</div>${t<5?`<div class="nx">${it.e[t+1]}</div>`:''}</div>`}).join('');
   const q=S.quest; $('#qbar i').style.width=Math.min(100,q.p/q.n*100)+'%';
   $('#qbar span').innerHTML=`${q.i} ${esc(tx(q.t))}<em>${Math.min(q.p,q.n)}/${q.n}</em>`;
+  $('#jbar i').style.width=Math.min(100,S.jar/S.jarN*100)+'%';
+  $('#jbar span').innerHTML=`🫙 Hũ tim cả phòng → đầy là mở <b style="color:#fde68a">Rương miễn phí</b><em>${S.jar}/${S.jarN}</em>`;
   $('#pbar i').style.width=S.pity/CFG.pity*100+'%';
   $('#pbar span').innerHTML=`🛡️ Bảo hiểm: còn <b style="color:#e9d5ff">${CFG.pity-S.pity}</b> lượt chắc chắn ra Sử Thi<em>${S.spins} lượt đã quay</em>`;
   const o=S.omen; $('#omen').className=o?'on':'';
   $('#omen').innerHTML=o?`🔮 Linh cảm: trong <b>${o.left}</b> lượt quay tới chắc chắn có đồ <b style="color:${RC[o.min]}">${RN[o.min]}</b> trở lên!`
-    :`🔮 Xong ${3-S.qdone%3} nhiệm vụ nữa → tặng 1 lượt quay · ${4-S.qdone%4} nhiệm vụ nữa → Linh cảm`;
+    :`🍀 ${2-S.qdone%2} nhiệm vụ nữa → 1 người may mắn được quay miễn phí · ${4-S.qdone%4} nữa → 🔮 Linh cảm`;
   $('#clueh').textContent=`🧩 Ký ức ${S.clues}/6`;
   $('#tiles').innerHTML=[0,1,2,3,4,5].map(k=>`<i class="${k<S.clues?'off':''}">?</i>`).join('');
   $('#photo svg').style.filter=`blur(${(6-S.clues)*1.3}px) sepia(.6)`;
@@ -407,6 +415,15 @@ function render(){
   const un=store.get('ld_ends',[]);
   $('#ends').innerHTML=`📖 Kết cục ${un.length}/${ENDS.length}: `+ENDS.map(e=>un.includes(e.id)?`<span class="en" title="${e.t}">${e.e}</span>`:`<span class="en lock">???</span>`).join('');
 }
+/* Hình nhân vật thật: thả file vào thư mục game/char/ với tên 0..9 (theo 10 mốc đời), đuôi .mp4 .png .webp .jpg.
+   Thiếu mốc nào thì dùng hình của mốc thấp hơn gần nhất; không có hình nào thì vẽ nhân vật SVG tạm. */
+const MEDIA={}; let artSrc='';
+function probeArt(){for(let i=0;i<10;i++){
+  ['png','webp','jpg'].forEach(x=>{const im=new Image();im.onload=()=>{if(!MEDIA[i]){MEDIA[i]={v:0,src:im.src};render()}};im.src=`char/${i}.${x}`});
+  const v=document.createElement('video');v.muted=true;v.preload='metadata';v.onloadeddata=()=>{MEDIA[i]={v:1,src:v.src};render()};v.src=`char/${i}.mp4`}}
+function drawArt(){let m=null;for(let k=S.stage;k>=0&&!m;k--)m=MEDIA[k];
+  $('#scene').classList.toggle('hasart',!!m); if(!m||m.src==artSrc)return; artSrc=m.src;
+  $('#art').innerHTML=m.v?`<video src="${m.src}" autoplay loop muted playsinline></video>`:`<img src="${m.src}" alt="">`}
 function tickHud(){
   const w=worth(); if(Math.abs(w-shownWorth)>1){shownWorth+=(w-shownWorth)*.18; if(Math.abs(w-shownWorth)<w*.001+1)shownWorth=w}
   $('#worth').textContent=fm(shownWorth);
@@ -434,7 +451,8 @@ function addProg(p,label){   // p = phần chặng đường lên đời (1 = đ
   if(up){const i=S.stage;confetti(60);
     banner('⬆️ LÊN ĐỜI!',`${esc(S.ch.name)} giờ là <b style="color:#fde047;font-size:20px">${STAGES[i]}</b>`+(i<9?`<br><i style="opacity:.8">Gợi ý chặng tới: “${esc(tx(TEASE[i+1]))}”</i>`:''),3000,sfx.fanfare);
     $('#char').classList.add('pop');setTimeout(()=>$('#char').classList.remove('pop'),700);
-    say(pick(SAY[i<3?0:i<6?1:2]))}
+    const top=Object.entries(S.contrib).sort((a,b)=>b[1]-a[1])[0];
+    say(top?`Lên ${STAGES[i]} rồi! Công lớn nhất là của ${top[0]} 🙏`:pick(SAY[i<3?0:i<6?1:2]))}
   return money;
 }
 function giveClue(){
@@ -444,19 +462,49 @@ function giveClue(){
   return true;
 }
 function newQuest(){
-  const k=CFG.scale, L=[
+  const k=CFG.scale,c=n=>Math.max(2,Math.round(n*k)), L=[
    ['❤️','like',Math.round(30*k),'Thả tim giúp {n} làm xong việc'],['❤️','like',Math.round(45*k),'Thả tim cổ vũ {n} tăng ca'],
-   ['💬','cmt',Math.max(3,Math.round(5*k)),'Bình luận động viên {n}'],['💬','cmt',Math.max(3,Math.round(6*k)),'Bình luận chỉ {n} cách làm giàu'],
-   ['❤️','like',Math.round(60*k),'Thả tim để {n} được sếp khen']];
-  const q=pick(L); S.quest={i:q[0],k:q[1],n:q[2],t:q[3],p:0};
+   ['❤️','like',Math.round(60*k),'Thả tim để {n} được sếp khen'],
+   ['💬','cmt',c(5),'Bình luận động viên {n}'],['💬','cmt',c(6),'Bình luận chỉ {n} cách làm giàu'],
+   ['📣','kw',c(4),'Bình luận "cố lên" tiếp sức cho {n}','cố lên'],['🍜','kw',c(3),'Bình luận "ăn đi" mời {n} bữa cơm','ăn đi'],
+   ['🙋','uniq',c(4),'Điểm danh: mỗi người bình luận 1 câu'],
+   ['➕','follow',c(2),'Follow để {n} có thêm người quen'],['↗','share',c(2),'Chia sẻ live để {n} gặp quý nhân']];
+  const q=pick(L); S.quest={i:q[0],k:q[1],n:q[2],t:q[3],w:q[4]||'',p:0,who:{},t0:S.t||0};
 }
-function questProg(kind,n,user){
-  const q=S.quest; if(q.k!==kind||S.ended)return; q.p+=n;
+function questHit(type,n,u,text){
+  const q=S.quest; if(S.ended)return; let add=0;
+  if(q.k=='like'&&type=='like')add=n;
+  else if(q.k=='cmt'&&type=='comment')add=1;
+  else if(q.k=='kw'&&type=='comment'&&text.toLowerCase().includes(q.w))add=1;
+  else if(q.k=='uniq'&&type=='comment'&&!q.who[u])add=1;
+  else if(q.k==type&&(type=='follow'||type=='share'))add=1;
+  if(!add)return; q.who[u]=1; q.p+=add;
   if(q.p>=q.n){S.qdone++;addProg(CFG.questPct,'nhiệm vụ');
-    if(S.qdone%3==0){Q.push({user:'Cả phòng',min:1,free:true});toast('🎉 Xong 3 nhiệm vụ → <b>tặng 1 lượt quay!</b>',2);pump()}
+    if(S.qdone%2==0){const lucky=pick(Object.keys(q.who));Q.push({user:lucky,min:1,lucky:true});toast(`🍀 <b>${esc(lucky)}</b> được chọn quay miễn phí!`,2);pump()}
     if(S.qdone%4==0&&!S.omen){S.omen={left:5,min:Math.random()<.2?4:3};toast('🔮 Linh cảm xuất hiện!',4);sfx.reveal(2)}
     if(Math.random()<.05)giveClue();
     newQuest()}
+}
+const SNACK=['ổ bánh mì','ly trà đá','gói xôi','hộp sữa','cái bánh bao','chai nước'];
+function welcome(u){   // quà chào sân: ai tương tác lần đầu cũng góp được một chút, không cần tiền
+  if(S.seen[u]||S.nseen>=300)return; S.seen[u]=1;S.nseen++;
+  S.prog+=.004*CFG.speed; toast(`👋 <b>${esc(u)}</b> ghé thăm, cho ${esc(S.ch.name)} ${pick(SNACK)}`,1);
+}
+function jarAdd(n){
+  S.jar+=n; if(S.jar<S.jarN)return;
+  S.jar-=S.jarN; S.jarN=Math.round(S.jarN*1.25); if(S.jar>=S.jarN)S.jar=S.jarN-1;
+  const k=Math.random()*3|0; for(let i=0;i<3;i++)Q.push({user:'Cả phòng',min:i==k?3:1,free:true});
+  banner('🫙 HŨ TIM ĐẦY!','Cả phòng nhận <b>Rương miễn phí</b>: 3 lượt quay, chắc chắn có đồ Hiếm!',2400,()=>sfx.reveal(3)); pump();
+}
+/* Tri ân: quà càng lớn, nhân vật cảm ơn càng "nặng" và để lại dấu ấn càng lâu */
+function thank(u,coins){
+  const n=S.ch.name, tot=S.gifts[u];
+  if(coins>=100){addProg(coins>=1000?2:.3,'ân nhân');   // 100 xu = +30% chặng, 1000 xu = lên thẳng 2 đờiconfetti(50);
+    banner('🙇 TRI ÂN',`${esc(n)} cúi đầu cảm ơn ân nhân <b style="color:#fde047">${esc(u)}</b>!<br><i>“Sau này thành công, ${esc(n)} nhất định không quên ${esc(u)}.”</i>`,3200,()=>sfx.reveal(4))}
+  else if(coins>=10)say(`${u} ơi, ${n} ghi sổ ơn này rồi đó 🙏`);
+  else say(`Cảm ơn ${u} nha! 🥺`);
+  if(tot>=1000&&(!S.patron||tot>S.patron.c)){const fresh=!S.patron||S.patron.u!==u; S.patron={u,c:tot};
+    if(fresh)banner('👑 NGƯỜI ĐỠ ĐẦU',`<b style="color:#fde047">${esc(u)}</b> trở thành người đỡ đầu của ${esc(n)}.<br><i>Tên sẽ đi cùng ${esc(n)} tới tận kết cục.</i>`,3600,sfx.fanfare)}
 }
 function credit(u,p){if(!u)return;S.contrib[u]=(S.contrib[u]||0)+p}
 
@@ -477,7 +525,7 @@ function roll(min=1){
 function applyRes(res,job){
   const it=ITEMS[res.slot],name=it.t[res.r];
   const money=addProg(res.p);
-  if(res.upg){S.eq[res.slot]=res.r;render();const el=$('#sl_'+res.slot);el&&el.classList.add('new');
+  if(res.upg){S.eq[res.slot]=res.r; if(res.r>=3&&!job.free)S.by[res.slot]=job.user; else delete S.by[res.slot]; render();const el=$('#sl_'+res.slot);el&&el.classList.add('new');
     $('#char').classList.add('pop');setTimeout(()=>$('#char').classList.remove('pop'),700);
     if(res.r>=3)say(`Cảm ơn ${job.user}! ${name} đẹp quá 😭`)}
   toast(`<b>${esc(job.user)}</b> → ${it.e[res.r]} ${name} ${res.upg?'<b style="color:#4ade80">LÊN ĐỜI</b>':'+'+fm(money)}`,res.r);
@@ -489,7 +537,7 @@ async function reveal(res,job,fast){
   let shown=res.r; if(res.r>=3&&Math.random()<.55)shown=res.r-1-(res.r==5&&Math.random()<.5?1:0);  // giả vờ ra đồ thấp rồi "nổ" lên
   const col=r=>g.style.setProperty('--c',RC[r]);
   col(shown);g.className='abs on';card.className='abs';egg.style.display='grid';egg.className='abs shake';
-  $('#gwho').innerHTML=job.free?'🎉 Lượt quay cả phòng kiếm được':`🎁 <b>${esc(job.user)}</b> đang mở quà cho ${esc(S.ch.name)}…`;
+  $('#gwho').innerHTML=job.free?'🎉 Rương miễn phí của cả phòng':job.lucky?`🍀 <b>${esc(job.user)}</b> được chọn quay miễn phí!`:`🎁 <b>${esc(job.user)}</b> đang mở quà cho ${esc(S.ch.name)}…`;
   $('#gq').textContent=Q.length?`còn ${Q.length} lượt đang chờ`:'';
   const n=fast?3:8; for(let i=0;i<n;i++){sfx.tick();await sleep(fast?90:120)}
   while(shown<res.r){shown++;col(shown);egg.className='abs';void egg.offsetWidth;egg.className='abs crack';sfx.up(shown);flash();await sleep(fast?260:600);egg.className='abs shake';await sleep(fast?120:380)}
@@ -566,9 +614,12 @@ async function finish(id){
   await sleep(bannerQ.length||bannerBusy?4500:800);
   const e=ENDS.find(x=>x.id==id),un=store.get('ld_ends',[]),isNew=!un.includes(id); if(isNew){un.push(id);store.set('ld_ends',un)}
   const top=Object.entries(S.contrib).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const keeps=SLOTS.filter(s=>S.by[s]).sort((a,b)=>S.eq[b]-S.eq[a]).slice(0,3).map(s=>`${ITEMS[s].e[S.eq[s]]} ${ITEMS[s].t[S.eq[s]]} — quà của <b>${esc(S.by[s])}</b>`);
+  const thanks=(S.patron?`👑 Người đỡ đầu: <b style="color:#fde047">${esc(S.patron.u)}</b><br>`:'')+keeps.join('<br>');
   const el=$('#ending'); let cd=25;
   el.innerHTML=`<div class="tag">KẾT CỤC ${isNew?'MỚI ĐƯỢC MỞ KHOÁ':''} · ĐỜI #${S.ch.no}</div><div class="big">${e.e}</div><h1>${e.t}</h1><p>${esc(tx(e.d))}</p>
    <div class="mvp">Tài sản cuối: <b style="color:#fde047">${fm(worth())}</b> · ${S.spins} lượt quay${top.length?'<br>Ân nhân: '+top.map(([u],k)=>'🥇🥈🥉'.slice(k*2,k*2+2)+' '+esc(u)).join(' · '):''}</div>
+   ${thanks?`<div class="mvp" style="font-size:13px"><b>Lời tri ân của ${esc(S.ch.name)}</b><br>${thanks}</div>`:''}
    <div class="gal">${ENDS.map(x=>un.includes(x.id)?`<div><u>${x.e}</u>${x.t}</div>`:`<div class="lock"><u>❔</u>${x.h}</div>`).join('')}</div>
    <button id="again">Nhân vật mới (<span id="cd">${cd}</span>)</button>`;
   el.classList.add('on');confetti(90);sfx.fanfare();render();
@@ -594,12 +645,13 @@ function intro(auto){
    ===================================================================== */
 function onEvent(e){
   if(!S||S.ended||!started)return; const u=String(e.user||'ẩn danh').slice(0,24), n=Math.max(1,+e.count||1);
-  if(e.type=='like'){credit(u,n*.1);questProg('like',n,u);if(ev&&ev.type=='crisis'){ev.got+=n;if(ev.got>=ev.need)endEvent(true);else drawEvent()}}
-  else if(e.type=='comment'){credit(u,1);questProg('cmt',1,u);const t=String(e.text||'').trim();
+  const t=String(e.text||'').trim(); welcome(u);
+  if(e.type=='like'){credit(u,n*.1);questHit('like',n,u,'');jarAdd(n);if(ev&&ev.type=='crisis'){ev.got+=n;if(ev.got>=ev.need)endEvent(true);else drawEvent()}}
+  else if(e.type=='comment'){credit(u,1);questHit('comment',1,u,t);
     if(ev&&ev.type=='choice'&&(t=='1'||t=='2')&&!ev.voters[u]){ev.voters[u]=1;ev.v[t-1]++;drawEvent()}}
-  else if(e.type=='follow'||e.type=='share'){credit(u,5);Q.push({user:u,min:1});toast(`<b>${esc(u)}</b> ${e.type=='follow'?'đã follow':'đã chia sẻ'} → +1 lượt quay`,2);pump()}
-  else if(e.type=='gift'){const coins=Math.max(1,Math.round((+e.coins||1)*n));credit(u,coins*10);
-    if(ev&&ev.type=='crisis')endEvent(true,u); chest(u,coins)}
+  else if(e.type=='follow'||e.type=='share'){credit(u,5);questHit(e.type,1,u,'');Q.push({user:u,min:1});toast(`<b>${esc(u)}</b> ${e.type=='follow'?'đã follow':'đã chia sẻ'} → +1 lượt quay`,2);pump()}
+  else if(e.type=='gift'){const coins=Math.max(1,Math.round((+e.coins||1)*n));credit(u,coins*10);S.gifts[u]=(S.gifts[u]||0)+coins;
+    if(ev&&ev.type=='crisis')endEvent(true,u); thank(u,coins); chest(u,coins)}
   render();
 }
 window.LiveGame={event:onEvent,state:()=>S,config:CFG};
@@ -614,6 +666,7 @@ setInterval(()=>{
   if(ev){ev.left-=.25; const cd=$('#event .cd i'); if(cd)cd.style.width=Math.max(0,ev.left/ev.total*100)+'%'; if(ev.left<=0)endEvent(false)}
   else if(S.t>=S.nextEv&&!bannerBusy)startEvent();
   if(S.t-lastSay>14*ff||S.t<lastSay){lastSay=S.t;if(!busy)say(pick(SAY[S.stage<3?0:S.stage<6?1:2]))}
+  if(S.t-S.quest.t0>90){newQuest();render()}
   maybeEnd();
 },250);
 setInterval(()=>{if(S&&started)save()},5000);
@@ -629,7 +682,7 @@ function simAct(a){
     follow:()=>E({type:'follow'}),share:()=>E({type:'share'}),g1:()=>E({type:'gift',coins:1}),g10:()=>E({type:'gift',coins:10}),g100:()=>E({type:'gift',coins:100}),g1000:()=>E({type:'gift',coins:1000}),
     auto:()=>{if(autoT){clearInterval(autoT);autoT=null}else autoT=setInterval(()=>{const x=Math.random(),v=pick(NAMES);
         onEvent({type:'like',user:v,count:1+Math.random()*6|0});
-        if(x<.12)onEvent({type:'comment',user:v,text:pick(['1','2','cố lên','haha','tội ghê'])});
+        if(x<.12)onEvent({type:'comment',user:v,text:pick(['1','2','cố lên','ăn đi','haha','tội ghê'])});
         else if(x<.15)onEvent({type:'gift',user:v,coins:1});else if(x<.156)onEvent({type:'gift',user:v,coins:10});
         else if(x<.158)onEvent({type:'gift',user:v,coins:100});else if(x<.1584)onEvent({type:'gift',user:v,coins:1000});else if(x<.168)onEvent({type:'follow',user:v})},400/ff);
       $('#bauto').classList.toggle('on',!!autoT)},
@@ -653,8 +706,8 @@ function fit(){
 }
 addEventListener('resize',fit);fit();
 const sv=store.get('ld_save',null);
-if(sv&&sv.ch&&!sv.ended&&sv.quest&&sv.prog!=null){S=sv}else{newChar()}
-render();tickHud();intro(false);
+if(sv&&sv.ch&&!sv.ended&&sv.quest&&sv.prog!=null&&sv.jarN){S=sv}else{newChar()}
+render();tickHud();probeArt();intro(false);
 </script>
 </body>
 </html>
