@@ -156,7 +156,7 @@
               return i < 0 || j < 0 || i >= seg.mw || j >= seg.mh ? -1 : seg.data[j * seg.mw + i];
             },
           } : null;
-          const rw = live ? Math.min(720, lw) : Math.min(1400, lw * 2), rh = Math.round(rw * lh / lw);
+          const rw = live ? Math.min(720, lw) : Math.min(1600, lw * (lw < 400 ? 4 : 2)), rh = Math.round(rw * lh / lw);   // ảnh nhỏ: dựng mịn gấp 4 để nét mảnh không bị đứt khúc
           const out = Wear3D.render({
             pts, conns: meshConns, W, H, rw, rh, seg: segv, debug: !!window.__wearDebug,
             glasses: eyewear ? Object.assign({ color: look.eyewear.color }, eyewear) : null,
