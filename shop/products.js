@@ -13,6 +13,7 @@
     kw      : từ khoá tìm kiếm dùng khi chưa có link affiliate
     links   : { shopee: 'link affiliate', tiktok: 'link affiliate' }  — để trống thì nút mua sẽ mở trang tìm kiếm
     image   : (tuỳ chọn) đường dẫn ảnh sản phẩm thật, hiện trong thẻ sản phẩm
+    overlay : (khuyên tai, đặt trong từng màu) ảnh PNG nền trong suốt của sản phẩm, chốt khuyên nằm sát mép trên — dùng để gắn lên tai khi thử bằng camera/ảnh
 */
 window.PRODUCTS = [
   // ───────── Son ─────────
@@ -159,7 +160,7 @@ window.PRODUCTS = [
     tip: 'Gọng vuông hợp mặt tròn và mặt trái xoan. Có chống UV400.',
     kw: 'kính mát nữ gọng vuông', links: { shopee: '', tiktok: '' } },
   { id: 'khuyen-tai', name: 'Khuyên tai ngọc trai', cat: 'acc', shape: 'earrings', price: 59000,
-    variants: [{ name: 'Trắng ngà', color: '#f7f1e6' }, { name: 'Vàng gold', color: '#d4a94e' }],
+    variants: [{ name: 'Trắng ngà', color: '#f7f1e6', overlay: 'img/earring-pearl.png' }, { name: 'Vàng gold', color: '#d4a94e', overlay: 'img/earring-gold.png' }],
     tip: 'Nhỏ xinh, đeo hằng ngày không bị nặng tai. Mặt sáng lên thấy rõ.',
     kw: 'khuyên tai ngọc trai', links: { shopee: '', tiktok: '' } },
   { id: 'mu-bucket', name: 'Mũ bucket', cat: 'acc', shape: 'bucket', price: 99000,

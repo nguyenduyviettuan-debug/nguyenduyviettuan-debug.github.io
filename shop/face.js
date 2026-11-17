@@ -17,7 +17,7 @@
   let canvas, ctx, video, stream = null, raf = 0;
   let source = null;      // 'camera' | 'photo'
   let photo = null, photoLm = null, photoCrop = null;
-  let look = {};          // {lip:{color,finish}, blush:{color}, eye:{color,shimmer}}
+  let look = {};          // {lip:{color,finish}, blush:{color}, eye:{color,shimmer}, ear:{src}}
   let onStatus = () => {};
 
   function load() {
@@ -34,6 +34,12 @@
     })();
     loading.catch(() => { loading = null; });
     return loading;
+  }
+
+  const overlays = {};
+  function overlayImg(src) {
+    if (!overlays[src]) { const im = new Image(); im.onload = () => { if (source === 'photo') drawPhoto(); }; im.src = src; overlays[src] = im; }
+    return overlays[src];
   }
 
   function rgba(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; }
@@ -86,6 +92,29 @@
           const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
           g.addColorStop(0, 'rgba(255,255,255,.6)'); g.addColorStop(1, 'rgba(255,255,255,0)');
           ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        }
+      }
+      if (look.ear && look.ear.src) {
+        const img = overlayImg(look.ear.src);
+        if (img.complete && img.naturalWidth) {
+          // Lưới mặt không có tai: ước lượng dái tai từ mép hàm, đẩy ra ngoài nhiều hơn khi mặt quay nghiêng
+          const [nx, ny] = P(1), [tx, ty] = P(10), [cx, cy] = P(152);
+          const faceH = Math.hypot(cx - tx, cy - ty), dR = Math.hypot(ax - nx, ay - ny), dL = Math.hypot(bx - nx, by - ny);
+          const ux = (bx - ax) / faceW, uy = (by - ay) / faceW;          // hướng ngang của mặt
+          const vx = (cx - tx) / faceH, vy = (cy - ty) / faceH;          // hướng dọc của mặt
+          const eh = faceH * 0.27, ew = eh * img.naturalWidth / img.naturalHeight;
+          [[323, dL, 1], [93, dR, -1]].forEach(([i, d, sign]) => {
+            const share = d / (dL + dR);                                  // 0.5 = nhìn thẳng
+            if (share < 0.3) return;                                      // tai bị khuất
+            const turn = Math.min(1, Math.max(0, (share - 0.5) * 2));
+            const out = faceH * (0.02 + 0.055 * turn) * sign, down = faceH * (0.07 - 0.035 * turn);
+            const [x, y] = P(i);
+            const lx = x + ux * out + vx * down, ly = y + uy * out + vy * down;
+            ctx.save(); ctx.translate(lx, ly); ctx.rotate(Math.atan2(vy, vx) - Math.PI / 2);
+            ctx.shadowColor = 'rgba(40,20,10,.35)'; ctx.shadowBlur = eh * 0.08; ctx.shadowOffsetY = eh * 0.03;
+            ctx.drawImage(img, -ew / 2, -eh * 0.067, ew, eh);            // chốt khuyên nằm ở 6.7% chiều cao ảnh
+            ctx.restore();
+          });
         }
       }
     }

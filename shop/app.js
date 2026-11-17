@@ -70,7 +70,7 @@
     const out = {};
     for (const [slot, w] of Object.entries(S.wearing)) {
       const p = P[w.id], v = p.variants[w.v];
-      out[slot] = { shape: p.shape, color: v.color, finish: p.finish, shimmer: p.shimmer };
+      out[slot] = { shape: p.shape, color: v.color, finish: p.finish, shimmer: p.shimmer, src: v.overlay || p.overlay };
     }
     return out;
   }
@@ -78,7 +78,7 @@
   function render() {
     const r = resolved();
     avatar.innerHTML = Avatar.render(r, S.tone);
-    FaceTry.setLook({ lip: r.lip, blush: r.blush, eye: r.eye });
+    FaceTry.setLook({ lip: r.lip, blush: r.blush, eye: r.eye, ear: r.ear });
     document.querySelectorAll('.item').forEach(el => {
       const p = P[el.dataset.id], w = S.wearing[slotOf(p)];
       el.classList.toggle('on', !!w && w.id === p.id);
@@ -140,7 +140,8 @@
     refreshThumb(p);
     if (quiet) return;
     S.sel = id; S.set = null;
-    if (COSMETIC.includes(slot)) {
+    const onFace = COSMETIC.includes(slot) || !!(p.variants[vi].overlay || p.overlay);  // thử được trên mặt thật
+    if (onFace) {
       if (S.mode === 'model') zoomTo('face');
     } else {
       if (S.mode === 'face') { setMode('model'); toast('Quần áo thử trên người mẫu nha'); }
