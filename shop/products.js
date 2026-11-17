@@ -13,7 +13,9 @@
     kw      : từ khoá tìm kiếm dùng khi chưa có link affiliate
     links   : { shopee: 'link affiliate', tiktok: 'link affiliate' }  — để trống thì nút mua sẽ mở trang tìm kiếm
     image   : (tuỳ chọn) đường dẫn ảnh sản phẩm thật, hiện trong thẻ sản phẩm
-    overlay : (khuyên tai, đặt trong từng màu) ảnh PNG nền trong suốt của sản phẩm, chốt khuyên nằm sát mép trên — dùng để gắn lên tai khi thử bằng camera/ảnh
+    overlay : (khuyên tai, kính — đặt trong sản phẩm hoặc trong từng màu) ảnh PNG nền trong suốt để gắn lên mặt thật khi thử bằng camera/ảnh
+              khuyên tai: { src, size: chiều cao so với mặt (mặc định 0.27), anchor: [x, y] vị trí dái tai trên ảnh, tính theo tỉ lệ 0–1 }
+              kính      : { src, eyes: [[x, y], [x, y]] tâm tròng trái và phải trên ảnh (px), faces: 'right' | 'left' nếu ảnh chụp nghiêng }
 */
 window.PRODUCTS = [
   // ───────── Son ─────────
@@ -160,9 +162,20 @@ window.PRODUCTS = [
     tip: 'Gọng vuông hợp mặt tròn và mặt trái xoan. Có chống UV400.',
     kw: 'kính mát nữ gọng vuông', links: { shopee: '', tiktok: '' } },
   { id: 'khuyen-tai', name: 'Khuyên tai ngọc trai', cat: 'acc', shape: 'earrings', price: 59000,
-    variants: [{ name: 'Trắng ngà', color: '#f7f1e6', overlay: 'img/earring-pearl.png' }, { name: 'Vàng gold', color: '#d4a94e', overlay: 'img/earring-gold.png' }],
+    variants: [{ name: 'Trắng ngà', color: '#f7f1e6', overlay: { src: 'img/earring-pearl.png' } }, { name: 'Vàng gold', color: '#d4a94e', overlay: { src: 'img/earring-gold.png' } }],
     tip: 'Nhỏ xinh, đeo hằng ngày không bị nặng tai. Mặt sáng lên thấy rõ.',
     kw: 'khuyên tai ngọc trai', links: { shopee: '', tiktok: '' } },
+  // Hai món dưới đây dùng ảnh sản phẩm thật đã tách nền. CHƯA có giá và link — điền vào trước khi quảng bá.
+  { id: 'khuyen-no', name: 'Khuyên tai nơ bạc', cat: 'acc', shape: 'earrings', price: 0,
+    variants: [{ name: 'Bạc', color: '#d9dcdf' }],
+    overlay: { src: 'img/earring-bow.png', size: 0.13, anchor: [0.66, 0.12] },
+    tip: 'Khuyên tròn ôm dái tai, đính nơ nhỏ — đeo hằng ngày nhẹ nhàng mà vẫn có điểm nhấn.',
+    kw: 'khuyên tai nơ bạc', links: { shopee: '', tiktok: '' } },
+  { id: 'kinh-gong', name: 'Kính gọng kim loại bạc', cat: 'acc', shape: 'glasses', price: 0,
+    variants: [{ name: 'Bạc', color: '#b9bec3' }],
+    overlay: { src: 'img/glasses-silver.png', eyes: [[338, 135], [531, 85]], faces: 'right' },
+    tip: 'Gọng kim loại mảnh, dáng vuông bo góc — hợp mặt tròn và mặt trái xoan, đeo lên trông gọn gàng tri thức.',
+    kw: 'kính gọng kim loại bạc', links: { shopee: '', tiktok: '' } },
   { id: 'mu-bucket', name: 'Mũ bucket', cat: 'acc', shape: 'bucket', price: 99000,
     variants: [{ name: 'Be', color: '#dccbb0' }, { name: 'Đen', color: '#2a2627' }],
     tip: 'Vành cụp che nắng tốt, gấp gọn bỏ túi được. Hôm nào tóc xấu thì đội.',

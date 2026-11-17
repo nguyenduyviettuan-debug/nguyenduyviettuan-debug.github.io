@@ -148,6 +148,11 @@
         <path d="M125 78 L117 76" stroke="${c}" stroke-width="1.6"/>`) +
         `<path d="M147 78 Q150 75.5 153 78" fill="none" stroke="${c}" stroke-width="1.8"/>`;
     } },
+    glasses: { slot: 'eyewear', box: [116, 66, 68, 28], hang: 'none', draw: c => {
+      return mirror(`<rect x="126" y="73.5" width="20" height="13.5" rx="4" fill="#fff" fill-opacity=".14" stroke="${c}" stroke-width="1.5"/>
+        <path d="M126 78 L117.5 76.5" stroke="${c}" stroke-width="1.3"/>`) +
+        `<path d="M146 78.5 Q150 76 154 78.5" fill="none" stroke="${c}" stroke-width="1.4"/>`;
+    } },
     earrings: { slot: 'ear', box: [104, 82, 92, 30], hang: 'none', draw: c => {
       return mirror(`<path d="M116.5 90 v5" stroke="#d4a94e" stroke-width="1"/><circle cx="116.5" cy="98.5" r="4" fill="${c}" stroke="${shade(c, -.25)}" stroke-width=".6"/>
         <circle cx="115.3" cy="97.3" r="1.1" fill="#fff" opacity=".8"/>`);
@@ -257,7 +262,7 @@ ${OVER.map(g).join('')}`;
       return { w: t.w * k, h: t.h * k, svg: t.svg.replace(/width="\d+" height="\d+"/, `width="${t.w * k}" height="${t.h * k}"`) };
     }
     const [x, y, w, h] = def.box;
-    const big = { earrings: 2.2, sunglasses: 1.5, sneakers: 1.2, heels: 1.2 }[p.shape] || 1;
+    const big = { earrings: 2.2, sunglasses: 1.5, glasses: 1.5, sneakers: 1.2, heels: 1.2 }[p.shape] || 1;
     const k = Math.min(maxW / w, maxH / h, 0.62 * big);
     const hanger = def.hang === 'top' ? hangerTop : def.hang === 'clip' ? hangerClip : '';
     return { w: w * k, h: h * k, svg: `<svg viewBox="${x} ${y} ${w} ${h}" width="${(w * k).toFixed(1)}" height="${(h * k).toFixed(1)}">${hanger}${def.draw(color)}</svg>` };

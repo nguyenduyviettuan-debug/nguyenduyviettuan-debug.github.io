@@ -17,7 +17,7 @@
   let canvas, ctx, video, stream = null, raf = 0;
   let source = null;      // 'camera' | 'photo'
   let photo = null, photoLm = null, photoCrop = null;
-  let look = {};          // {lip:{color,finish}, blush:{color}, eye:{color,shimmer}, ear:{src}}
+  let look = {};          // {lip:{color,finish}, blush:{color}, eye:{color,shimmer}, ear:{src,size,anchor}, eyewear:{src,eyes,faces}}
   let onStatus = () => {};
 
   function load() {
@@ -94,6 +94,27 @@
           ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         }
       }
+      if (look.eyewear && look.eyewear.src && look.eyewear.eyes) {
+        const img = overlayImg(look.eyewear.src);
+        if (img.complete && img.naturalWidth) {
+          // Khớp tâm hai tròng kính trong ảnh sản phẩm với tâm hai mắt (co giãn + xoay)
+          const mid = (i, j) => { const [x1, y1] = P(i), [x2, y2] = P(j); return [(x1 + x2) / 2, (y1 + y2) / 2]; };
+          const tL = mid(33, 133), tR = mid(362, 263);
+          const [nx, ny] = P(1);
+          const facingLeft = Math.hypot(ax - nx, ay - ny) < Math.hypot(bx - nx, by - ny);
+          const w = img.naturalWidth, flip = look.eyewear.faces === (facingLeft ? 'right' : 'left');
+          let [e1, e2] = look.eyewear.eyes;
+          if (flip) [e1, e2] = [[w - e2[0], e2[1]], [w - e1[0], e1[1]]];
+          const s = Math.hypot(tR[0] - tL[0], tR[1] - tL[1]) / Math.hypot(e2[0] - e1[0], e2[1] - e1[1]);
+          const rot = Math.atan2(tR[1] - tL[1], tR[0] - tL[0]) - Math.atan2(e2[1] - e1[1], e2[0] - e1[0]);
+          ctx.save();
+          ctx.translate(tL[0], tL[1]); ctx.rotate(rot); ctx.scale(s, s); ctx.translate(-e1[0], -e1[1]);
+          if (flip) { ctx.translate(w, 0); ctx.scale(-1, 1); }
+          ctx.shadowColor = 'rgba(30,15,10,.3)'; ctx.shadowBlur = faceW * 0.02; ctx.shadowOffsetY = faceW * 0.012;
+          ctx.drawImage(img, 0, 0);
+          ctx.restore();
+        }
+      }
       if (look.ear && look.ear.src) {
         const img = overlayImg(look.ear.src);
         if (img.complete && img.naturalWidth) {
@@ -102,7 +123,8 @@
           const faceH = Math.hypot(cx - tx, cy - ty), dR = Math.hypot(ax - nx, ay - ny), dL = Math.hypot(bx - nx, by - ny);
           const ux = (bx - ax) / faceW, uy = (by - ay) / faceW;          // hướng ngang của mặt
           const vx = (cx - tx) / faceH, vy = (cy - ty) / faceH;          // hướng dọc của mặt
-          const eh = faceH * 0.27, ew = eh * img.naturalWidth / img.naturalHeight;
+          const eh = faceH * (look.ear.size || 0.27), ew = eh * img.naturalWidth / img.naturalHeight;
+          const [anx, any] = look.ear.anchor || [0.5, 0.067];             // điểm trên ảnh nằm ở dái tai
           [[323, dL, 1], [93, dR, -1]].forEach(([i, d, sign]) => {
             const share = d / (dL + dR);                                  // 0.5 = nhìn thẳng
             if (share < 0.3) return;                                      // tai bị khuất
@@ -112,7 +134,8 @@
             const lx = x + ux * out + vx * down, ly = y + uy * out + vy * down;
             ctx.save(); ctx.translate(lx, ly); ctx.rotate(Math.atan2(vy, vx) - Math.PI / 2);
             ctx.shadowColor = 'rgba(40,20,10,.35)'; ctx.shadowBlur = eh * 0.08; ctx.shadowOffsetY = eh * 0.03;
-            ctx.drawImage(img, -ew / 2, -eh * 0.067, ew, eh);            // chốt khuyên nằm ở 6.7% chiều cao ảnh
+            if (sign < 0) ctx.scale(-1, 1);                              // tai bên kia: lật ảnh cho đối xứng
+            ctx.drawImage(img, -ew * anx, -eh * any, ew, eh);
             ctx.restore();
           });
         }

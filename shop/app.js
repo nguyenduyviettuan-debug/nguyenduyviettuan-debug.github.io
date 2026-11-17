@@ -1,7 +1,7 @@
 (function () {
   const $ = s => document.querySelector(s);
   const P = Object.fromEntries(PRODUCTS.map(p => [p.id, p]));
-  const vnd = n => n.toLocaleString('vi-VN') + '₫';
+  const vnd = n => n ? n.toLocaleString('vi-VN') + '₫' : 'Xem giá trên sàn';
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const COSMETIC = ['lip', 'blush', 'eye'], FACE_SLOTS = COSMETIC.concat(['eyewear', 'ear', 'hat']);
   const TONE_NAME = { light: 'da sáng', medium: 'da trung bình', tan: 'da ngăm' };
@@ -70,7 +70,7 @@
     const out = {};
     for (const [slot, w] of Object.entries(S.wearing)) {
       const p = P[w.id], v = p.variants[w.v];
-      out[slot] = { shape: p.shape, color: v.color, finish: p.finish, shimmer: p.shimmer, src: v.overlay || p.overlay };
+      out[slot] = { shape: p.shape, color: v.color, finish: p.finish, shimmer: p.shimmer, ...(v.overlay || p.overlay || {}) };
     }
     return out;
   }
@@ -78,7 +78,7 @@
   function render() {
     const r = resolved();
     avatar.innerHTML = Avatar.render(r, S.tone);
-    FaceTry.setLook({ lip: r.lip, blush: r.blush, eye: r.eye, ear: r.ear });
+    FaceTry.setLook({ lip: r.lip, blush: r.blush, eye: r.eye, ear: r.ear, eyewear: r.eyewear });
     document.querySelectorAll('.item').forEach(el => {
       const p = P[el.dataset.id], w = S.wearing[slotOf(p)];
       el.classList.toggle('on', !!w && w.id === p.id);
