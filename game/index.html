@@ -272,7 +272,7 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
       <button data-a="ff" id="bff">⏩ Tua ×10</button><button data-a="mute" id="bmute">🔊 Âm thanh</button>
       <button data-a="end">🏁 Kết thúc ngay</button><button data-a="reset">♻️ Nhân vật mới</button>
     </div>
-    <small>Tham số URL: <b>?min=45</b> thời lượng 1 đời (phút) · <b>?days=30</b> số ngày trong 1 đời · <b>?scale=1</b> độ đông của phòng · <b>?speed=1</b> tốc độ lên đời · <b>?live=1</b> ẩn bảng này · <b>?ws=ws://localhost:8787</b> nhận sự kiện TikTok thật.</small>
+    <small>Tham số URL: <b>?min=45</b> thời lượng 1 đời (phút) · <b>?days=15</b> số ngày trong 1 đời · <b>?scale=1</b> độ đông của phòng · <b>?speed=1</b> tốc độ lên đời · <b>?live=1</b> ẩn bảng này · <b>?ws=ws://localhost:8787</b> nhận sự kiện TikTok thật.</small>
   </div>
 </div>
 
@@ -284,7 +284,7 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
 const P=new URLSearchParams(location.search);
 const CFG={
   minutes:+P.get('min')||45,         // thời lượng một "đời"
-  days:+P.get('days')||30,            // một đời chia thành bao nhiêu "ngày" (45 phút / 30 ngày = 90 giây mỗi ngày)
+  days:+P.get('days')||15,            // một đời chia thành bao nhiêu "ngày" (45 phút / 15 ngày = 3 phút mỗi ngày, 45 giây mỗi buổi)
   scale:+P.get('scale')||1,          // phòng càng đông thì để càng lớn
   speed:+P.get('speed')||1,          // nhân tốc độ lên đời (phòng vắng thì tăng lên)
   rates:[0,.55,.28,.12,.04,.01],     // tỉ lệ Thường..Huyền thoại
@@ -357,25 +357,42 @@ const ACTS=[
  {ph:2,min:7,bg:'bar',pose:'lift',icon:'🍸',label:'Lên bar quẩy',gf:1,emo:['🍸','🪩','🕺']},
  {ph:2,min:8,bg:'yacht',pose:'stay',icon:'🛥️',label:'Mở tiệc trên du thuyền',gf:1,emo:['🥂','🌊','📸']},
  {ph:3,min:0,bg:'home',pose:'sleep',icon:'💤',label:'Về nhà ngủ',emo:['💤']}];
+/* Nút thắt: "at" = những bối cảnh mà chuyện này có thể xảy ra. Game ưu tiên chọn chuyện khớp với việc nhân vật đang làm. */
 const CRISES=[
- {t:'Chủ trọ gõ cửa đòi tiền nhà!',bg:'home',npc:'👵',say:'Tiền nhà tháng này đâu?! 💢',ok:()=>S.eq.nha<=2},
- {t:'Mưa dột ướt hết đồ đạc!',bg:'home',npc:'🌧️',sm:1,ok:()=>S.eq.nha<=2},
- {t:'Xe hỏng giữa đường, sắp trễ việc!',bg:'road',npc:'💥',sm:1},
- {t:'Bị móc mất ví ngoài chợ!',bg:'market',npc:'🥷',say:'Hề hề… 💨'},
- {t:'Sếp doạ trừ lương vì đi trễ!',bg:'office',npc:'👨‍💼',say:'Lại đi trễ! Trừ lương! 💢',ok:()=>S.stage<6},
- {t:'Điện thoại rơi xuống cống!',bg:'street',npc:'🕳️',sm:1},
- {t:'Đối tác doạ huỷ hợp đồng!',bg:'office',npc:'🤵',say:'Không xong là tôi rút vốn!',ok:()=>S.stage>=4},
- {t:'Cổ phiếu lao dốc không phanh!',bg:'office',npc:'📉',sm:1,ok:()=>S.stage>=6}];
+ {t:'Chủ trọ gõ cửa đòi tiền nhà!',bg:'home',at:['home'],npc:'👵',say:'Tiền nhà tháng này đâu?! 💢',ok:()=>S.eq.nha<=2},
+ {t:'Mưa dột ướt hết đồ đạc!',bg:'home',at:['home'],npc:'🌧️',sm:1,ok:()=>S.eq.nha<=2},
+ {t:'Chó dữ rượt chạy mất dép!',bg:'park',at:['park','home'],npc:'🐕',say:'Gâu gâu!! 💢',ok:()=>S.stage<4&&base.pose!='sleep'},
+ {t:'Trẹo chân giữa buổi tập!',bg:'gym',at:['gym','park'],npc:'🩹',sm:1},
+ {t:'Xe hỏng giữa đường, sắp trễ việc!',bg:'road',at:['road'],npc:'💥',sm:1},
+ {t:'Khách bom hàng, mất trắng tiền ứng!',bg:'road',at:['road'],npc:'📦',sm:1,ok:()=>S.stage>=1&&S.stage<=2},
+ {t:'Bị móc mất ví giữa chốn đông người!',bg:'market',at:['market','fair','street'],npc:'🥷',say:'Hề hề… 💨'},
+ {t:'Sếp doạ trừ lương vì đi trễ!',bg:'office',at:['office'],npc:'👨‍💼',say:'Lại đi trễ! Trừ lương! 💢',ok:()=>S.stage<6},
+ {t:'Khách bóc phốt shop 1 sao!',bg:'shop',at:['shop'],npc:'🤳',say:'Shop này lừa đảo nha mọi người!'},
+ {t:'Điện thoại rơi xuống cống!',bg:'street',at:['street'],npc:'🕳️',sm:1},
+ {t:'Đối tác doạ huỷ hợp đồng!',bg:'boss',at:['boss','tower','pub','golf'],npc:'🤵',say:'Không xong là tôi rút vốn!',ok:()=>S.stage>=4},
+ {t:'Cổ phiếu lao dốc không phanh!',bg:'boss',at:['boss','tower'],npc:'📉',sm:1,ok:()=>S.stage>=6},
+ {t:'Bạn gái giận vì quên ngày kỷ niệm!',bg:'date',at:['date','cinema','beach','yacht','bar','fair'],npc:'👩',say:'Anh quên hôm nay là ngày gì à?! 😤',ok:()=>S.stage>=3},
+ {t:'Hoá đơn bar 200 triệu, quẹt thẻ không qua!',bg:'bar',at:['bar'],npc:'🧾',sm:1},
+ {t:'Sóng đánh rơi điện thoại xuống biển!',bg:'beach',at:['beach','yacht'],npc:'🌊',sm:1}];
 const CHOICES=[
- {bg:'street',npc:'👛',sm:1,q:'{n} nhặt được một chiếc ví dày cộp.',a:['Trả lại',{k:2,c:.02,clue:.3,t:'Chủ ví cảm động hậu tạ.'}],b:['Giữ luôn',{k:-2,c:.09,t:'Tiền vào túi, nhưng đêm đó khó ngủ.'}]},
- {bg:'cafe',npc:'🧔',say:'Lãi 30% mỗi tháng, tin tao đi!',q:'Bạn cũ rủ {n} đầu tư.',a:['Chơi luôn',{k:0,c:.16,risk:.5,t:'Trúng đậm!',tf:'Bạn ôm tiền biến mất…'}],b:['Từ chối',{k:1,c:.02,t:'Tỉnh táo. Tuần sau nghe tin vỡ nợ.'}]},
- {bg:'rain',npc:'👵',say:'Mua giúp bà tờ vé số…',q:'Bà cụ còn ế cả xấp vé số lúc trời mưa.',a:['Mua hết',{k:2,c:-.03,luck:.25,t:'Bà cười móm mém.'}],b:['Lướt qua',{k:-1,c:0,t:'{n} quay mặt đi.'}]},
- {bg:'office',npc:'👨‍💼',say:'Ký vào đây. Đừng hỏi nhiều.',q:'Sếp bảo {n} ký khống một hoá đơn.',a:['Ký',{k:-3,c:.11,t:'Phong bì dày, lương tâm mỏng.'}],b:['Không ký',{k:2,c:-.02,clue:.3,t:'Bị ghét, nhưng ngẩng cao đầu.'}]},
- {bg:'alley',npc:'🕴️',say:'… Cầm lấy.',q:'Người lạ áo đen dúi vào tay {n} một phong bì rồi bỏ đi.',a:['Mở ra xem',{k:0,c:.01,clue:1,t:'Bên trong có thứ gì đó rất quen…'}],b:['Nộp công an',{k:2,c:.03,t:'Được khen thưởng.'}]},
- {bg:'date',npc:'👩',say:'Tối nay anh rảnh không? 💕',q:'Crush rủ đi ăn, nhưng mai phải nộp tiền trọ.',a:['Đi chứ',{k:1,c:-.04,t:'Hết tiền nhưng cười cả tối.'}],b:['Ở nhà cày',{k:0,c:.05,t:'Thêm được một khoản.'}]},
- {bg:'office',npc:'👨‍💼',say:'Ai làm hỏng báo cáo này?! 💢',q:'Đồng nghiệp làm sai, sếp tưởng lỗi của {n}.',a:['Nhận thay',{k:2,c:-.03,clue:.2,t:'Đồng nghiệp nợ {n} một ân tình.'}],b:['Chỉ đích danh',{k:-1,c:.04,t:'Thoát tội, mất bạn.'}]},
- {bg:'office',npc:'👨‍💼',say:'Làm ăn thế à?! Đồ vô dụng! 💢',q:'Sếp mắng {n} trước mặt cả phòng.',a:['Nhịn',{k:1,c:.03,t:'Sếp nguôi giận, giao việc lớn hơn.'}],b:['Cãi lại',{k:0,c:.13,risk:.5,t:'Sếp nể, tăng lương luôn!',tf:'Bị đuổi việc ngay tại chỗ…'}]},
- {bg:'date',npc:'👩',say:'Mẹ em muốn gặp anh đó…',q:'Bạn gái rủ về ra mắt, đúng hôm có kèo làm ăn lớn.',a:['Về ra mắt',{k:2,c:-.02,clue:.2,t:'Mẹ nàng gật đầu cái rụp.'}],b:['Đi gặp đối tác',{k:-1,c:.1,t:'Ký được hợp đồng, nàng giận cả tuần.'}]}];
+ {bg:'park',at:['park','home','street','fair'],npc:'🧎',say:'Cậu ơi… cho tôi xin chút gì ăn…',q:'{n} gặp một người ăn xin trên đường.',a:['Cho tiền',{k:2,c:-.02,clue:.25,t:'Ông cụ nhìn {n} rất lâu, như nhận ra điều gì…'}],b:['Lướt qua',{k:-1,c:0,t:'{n} cúi mặt bước nhanh.'}],ok:()=>base.pose!='sleep'},
+ {bg:'street',at:['street','market','park','fair'],npc:'👛',sm:1,q:'{n} nhặt được một chiếc ví dày cộp.',a:['Trả lại',{k:2,c:.02,clue:.3,t:'Chủ ví cảm động hậu tạ.'}],b:['Giữ luôn',{k:-2,c:.09,t:'Tiền vào túi, nhưng đêm đó khó ngủ.'}]},
+ {bg:'cafe',at:['cafe','pub'],npc:'🧔',say:'Lãi 30% mỗi tháng, tin tao đi!',q:'Bạn cũ rủ {n} đầu tư.',a:['Chơi luôn',{k:0,c:.16,risk:.5,t:'Trúng đậm!',tf:'Bạn ôm tiền biến mất…'}],b:['Từ chối',{k:1,c:.02,t:'Tỉnh táo. Tuần sau nghe tin vỡ nợ.'}]},
+ {bg:'rain',at:['road','street'],npc:'👵',say:'Mua giúp bà tờ vé số…',q:'Bà cụ còn ế cả xấp vé số bên đường.',a:['Mua hết',{k:2,c:-.03,luck:.25,t:'Bà cười móm mém.'}],b:['Lướt qua',{k:-1,c:0,t:'{n} quay mặt đi.'}]},
+ {bg:'office',at:['office'],npc:'👨‍💼',say:'Ký vào đây. Đừng hỏi nhiều.',q:'Sếp bảo {n} ký khống một hoá đơn.',a:['Ký',{k:-3,c:.11,t:'Phong bì dày, lương tâm mỏng.'}],b:['Không ký',{k:2,c:-.02,clue:.3,t:'Bị ghét, nhưng ngẩng cao đầu.'}]},
+ {bg:'office',at:['office'],npc:'👨‍💼',say:'Ai làm hỏng báo cáo này?! 💢',q:'Đồng nghiệp làm sai, sếp tưởng lỗi của {n}.',a:['Nhận thay',{k:2,c:-.03,clue:.2,t:'Đồng nghiệp nợ {n} một ân tình.'}],b:['Chỉ đích danh',{k:-1,c:.04,t:'Thoát tội, mất bạn.'}]},
+ {bg:'office',at:['office'],npc:'👨‍💼',say:'Làm ăn thế à?! Đồ vô dụng! 💢',q:'Sếp chê trách {n} trước mặt cả phòng.',a:['Nhịn',{k:1,c:.03,t:'Sếp nguôi giận, giao việc lớn hơn.'}],b:['Cãi lại',{k:0,c:.13,risk:.5,t:'Sếp nể, tăng lương luôn!',tf:'Bị đuổi việc ngay tại chỗ…'}]},
+ {bg:'alley',at:['home'],npc:'🕴️',say:'… Cầm lấy.',q:'Nửa đêm, người lạ áo đen dúi vào tay {n} một phong bì rồi bỏ đi.',a:['Mở ra xem',{k:0,c:.01,clue:1,t:'Bên trong có thứ gì đó rất quen…'}],b:['Nộp công an',{k:2,c:.03,t:'Được khen thưởng.'}],ok:()=>base.ph==3},
+ {bg:'date',at:['date','cinema'],npc:'👩',say:'Ăn thêm món nữa nha anh? 💕',q:'Bạn gái muốn ăn sang, mà mai {n} phải đóng tiền nhà.',a:['Chiều nàng',{k:1,c:-.04,t:'Hết tiền nhưng nàng cười cả tối.'}],b:['Nói thật',{k:1,c:.02,t:'Nàng nắm tay: "Mình ăn mì cũng được."'}],ok:()=>S.stage<6},
+ {bg:'date',at:['date','beach','cinema','fair'],npc:'👩',say:'Mẹ em muốn gặp anh đó…',q:'Bạn gái rủ về ra mắt, đúng hôm có kèo làm ăn lớn.',a:['Về ra mắt',{k:2,c:-.02,clue:.2,t:'Mẹ nàng gật đầu cái rụp.'}],b:['Đi gặp đối tác',{k:-1,c:.1,t:'Ký được hợp đồng, nàng giận cả tuần.'}],ok:()=>S.stage>=3},
+ {bg:'gym',at:['gym'],npc:'💪',say:'Gói PT 50 triệu, bao đẹp!',q:'PT phòng gym chèo kéo {n} mua gói tập.',a:['Mua luôn',{k:0,c:-.04,t:'Ví mỏng đi, bắp tay chưa thấy to.'}],b:['Tự tập',{k:1,c:.02,t:'Kỷ luật thì miễn phí.'}]},
+ {bg:'shop',at:['shop'],npc:'🧑‍💼',say:'Hàng nhái y hệt, lãi gấp đôi!',q:'Mối quen rủ {n} nhập hàng nhái về bán.',a:['Nhập',{k:-2,c:.12,risk:.4,t:'Bán chạy như tôm tươi.',tf:'Bị tịch thu sạch cả lô…'}],b:['Không nhập',{k:2,c:.02,t:'Khách quen ngày càng tin shop.'}]},
+ {bg:'boss',at:['boss','tower'],npc:'🤵',say:'Cắt 50 người là lãi tăng ngay.',q:'Cố vấn đề nghị {n} sa thải 50 nhân viên.',a:['Cắt',{k:-3,c:.12,t:'Lợi nhuận tăng, hành lang vắng lặng.'}],b:['Giữ người',{k:3,c:-.03,t:'Cả công ty đứng dậy vỗ tay.'}],ok:()=>S.stage>=6},
+ {bg:'pub',at:['pub'],npc:'🤵',say:'Cạn 3 ly nữa là tôi ký!',q:'Đối tác ép {n} uống để ký hợp đồng.',a:['Uống',{k:0,c:.1,risk:.3,t:'Ký xong, về không nhớ đường.',tf:'Say quá, ký nhầm điều khoản…'}],b:['Từ chối khéo',{k:1,c:.03,t:'Đối tác nể sự tỉnh táo.'}]},
+ {bg:'fair',at:['fair'],npc:'🎯',sm:1,q:'Trò ném vòng treo giải một chiếc xe máy.',a:['Chơi tất tay',{k:0,c:.12,risk:.6,t:'Trúng thật!',tf:'Vòng bị dán keo… mất sạch.'}],b:['Chỉ đứng xem',{k:0,c:.01,t:'Xem người khác thua cũng vui.'}]},
+ {bg:'bar',at:['bar','yacht'],npc:'🕴️',say:'Chai này tôi mời. Bàn chuyện làm ăn chứ?',q:'Người lạ mời {n} một phi vụ "nhanh gọn".',a:['Nghe thử',{k:-2,c:.14,risk:.4,t:'Tiền về nhanh thật.',tf:'Hoá ra là một cái bẫy…'}],b:['Từ chối',{k:1,c:.02,clue:.2,t:'Người lạ cười: "Giống hệt cha cậu."'}]},
+ {bg:'golf',at:['golf'],npc:'🏌️',say:'Cược một gậy, 1 tỷ nhé?',q:'Đối tác rủ {n} cá một gậy golf.',a:['Cược',{k:-1,c:.14,risk:.5,t:'Một gậy ăn ngay!',tf:'Bóng bay thẳng xuống hồ…'}],b:['Chơi vui thôi',{k:1,c:.02,t:'Thua gậy nhưng được việc.'}]},
+ {bg:'beach',at:['beach'],npc:'🧒',say:'Mua giúp con cái vòng ốc đi ạ…',q:'Một đứa bé bán vòng ốc dạo trên bãi biển.',a:['Mua hết',{k:2,c:-.02,luck:.15,t:'Con bé chạy đi khoe mẹ.'}],b:['Lắc đầu',{k:-1,c:0,t:'{n} quay ra nhìn biển.'}]}];
 const TEASE=['','Có người sắp trả công cho {n} lần đầu tiên…','Cuối tháng túi sẽ không còn rỗng…','Một chiếc thẻ nhân viên đang chờ in tên…','Sắp có người phải báo cáo cho {n}…','Một tấm biển hiệu mang tên {n}…','Chiếc ghế xoay to nhất phòng…','Người ta bắt đầu gọi {n} là "anh Hai"…','Tài khoản bắt đầu tính bằng đô…','Tạp chí đang cần một gương mặt trang bìa…'];
 const CLUES=[
  'Chiếc đồng hồ cũ, mặt sau khắc chữ "L.G". {n} không nhớ ai đã tặng.',
@@ -525,8 +542,8 @@ async function moveCut(o,n,by){   // có nhà mới: xe tải chuyển nhà, đ�
   await walkTo(195,1300);$('#actor').classList.remove('walk');$('#actor').classList.add('jump');say('Nhà mới của mình đây sao… 😭');
   await sleep(1600);applyBase();lock=false;
 }
-function storyIn(d){story=true;lock=true;
-  return wipe(()=>{resetActor(70);setBackdrop(d.bg);$('#shade').style.background='transparent';$('#tag').innerHTML='⚡ Có biến!<small>cả phòng quyết định ở ô bên dưới</small>';const n=$('#npc');n.className='abs on'+(d.sm?' sm':'');$('#npce').textContent=d.npc;$('#npcsay').textContent=d.say||''})}
+function storyIn(d){story=true;lock=true;const here=d.at.includes(base.bg);   // chuyện xảy ra ngay tại nơi nhân vật đang ở thì không đổi cảnh
+  return (here?async f=>{f();await sleep(300)}:wipe)(()=>{resetActor(70);if(!here)setBackdrop(d.bg);$('#shade').style.background='transparent';$('#tag').innerHTML='⚡ Có biến!<small>cả phòng quyết định ở ô bên dưới</small>';const n=$('#npc');n.className='abs on'+(d.sm?' sm':'');$('#npce').textContent=d.npc;$('#npcsay').textContent=d.say||''})}
 async function storyOut(){await sleep(1700);await wipe(applyBase);story=false;lock=false;render()}
 
 /* Một ngày của nhân vật: sáng thể dục → đi làm → tối đi chơi → đêm ngủ và mơ.
@@ -549,9 +566,9 @@ async function runPhase(ph,key){
     await cut(async()=>{if(!fresh()||story)return;setBase(b);lock=true;await wipe(applyBase);lock=false;render()});return fresh()};
   if(ph==1&&a.pose!='ride'){   // đi làm: chạy xe tới chỗ làm trước đã
     if(!await swap({ph,bg:'road',pose:'ride',emo:['🎶','😌'],label:`${ITEMS.xe.e[shownXe]} ${shownXe?'Chạy '+ITEMS.xe.t[shownXe].toLowerCase():'Cuốc bộ'} đi làm`}))return;
-    if(shownXe)sfx.vroom(); await sleep(Math.min(8000,dayLen()*60)); if(!fresh())return}
+    if(shownXe)sfx.vroom(); await sleep(Math.min(11000,dayLen()*60)); if(!fresh())return}
   if(!await swap({ph,bg:a.bg,pose:a.pose,npc:a.npc||(a.gf&&S.stage>=3?'👩':''),emo:a.emo,label:a.icon+' '+a.label}))return;
-  if(ph==3&&ff==1){await sleep(Math.min(5000,dayLen()*50));if(fresh()&&!story)cut(dreamCut)}
+  if(ph==3&&ff==1){await sleep(Math.min(9000,dayLen()*50));if(fresh()&&!story)cut(dreamCut)}
 }
 async function idleStep(){
   const b=base,my=baseId,a=$('#actor'),ok=()=>my===baseId&&!lock&&!S.ended;
@@ -775,9 +792,12 @@ function chest(user,coins){
    ===================================================================== */
 function startEvent(){
   if(ev||S.ended)return; S.evFlip^=1;
-  if(S.evFlip){ev={type:'crisis',d:pick(CRISES.filter(c=>!c.ok||c.ok())),need:Math.round(40*CFG.scale),got:0,left:25,total:25};sfx.alarm()}
-  else{ev={type:'choice',d:pick(CHOICES),v:[0,0],voters:{},left:20,total:20};sfx.reveal(1)}
-  const d=ev.d; cut(()=>storyIn(d)); drawTodo();
+  const ok=L=>L.filter(c=>!c.ok||c.ok()), here=L=>ok(L).filter(c=>c.at.includes(base.bg));
+  let crisis=!!S.evFlip; if(crisis&&!here(CRISES).length&&here(CHOICES).length)crisis=false; else if(!crisis&&!here(CHOICES).length&&here(CRISES).length)crisis=true;
+  const L=crisis?CRISES:CHOICES, d=pick(here(L).length?here(L):ok(L));
+  if(crisis){ev={type:'crisis',d,need:Math.round(40*CFG.scale),got:0,left:25,total:25};sfx.alarm()}
+  else{ev={type:'choice',d,v:[0,0],voters:{},left:20,total:20};sfx.reveal(1)}
+  cut(()=>storyIn(d)); drawTodo();
 }
 function endEvent(win,hero){
   const e=ev; ev=null; S.nextEv=S.t+rnd(...CFG.eventEvery);
