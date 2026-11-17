@@ -12,7 +12,6 @@
     { lid: [33, 246, 161, 160, 159, 158, 157, 173, 133], top: [189, 221, 222, 223, 224, 225, 113] },
     { lid: [263, 466, 388, 387, 386, 385, 384, 398, 362], top: [413, 441, 442, 443, 444, 445, 342] },
   ];
-  const CHEEKS = [205, 425];
 
   let landmarker = null, loading = null, meshConns = null, vision = null, fileset = null;
   let canvas, ctx, video, stream = null, raf = 0;
@@ -71,6 +70,34 @@
     } catch (e) { /* giữ kết quả cũ */ }
   }
 
+  const lumOf = hex => { const n = parseInt(hex.slice(1), 16); return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; };
+  /* Phấn mắt màu tối thì làm đậm da; màu sáng (nhũ, champagne) thì phủ nhẹ và làm bật chỗ bắt sáng — không ép sắc độ, tránh ngả xanh trên da */
+  const eyePasses = e => lumOf(e.color) < 0.55
+    ? [['multiply', 0.55], ['color', 0.3]].concat(e.shimmer ? [['color-dodge', 0.25, '#8a8a8a']] : [])
+    : [['soft-light', 0.75], ['source-over', 0.2]].concat(e.shimmer ? [['color-dodge', 0.4, '#9a9a9a']] : []);
+
+  /* Tô một lớp màu mềm lên da.
+     idx: các điểm mốc bao vùng tô (để tính khung); feather: độ tán viền (px); drawMask(ctx, T): vẽ mặt nạ trắng;
+     passes: [[phép trộn, độ đậm, màu riêng?]]. Mặt nạ được vẽ ở độ phân giải thấp rồi phóng lên nên viền tự mềm. */
+  const maskC = document.createElement('canvas'), tintC = document.createElement('canvas');
+  function softTint(P, idx, feather, drawMask, passes, color) {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    idx.forEach(i => { const [x, y] = P(i); x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); });
+    const pad = feather * 3; x0 -= pad; y0 -= pad; x1 += pad; y1 += pad;
+    const q = Math.min(1, 1 / Math.max(1, feather)), mw = Math.max(2, Math.ceil((x1 - x0) * q)), mh = Math.max(2, Math.ceil((y1 - y0) * q));
+    maskC.width = mw; maskC.height = mh; tintC.width = mw; tintC.height = mh;
+    const m = maskC.getContext('2d'), t = tintC.getContext('2d');
+    drawMask(m, p => [(p[0] - x0) * q, (p[1] - y0) * q]);
+    ctx.save(); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+    passes.forEach(([op, alpha, own]) => {
+      t.globalCompositeOperation = 'copy'; t.drawImage(maskC, 0, 0);
+      t.globalCompositeOperation = 'source-in'; t.fillStyle = own || color; t.fillRect(0, 0, mw, mh);
+      ctx.globalCompositeOperation = op; ctx.globalAlpha = alpha;
+      ctx.drawImage(tintC, x0, y0, x1 - x0, y1 - y0);
+    });
+    ctx.restore();
+  }
+
   function rgba(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; }
 
   /* Vẽ một khung hình: nguồn (video/ảnh) cắt theo crop {sx,sy,sw,sh}, flip = soi gương */
@@ -80,49 +107,63 @@
     ctx.drawImage(src, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, W, H);
     if (lm) {
       const P = i => [(lm[i].x * sw0 - crop.sx) / crop.sw * W, (lm[i].y * sh0 - crop.sy) / crop.sh * H];
-      const poly = idx => { idx.forEach((i, k) => { const [x, y] = P(i); k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.closePath(); };
       const [ax, ay] = P(234), [bx, by] = P(454);
       const faceW = Math.hypot(bx - ax, by - ay);
 
+      // Trang điểm: mỗi lớp là một mặt nạ mềm, hoà vào da bằng hai phép trộn —
+      // "multiply" (làm đậm nhưng giữ vân da và bóng đổ) và "color" (đổi sắc độ, giữ nguyên sáng tối của ảnh).
+      // Nhờ vậy màu ăn theo ánh sáng thật trên mặt thay vì nằm đè lên như một miếng dán.
+      const mid2 = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+      const eyeD = (() => { const a = mid2(P(33), P(133), 0.5), b = mid2(P(362), P(263), 0.5); return Math.hypot(b[0] - a[0], b[1] - a[1]); })();
+      const unit = Math.max(eyeD, faceW * 0.42);          // thước đo trên mặt, không co lại quá mức khi quay nghiêng
+
       if (look.blush) {
-        CHEEKS.forEach(i => {
-          const [x, y] = P(i), r = faceW * 0.17;
-          const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-          g.addColorStop(0, rgba(look.blush.color, 0.42)); g.addColorStop(0.55, rgba(look.blush.color, 0.2)); g.addColorStop(1, rgba(look.blush.color, 0));
-          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
-        });
-      }
-      if (look.eye) {
-        EYES.forEach(e => {
-          ctx.save();
-          ctx.shadowColor = rgba(look.eye.color, 0.7); ctx.shadowBlur = faceW * 0.035;
-          ctx.fillStyle = rgba(look.eye.color, look.eye.shimmer ? 0.38 : 0.46);
-          ctx.beginPath(); poly(e.lid.concat(e.top)); ctx.fill();
+        // Má hồng nằm trên gò má, kéo chếch lên phía thái dương. Hình elip dựng từ chính các điểm mốc quanh gò má
+        // nên tự co theo phối cảnh khi quay mặt.
+        const pass = (alpha, op) => {
+          ctx.save(); ctx.globalCompositeOperation = op;
+          [[50, 116, 36, 117, 123], [280, 345, 266, 346, 352]].forEach(([c, t, n, e, o]) => {
+            const pc = P(c), pn = P(n), pt = P(t), pe = P(e), po = P(o);
+            // tâm: từ giữa gò má nhích ra phía tai và lên phía đuôi mắt
+            const C = [pc[0] + (po[0] - pc[0]) * 0.3 + (pe[0] - pc[0]) * 0.2, pc[1] + (po[1] - pc[1]) * 0.3 + (pe[1] - pc[1]) * 0.2];
+            // trục dài chạy dọc gò má (từ cánh mũi lên thái dương); trục ngắn vuông góc với nó
+            const u = [(pt[0] - pn[0]) * 0.44, (pt[1] - pn[1]) * 0.44], ul = Math.hypot(u[0], u[1]);
+            const wdt = Math.hypot(po[0] - pn[0], po[1] - pn[1]);          // bề ngang má trên ảnh: hẹp lại khi má quay khuất
+            if (ul < 4 || wdt < unit * 0.45) return;                       // má phía khuất: bỏ
+            const k = 0.6, v = [-u[1] * k, u[0] * k];
+            ctx.save(); ctx.transform(u[0], u[1], v[0], v[1], C[0], C[1]);
+            const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+            g.addColorStop(0, rgba(look.blush.color, alpha)); g.addColorStop(0.45, rgba(look.blush.color, alpha * 0.62)); g.addColorStop(1, rgba(look.blush.color, 0));
+            ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 1, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+          });
           ctx.restore();
-          if (look.eye.shimmer) {
-            const [x, y] = P(e.lid[4]), [tx, ty] = P(e.top[3]);
-            const g = ctx.createRadialGradient((x + tx) / 2, (y + ty) / 2, 0, (x + tx) / 2, (y + ty) / 2, faceW * 0.05);
-            g.addColorStop(0, 'rgba(255,255,255,.45)'); g.addColorStop(1, 'rgba(255,255,255,0)');
-            ctx.fillStyle = g; ctx.beginPath(); ctx.arc((x + tx) / 2, (y + ty) / 2, faceW * 0.05, 0, Math.PI * 2); ctx.fill();
-          }
-        });
+        };
+        pass(0.4, 'multiply'); pass(0.24, 'color'); pass(0.06, 'source-over');
       }
+
+      if (look.eye) {
+        // Phấn mắt: đậm ở sát mí rồi nhạt dần lên hốc mắt, viền tán mềm
+        softTint(P, [].concat(...EYES.map(e => e.lid.concat(e.top))), unit * 0.035, (m, T2) => {
+          EYES.forEach(e => {
+            const a = T2(P(e.lid[4])), b = T2(P(e.top[3])), g = m.createLinearGradient(a[0], a[1], a[0] + (b[0] - a[0]) * 1.05, a[1] + (b[1] - a[1]) * 1.05);
+            g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.4, 'rgba(255,255,255,.7)'); g.addColorStop(0.8, 'rgba(255,255,255,.22)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+            m.fillStyle = g; m.beginPath();
+            e.lid.concat(e.top).forEach((i, k) => { const [x, y] = T2(P(i)); k ? m.lineTo(x, y) : m.moveTo(x, y); });
+            m.closePath(); m.fill();
+          });
+        }, eyePasses(look.eye), look.eye.color);
+      }
+
       if (look.lip) {
-        const lips = () => { ctx.beginPath(); poly(LIP_OUT); poly(LIP_IN); };
-        ctx.save();
-        ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = rgba(look.lip.color, 0.62); lips(); ctx.fill('evenodd');
-        ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = rgba(look.lip.color, 0.3);
-        ctx.shadowColor = rgba(look.lip.color, 0.5); ctx.shadowBlur = faceW * 0.012; lips(); ctx.fill('evenodd');
-        ctx.restore();
-        if (look.lip.finish === 'gloss') {
-          const [x1, y1] = P(14), [x2, y2] = P(17);
-          const cx = (x1 + x2) / 2, cy = y1 + (y2 - y1) * 0.45, r = faceW * 0.045;
-          ctx.save(); ctx.translate(cx, cy); ctx.scale(1, 0.32);
-          const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
-          g.addColorStop(0, 'rgba(255,255,255,.6)'); g.addColorStop(1, 'rgba(255,255,255,0)');
-          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-        }
+        const gloss = look.lip.finish === 'gloss';
+        softTint(P, LIP_OUT, unit * 0.014, (m, T2) => {
+          m.fillStyle = '#fff'; m.beginPath();
+          [LIP_OUT, LIP_IN].forEach(idx => { idx.forEach((i, k) => { const [x, y] = T2(P(i)); k ? m.lineTo(x, y) : m.moveTo(x, y); }); m.closePath(); });
+          m.fill('evenodd');                                             // chừa khoang miệng và răng
+        }, gloss ? [['multiply', 0.42], ['color', 0.72], ['color-dodge', 0.34, '#777777']]    // son bóng: làm bật những chỗ đang bắt sáng sẵn
+          : [['multiply', 0.42], ['color', 0.8]], look.lip.color);
       }
+
       const eyewear = look.eyewear && look.eyewear.model, earring = look.ear && look.ear.model;
       if ((eyewear || earring) && window.Wear3D) {
         loadSeg();
