@@ -13,12 +13,10 @@
     kw      : từ khoá tìm kiếm dùng khi chưa có link affiliate
     links   : { shopee: 'link affiliate', tiktok: 'link affiliate' }  — để trống thì nút mua sẽ mở trang tìm kiếm
     image   : (tuỳ chọn) đường dẫn ảnh sản phẩm thật, hiện trong thẻ sản phẩm
-    overlay : (khuyên tai, kính — đặt trong sản phẩm hoặc trong từng màu) ảnh PNG nền trong suốt để gắn lên mặt thật khi thử bằng camera/ảnh
-              khuyên tai: { src, size: chiều cao so với mặt (mặc định 0.27), anchor: [x, y] vị trí lỗ xỏ trên ảnh (tỉ lệ 0–1),
-                            hide: [[x, y], …] vùng khuyên nằm sau dái tai cần che đi (tỉ lệ 0–1) }
-              kính 3D   : { model: { lensW, lensH, bridge (mm), rim: độ dày vành, square: độ vuông của tròng, taper: độ thu hẹp ở đáy } } — đúng ở mọi góc quay đầu
-              kính ảnh  : { src, eyes: [[x, y], [x, y]] tâm tròng trái và phải trên ảnh (px), faces: 'right' | 'left' nếu ảnh chụp nghiêng,
-                            temple: { hinge: [x, y] bản lề, tip: [x, y] chỗ càng bắt đầu uốn xuống sau tai } (px) }
+    overlay : (khuyên tai, kính — đặt trong sản phẩm hoặc trong từng màu) mô hình 3D để đeo lên mặt thật khi thử bằng camera/ảnh, kích thước theo mm
+              kính      : { model: { lensW, lensH, bridge, rim: độ dày vành, square: độ vuông của tròng, taper: độ thu hẹp ở đáy, frame: màu gọng } }
+              khuyên tai: { model: { type: 'hoop-bow', size: đường kính khoen } }
+                          { model: { type: 'drop', bead: bán kính hạt, drop: chiều dài dây, metal: màu chốt và dây, beadMetal: true nếu hạt bằng kim loại } }
 */
 window.PRODUCTS = [
   // ───────── Son ─────────
@@ -165,13 +163,13 @@ window.PRODUCTS = [
     tip: 'Gọng vuông hợp mặt tròn và mặt trái xoan. Có chống UV400.',
     kw: 'kính mát nữ gọng vuông', links: { shopee: '', tiktok: '' } },
   { id: 'khuyen-tai', name: 'Khuyên tai ngọc trai', cat: 'acc', shape: 'earrings', price: 59000,
-    variants: [{ name: 'Trắng ngà', color: '#f7f1e6', overlay: { src: 'img/earring-pearl.png' } }, { name: 'Vàng gold', color: '#d4a94e', overlay: { src: 'img/earring-gold.png' } }],
+    variants: [{ name: 'Trắng ngà', color: '#f7f1e6', overlay: { model: { type: 'drop', bead: 4, drop: 11, metal: '#d9b45a' } } }, { name: 'Vàng gold', color: '#d4a94e', overlay: { model: { type: 'drop', bead: 4, drop: 11, metal: '#d9b45a', beadMetal: true } } }],
     tip: 'Nhỏ xinh, đeo hằng ngày không bị nặng tai. Mặt sáng lên thấy rõ.',
     kw: 'khuyên tai ngọc trai', links: { shopee: '', tiktok: '' } },
   // Hai món dưới đây dùng ảnh sản phẩm thật đã tách nền. CHƯA có giá và link — điền vào trước khi quảng bá.
   { id: 'khuyen-no', name: 'Khuyên tai nơ bạc', cat: 'acc', shape: 'earrings', price: 0,
     variants: [{ name: 'Bạc', color: '#d9dcdf' }],
-    overlay: { src: 'img/earring-bow.png', size: 0.115, anchor: [0.66, 0.07], hide: [[0.45, -0.1], [1.1, -0.1], [1.1, 0.1], [0.45, 0.1]] },
+    overlay: { model: { type: 'hoop-bow', size: 11 } },   // khoen 11 mm đính nơ, dựng 3D
     tip: 'Khuyên tròn ôm dái tai, đính nơ nhỏ — đeo hằng ngày nhẹ nhàng mà vẫn có điểm nhấn.',
     kw: 'khuyên tai nơ bạc', links: { shopee: '', tiktok: '' } },
   { id: 'kinh-gong', name: 'Kính gọng kim loại bạc', cat: 'acc', shape: 'glasses', price: 0,
