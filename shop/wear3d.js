@@ -189,34 +189,63 @@
       if (o.seg && near && yl > 0.35 && o.seg.version !== e.version) {
         e.version = o.seg.version;
         const wr = fromHead(estR), wl = fromHead(estL), c = [(wr.x + wl.x) / 2, -(wr.y + wl.y) / 2];
-        const rad = 55 * s, st = Math.max(1, o.seg.step), cand = []; 
-        for (let y = c[1] - rad; y <= c[1] + rad; y += st) for (let x = c[0] - rad; x <= c[0] + rad; x += st) {
-          const k = o.seg.cls(x, y); if (k < 0) continue;
-          if (k !== SKIN) continue;
-          const v = (x - c[0]) * Yd[0] + (y - c[1]) * Yd[1];
-          if (Math.abs(v) > 48 * s || ((x - O2[0]) * Xd[0] + (y - O2[1]) * Xd[1]) * sg <= 0 || inside(poly, x, y)) continue;
-          const dd = distPoly(poly, x, y); if (dd < 3.5 * s) continue;   // sát mép mặt: da má, chưa phải tai
-          cand.push([x, y, v, dd]);
+        // Trục v: dọc theo đầu (xuống cằm); trục u: vuông góc, hướng từ mặt ra phía tai
+        let Ud = [-Yd[1], Yd[0]]; if ((c[0] - O2[0]) * Ud[0] + (c[1] - O2[1]) * Ud[1] < 0) Ud = [-Ud[0], -Ud[1]];
+        const st = Math.max(1, o.seg.step), at = (u, v) => o.seg.cls(c[0] + Ud[0] * u + Yd[0] * v, c[1] + Ud[1] * u + Yd[1] * v);
+        // Với mỗi hàng, tìm mép ngoài của da: đó là viền vành tai — đường ranh rõ nhất (bên ngoài là tóc, nền hoặc cổ)
+        const rows = [];
+        for (let v = -54 * s; v <= 54 * s; v += st) {
+          let ub = NaN, run = 0;
+          for (let u = 48 * s; u >= -30 * s; u -= st) { if (at(u, v) === SKIN) { if (++run >= 2) { ub = u + st; break; } } else run = 0; }
+          rows.push([v, ub]);
         }
-        const vs = cand.map(p => p[2]).sort((a, b) => a - b);
-        const top = vs[Math.floor(vs.length * 0.03)], bot = vs[Math.floor(vs.length * 0.97)], hmm = (bot - top) / s;
-        if (cand.length * st * st > 150 * s * s && hmm > 28 && hmm < 90) {
-          const lb = cand.filter(p => p[2] > bot - 9 * s && p[2] < bot - 2 * s);
-          const rb = cand.filter(p => p[2] > top + 0.12 * (bot - top) && p[2] < top + 0.3 * (bot - top)).sort((a, b) => a[3] - b[3]);
-          if (lb.length && rb.length) {
-            const lx = lb.reduce((a, p) => a + p[0], 0) / lb.length, ly = lb.reduce((a, p) => a + p[1], 0) / lb.length;
-            const fr = rb.slice(0, Math.max(1, Math.ceil(rb.length * 0.25)));   // mép trước của vành tai — chỗ càng kính gác lên
-            const rx = fr.reduce((a, p) => a + p[0], 0) / fr.length, ry = fr.reduce((a, p) => a + p[1], 0) / fr.length;
-            const nl = toHead(V(lx, -ly, wl.z)), nr = toHead(V(rx, -ry, wr.z)), a = e.found ? 0.4 : 1;
+        let i0 = -1;
+        rows.forEach((r, i) => { if (!isNaN(r[1]) && Math.abs(r[0]) < 20 * s && (i0 < 0 || Math.abs(r[0]) < Math.abs(rows[i0][0]))) i0 = i; });
+        let ok = false;
+        if (i0 >= 0) {
+          const n4 = Math.max(1, Math.round(4 * s / st));
+          const walk = dir => {            // đi dọc viền tai tới khi viền thụt vào đột ngột: hết vành tai (phía trên) hoặc hết dái tai (phía dưới)
+            let i = i0, peak = rows[i0][1];
+            for (;;) {
+              const n = i + dir; if (n < 0 || n >= rows.length || isNaN(rows[n][1])) break;
+              const back = rows[Math.min(rows.length - 1, Math.max(0, n - dir * n4))][1];
+              if (rows[n][1] < back - 5 * s || rows[n][1] < peak - 20 * s) break;
+              i = n; peak = Math.max(peak, rows[i][1]);
+            }
+            return i;
+          };
+          const it = walk(-1), ib = walk(1), top = rows[it][0], bot = rows[ib][0], hmm = (bot - top) / s;
+          // Tai phải nhô hẳn ra ngoài đường viền khuôn mặt; nếu không thì thứ vừa dò chỉ là viền má
+          const pu = OVAL.map(i => { const dx = pts[i][0] - c[0], dy = pts[i][1] - c[1]; return [dx * Ud[0] + dy * Ud[1], dx * Yd[0] + dy * Yd[1]]; });
+          const ovalU = v => { let m = -Infinity; for (let i = 0, j = pu.length - 1; i < pu.length; j = i++) { const a = pu[j], b = pu[i]; if ((a[1] > v) !== (b[1] > v)) m = Math.max(m, a[0] + (b[0] - a[0]) * (v - a[1]) / (b[1] - a[1])); } return m; };
+          const stick = rows.slice(it, ib + 1).map(r => r[1] - ovalU(r[0])).filter(isFinite).sort((a, b) => a - b);
+          const juts = stick.length && stick[stick.length >> 1] > 8 * s;
+          if (hmm > 35 && hmm < 90 && juts) {
+            // Lỗ xỏ: giữa dái tai. Bề ngang dái tai nhìn thấy được tuỳ góc quay đầu (nhìn thẳng thì hẹp, nhìn nghiêng thì rộng)
+            const yaw = Math.asin(Math.max(-1, Math.min(1, sg * X.z))), half = Math.max(3.5, 9 * Math.sin(yaw + 0.49));
+            const il = Math.max(it, ib - Math.round(2.5 * s / st)), vl = rows[il][0] - 2.5 * s, ul = rows[il][1] - half * s;   // lỗ xỏ nằm trên đáy dái tai vài mm
+            const lx = c[0] + Ud[0] * ul + Yd[0] * vl, ly = c[1] + Ud[1] * ul + Yd[1] * vl;
+            const nl = toHead(V(lx, -ly, wl.z));
+            // Chỗ càng kính gác lên: mép trước của vành tai ở khoảng 1/5 chiều cao tính từ đỉnh tai.
+            // Dò từ viền ngoài vào trong tới khi hết da tai (gặp tóc mai). Không gặp thì suy từ dái tai theo tỉ lệ giải phẫu.
+            const ir = Math.min(ib, it + Math.round(0.22 * (ib - it))), vr = rows[ir][0]; let uin = NaN;
+            for (let u = rows[ir][1] - 2 * st; u > rows[ir][1] - 36 * s; u -= st) if (at(u, vr) !== SKIN) { uin = u; break; }
+            let nr = nl.clone().add(V(-sg * 1, -0.74 * hmm, -5));
+            if (!isNaN(uin)) {
+              const ur = uin + 1.5 * s, m = toHead(V(c[0] + Ud[0] * ur + Yd[0] * vr, -(c[1] + Ud[1] * ur + Yd[1] * vr), wr.z));
+              if (m.distanceTo(estR) < 40) nr = m;
+            }
+            const a = e.found ? 0.4 : 1;
             e.lobe = (e.found ? e.lobe : nl.clone()).lerp(nl, a); e.root = (e.found ? e.root : nr.clone()).lerp(nr, a);
-            e.h += (hmm - e.h) * a; e.found = true; e.covered = false;
+            e.h += (hmm - e.h) * a; e.found = true; e.covered = false; ok = true;
+            if (o.debug) e.dbg = { cand: rows.slice(it, ib + 1).map(r => [c[0] + Ud[0] * r[1] + Yd[0] * r[0], c[1] + Ud[1] * r[1] + Yd[1] * r[0]]), c, est: [[wr.x, -wr.y], [wl.x, -wl.y]] };
           }
-          else e.covered = !e.found;
-        } else e.covered = !e.found;                                           // không thấy mảng da tai: tai bị tóc che hoặc khuất
+        }
+        if (!ok) e.covered = !e.found;                                // không thấy vành tai: tai bị tóc che hoặc khuất
       }
       if (!e.found) { e.root = estR; e.lobe = estL; e.h = 62; }
-      const top = e.root.y - 0.2 * e.h;
-      e.upper.position.set(e.root.x + sg * 2, top + 0.42 * e.h, e.root.z + 11); e.upper.scale.set(11, 0.42 * e.h, 17);   // vành tai trên: che đuôi càng kính
+      const top = e.root.y - 0.23 * e.h;
+      e.upper.position.set(e.root.x + sg * 2, top + 0.42 * e.h, e.root.z + 14); e.upper.scale.set(11, 0.42 * e.h, 16);   // vành tai trên: che đuôi càng kính
       e.slab.position.set(e.lobe.x, e.lobe.y - 2.5, e.lobe.z); e.slab.scale.set(2.2, 8.5, 7.5);                        // dái tai mỏng: khuyên xỏ qua
     });
 
@@ -231,12 +260,14 @@
         const out = Math.max(Math.abs(h.x), Math.abs(side[0].x) + 3.5, Math.abs(side[1].x) + 2);   // càng ôm ngoài thái dương và gò má
         end.x = sg * Math.max(Math.abs(end.x), out);
         const zt = Math.min(Math.max(side[0].z, h.z + 12), end.z - 12);
+        const mid = V(sg * out, h.y + (end.y - h.y) * 0.5, zt);
         const tk = [h.x, end.x, end.y, end.z, out, zt].map(v => v.toFixed(1)).join();   // chỉ dựng lại càng khi tai hoặc bề ngang đầu đổi
         if (G.templeKey[k] === tk + key) return;
         G.templeKey[k] = tk + key;
         if (G.temple[k]) { group.remove(G.temple[k]); G.temple[k].geometry.dispose(); }
         G.temple[k] = tube([h, V(sg * (Math.abs(h.x) + (out - Math.abs(h.x)) * 0.6), h.y + (end.y - h.y) * 0.2, h.z + (zt - h.z) * 0.5),
-          V(sg * out, h.y + (end.y - h.y) * 0.5, zt), end, V(end.x - sg * 1.5, end.y + 8, end.z + 12), V(end.x - sg * 3.5, end.y + 18, end.z + 17)], 1.0);
+          V(sg * out, h.y + (end.y - h.y) * 0.5, zt), mid.clone().lerp(end, 0.8), end,          // điểm kề cuối giữ càng thẳng cho tới khi chạm tai
+          V(end.x, end.y + 1, end.z + 7), V(end.x - sg * 1.5, end.y + 9, end.z + 14), V(end.x - sg * 3.5, end.y + 18, end.z + 18)], 1.0);
         group.add(G.temple[k]);
       });
     }
@@ -263,7 +294,8 @@
     renderer.render(scene, cam);
     return {
       canvas: renderer.domElement,
-      ears: ears.map(e => { const p = fromHead(e.root.clone().add(e.lobe).multiplyScalar(0.5)); return { c: [p.x, -p.y], r: 62 * s, covered: e.covered, found: e.found }; }),
+      ears: ears.map(e => { const p = fromHead(e.root.clone().add(e.lobe).multiplyScalar(0.5)), r = fromHead(e.root), l = fromHead(e.lobe);
+        return { c: [p.x, -p.y], r: 62 * s, covered: e.covered, found: e.found, root: [r.x, -r.y], lobe: [l.x, -l.y], h: e.h, dbg: o.debug ? e.dbg : undefined }; }),
     };
   }
 

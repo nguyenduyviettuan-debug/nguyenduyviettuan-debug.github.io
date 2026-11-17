@@ -143,7 +143,7 @@
           } : null;
           const rw = Math.min(1400, lw * 2), rh = Math.round(rw * lh / lw);
           const out = Wear3D.render({
-            pts, conns: meshConns, W, H, rw, rh, seg: segv,
+            pts, conns: meshConns, W, H, rw, rh, seg: segv, debug: !!window.__wearDebug,
             glasses: eyewear ? Object.assign({ color: look.eyewear.color }, eyewear) : null,
             earring: earring ? Object.assign({ color: look.ear.color }, earring) : null,
           });
