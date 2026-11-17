@@ -42,10 +42,44 @@
     return overlays[src];
   }
 
+  const layer = document.createElement('canvas'); let tone = null, hint = '';
+  const partCache = {};
+  const canvasOf = (img, flipImg) => {
+    const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight;
+    const x = c.getContext('2d');
+    if (flipImg) { x.translate(c.width, 0); x.scale(-1, 1); }
+    x.drawImage(img, 0, 0); x.setTransform(1, 0, 0, 1, 0, 0);
+    return [c, x];
+  };
+  /* Tách ảnh kính thành mặt kính và càng kính (cắt ở bản lề); đuôi càng mờ dần để trông như luồn ra sau tai */
+  function glassesParts(o, img, flipImg) {
+    const key = o.src + '|' + flipImg;
+    if (partCache[key]) return partCache[key];
+    const w = img.naturalWidth, h = img.naturalHeight, [front, fx] = canvasOf(img, flipImg);
+    if (!o.temple) return (partCache[key] = { front });
+    const fp = p => flipImg ? [w - p[0], p[1]] : p, hg = fp(o.temple.hinge), tp = fp(o.temple.tip), right = tp[0] > hg[0];
+    const [temple, tx] = canvasOf(img, flipImg);
+    if (right) { fx.clearRect(hg[0], 0, w, h); tx.clearRect(0, 0, hg[0] - 3, h); } else { fx.clearRect(0, 0, hg[0], h); tx.clearRect(hg[0] + 3, 0, w, h); }
+    const g = tx.createLinearGradient(hg[0], hg[1], tp[0], tp[1]);
+    g.addColorStop(0, '#000'); g.addColorStop(0.86, '#000'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    tx.globalCompositeOperation = 'destination-in'; tx.fillStyle = g; tx.fillRect(0, 0, w, h);
+    return (partCache[key] = { front, temple });
+  }
+  /* Xoá phần khuyên nằm sau dái tai (vùng `hide`, toạ độ theo tỉ lệ ảnh) để khuyên trông như xỏ qua tai */
+  function earringCut(o, img) {
+    if (!o.hide) return img;
+    if (partCache[o.src]) return partCache[o.src];
+    const [c, x] = canvasOf(img, false), w = c.width, h = c.height;
+    x.globalCompositeOperation = 'destination-out'; x.filter = `blur(${Math.round(w * 0.02)}px)`;
+    x.beginPath(); o.hide.forEach(([px, py], n) => n ? x.lineTo(px * w, py * h) : x.moveTo(px * w, py * h)); x.closePath(); x.fill();
+    return (partCache[o.src] = c);
+  }
+
   function rgba(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; }
 
   /* Vẽ một khung hình: nguồn (video/ảnh) cắt theo crop {sx,sy,sw,sh}, flip = soi gương */
   function paint(src, sw0, sh0, crop, lm, flip) {
+    hint = '';
     ctx.save();
     if (flip) { ctx.translate(W, 0); ctx.scale(-1, 1); }
     ctx.drawImage(src, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, W, H);
@@ -94,51 +128,97 @@
           ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         }
       }
-      if (look.eyewear && look.eyewear.src && look.eyewear.eyes) {
-        const img = overlayImg(look.eyewear.src);
-        if (img.complete && img.naturalWidth) {
-          // Khớp tâm hai tròng kính trong ảnh sản phẩm với tâm hai mắt (co giãn + xoay)
-          const mid = (i, j) => { const [x1, y1] = P(i), [x2, y2] = P(j); return [(x1 + x2) / 2, (y1 + y2) / 2]; };
+      const accs = [look.eyewear, look.ear].filter(o => o && o.src);
+      const imgs = accs.map(o => overlayImg(o.src));
+      if (accs.length && imgs.every(im => im.complete && im.naturalWidth)) {
+        // Phụ kiện vẽ lên một lớp riêng ở đúng độ phân giải của ảnh gốc rồi mới phóng lên,
+        // để sản phẩm mềm nét bằng ảnh (ảnh nhỏ bị phóng to thì kính cũng mờ theo, không bị "dán" lên)
+        const k = Math.max(1, W / crop.sw), lw = Math.round(W / k), lh = Math.round(H / k);
+        if (layer.width !== lw || layer.height !== lh) { layer.width = lw; layer.height = lh; }
+        const L = layer.getContext('2d');
+        L.setTransform(1, 0, 0, 1, 0, 0); L.clearRect(0, 0, lw, lh); L.setTransform(1 / k, 0, 0, 1 / k, 0, 0);
+        L.imageSmoothingQuality = 'high';
+
+        // Hướng của đầu trong không gian 3 chiều → suy ra chỗ của tai (lưới mặt không có điểm mốc cho tai)
+        const P3 = i => { const [x, y] = P(i); return [x, y, lm[i].z * sw0 / crop.sw * W]; };
+        const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+        const unit = v => { const n = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / n, v[1] / n, v[2] / n]; };
+        const sideV = sub(P3(454), P3(234)), downV = sub(P3(152), P3(10));
+        const faceH = Math.hypot(downV[0], downV[1]);
+        const sd = unit(sideV), dn = unit(downV);
+        let back = unit([sideV[1] * downV[2] - sideV[2] * downV[1], sideV[2] * downV[0] - sideV[0] * downV[2], sideV[0] * downV[1] - sideV[1] * downV[0]]);
+        if (back[2] < 0) back = back.map(v => -v);                        // chiều ra sau gáy
+        const [nx, ny] = P(1), dR = Math.hypot(ax - nx, ay - ny), dL = Math.hypot(bx - nx, by - ny);
+        const visible = sign => (sign > 0 ? dL : dR) / (dL + dR) >= 0.3;  // tai phía xa bị đầu che
+        const earPt = (i, sign, b, o, d) => {
+          const [x, y] = P(i);
+          return [x + (back[0] * b + sd[0] * o * sign + dn[0] * d) * faceH, y + (back[1] * b + sd[1] * o * sign + dn[1] * d) * faceH];
+        };
+        const earRoot = sign => earPt(sign > 0 ? 356 : 127, sign, 0.14, 0.012, -0.065);   // chỗ vành tai nối vào đầu — nơi càng kính gác lên
+        const lobe = sign => earPt(sign > 0 ? 323 : 93, sign, 0.09, 0.025, 0.03);         // lỗ xỏ khuyên trên dái tai
+
+        const turned = Math.max(dL, dR) / (dL + dR) > 0.7;
+        if (look.eyewear && look.eyewear.faces && !turned) hint = 'Kính này chụp nghiêng — quay mặt nghiêng một chút để thử nha';
+        if (look.eyewear && look.eyewear.src && look.eyewear.eyes && (turned || !look.eyewear.faces)) {
+          const o = look.eyewear, img = overlayImg(o.src), w = img.naturalWidth;
+          const mid = (a, b) => { const [x1, y1] = P(a), [x2, y2] = P(b); return [(x1 + x2) / 2, (y1 + y2) / 2]; };
           const tL = mid(33, 133), tR = mid(362, 263);
-          const [nx, ny] = P(1);
-          const facingLeft = Math.hypot(ax - nx, ay - ny) < Math.hypot(bx - nx, by - ny);
-          const w = img.naturalWidth, flip = look.eyewear.faces === (facingLeft ? 'right' : 'left');
-          let [e1, e2] = look.eyewear.eyes;
-          if (flip) [e1, e2] = [[w - e2[0], e2[1]], [w - e1[0], e1[1]]];
+          const flipImg = o.faces === (dR < dL ? 'right' : 'left');       // ảnh chụp nghiêng: lật theo hướng quay mặt
+          const fp = p => flipImg ? [w - p[0], p[1]] : p;
+          let e1 = fp(o.eyes[0]), e2 = fp(o.eyes[1]); if (flipImg) [e1, e2] = [e2, e1];
           const s = Math.hypot(tR[0] - tL[0], tR[1] - tL[1]) / Math.hypot(e2[0] - e1[0], e2[1] - e1[1]);
           const rot = Math.atan2(tR[1] - tL[1], tR[0] - tL[0]) - Math.atan2(e2[1] - e1[1], e2[0] - e1[0]);
-          ctx.save();
-          ctx.translate(tL[0], tL[1]); ctx.rotate(rot); ctx.scale(s, s); ctx.translate(-e1[0], -e1[1]);
-          if (flip) { ctx.translate(w, 0); ctx.scale(-1, 1); }
-          ctx.shadowColor = 'rgba(30,15,10,.3)'; ctx.shadowBlur = faceW * 0.02; ctx.shadowOffsetY = faceW * 0.012;
-          ctx.drawImage(img, 0, 0);
-          ctx.restore();
+          const T = p => { const dx = (p[0] - e1[0]) * s, dy = (p[1] - e1[1]) * s, c = Math.cos(rot), sn = Math.sin(rot); return [tL[0] + dx * c - dy * sn, tL[1] + dx * sn + dy * c]; };
+          const parts = glassesParts(o, img, flipImg);
+          if (parts.temple) {                                             // càng kính: kéo từ bản lề tới gốc tai, đuôi càng khuất sau tai
+            const h = fp(o.temple.hinge), t = fp(o.temple.tip), sign = t[0] > h[0] ? 1 : -1;
+            if (visible(sign)) {
+              const Hc = T(h), E = earRoot(sign);
+              const len = Math.hypot(E[0] - Hc[0], E[1] - Hc[1]) / Math.hypot(t[0] - h[0], t[1] - h[1]);
+              L.save();
+              L.translate(Hc[0], Hc[1]); L.rotate(Math.atan2(E[1] - Hc[1], E[0] - Hc[0])); L.scale(len, s);
+              L.rotate(-Math.atan2(t[1] - h[1], t[0] - h[0])); L.translate(-h[0], -h[1]);
+              L.drawImage(parts.temple, 0, 0);
+              L.restore();
+            }
+          }
+          L.save();
+          L.translate(tL[0], tL[1]); L.rotate(rot); L.scale(s, s); L.translate(-e1[0], -e1[1]);
+          L.drawImage(parts.front, 0, 0);
+          L.restore();
         }
-      }
-      if (look.ear && look.ear.src) {
-        const img = overlayImg(look.ear.src);
-        if (img.complete && img.naturalWidth) {
-          // Lưới mặt không có tai: ước lượng dái tai từ mép hàm, đẩy ra ngoài nhiều hơn khi mặt quay nghiêng
-          const [nx, ny] = P(1), [tx, ty] = P(10), [cx, cy] = P(152);
-          const faceH = Math.hypot(cx - tx, cy - ty), dR = Math.hypot(ax - nx, ay - ny), dL = Math.hypot(bx - nx, by - ny);
-          const ux = (bx - ax) / faceW, uy = (by - ay) / faceW;          // hướng ngang của mặt
-          const vx = (cx - tx) / faceH, vy = (cy - ty) / faceH;          // hướng dọc của mặt
-          const eh = faceH * (look.ear.size || 0.27), ew = eh * img.naturalWidth / img.naturalHeight;
-          const [anx, any] = look.ear.anchor || [0.5, 0.067];             // điểm trên ảnh nằm ở dái tai
-          [[323, dL, 1], [93, dR, -1]].forEach(([i, d, sign]) => {
-            const share = d / (dL + dR);                                  // 0.5 = nhìn thẳng
-            if (share < 0.3) return;                                      // tai bị khuất
-            const turn = Math.min(1, Math.max(0, (share - 0.5) * 2));
-            const out = faceH * (0.02 + 0.055 * turn) * sign, down = faceH * (0.07 - 0.035 * turn);
-            const [x, y] = P(i);
-            const lx = x + ux * out + vx * down, ly = y + uy * out + vy * down;
-            ctx.save(); ctx.translate(lx, ly); ctx.rotate(Math.atan2(vy, vx) - Math.PI / 2);
-            ctx.shadowColor = 'rgba(40,20,10,.35)'; ctx.shadowBlur = eh * 0.08; ctx.shadowOffsetY = eh * 0.03;
-            if (sign < 0) ctx.scale(-1, 1);                              // tai bên kia: lật ảnh cho đối xứng
-            ctx.drawImage(img, -ew * anx, -eh * any, ew, eh);
-            ctx.restore();
+        if (look.ear && look.ear.src) {
+          const o = look.ear, img = overlayImg(o.src), cut = earringCut(o, img);
+          const eh = faceH * (o.size || 0.27), ew = eh * img.naturalWidth / img.naturalHeight;
+          const [anx, any] = o.anchor || [0.5, 0.067];                    // điểm trên ảnh nằm ở lỗ xỏ khuyên
+          [1, -1].forEach(sign => {
+            if (!visible(sign)) return;
+            const [lx, ly] = lobe(sign);
+            L.save(); L.translate(lx, ly); L.rotate(Math.atan2(dn[1], dn[0]) - Math.PI / 2);
+            if (sign < 0) L.scale(-1, 1);                                 // tai bên kia: lật ảnh cho đối xứng
+            L.drawImage(cut, -ew * anx, -eh * any, ew, eh);
+            L.restore();
           });
         }
+
+        // Nhuộm nhẹ theo màu ánh sáng trên da để kim loại không lạc tông với ảnh
+        if (!(tick.n = (tick.n || 0) + 1) || tick.n % 12 === 1 || !tone) {
+          const [sx, sy] = P(dR < dL ? 425 : 205);
+          try {
+            const d = ctx.getImageData(Math.round(flip ? W - sx : sx) - 3, Math.round(sy) - 3, 7, 7).data; let r = 0, g = 0, b = 0;
+            for (let q = 0; q < d.length; q += 4) { r += d[q]; g += d[q + 1]; b += d[q + 2]; }
+            tone = [r, g, b].map(v => Math.round(v / (d.length / 4)));
+          } catch (e) { tone = [200, 170, 150]; }
+        }
+        L.setTransform(1, 0, 0, 1, 0, 0); L.globalCompositeOperation = 'source-atop';
+        L.fillStyle = `rgba(${tone[0]},${tone[1]},${tone[2]},.1)`; L.fillRect(0, 0, lw, lh);
+        L.globalCompositeOperation = 'source-over';
+
+        ctx.save();
+        ctx.imageSmoothingQuality = 'high';
+        ctx.shadowColor = 'rgba(30,15,8,.38)'; ctx.shadowBlur = faceW * 0.03; ctx.shadowOffsetY = faceW * 0.014;   // bóng đổ lên da
+        ctx.drawImage(layer, 0, 0, W, H);
+        ctx.restore();
       }
     }
     ctx.restore();
@@ -156,12 +236,13 @@
     let lm = null;
     try { const res = landmarker.detectForVideo(video, performance.now()); lm = res.faceLandmarks && res.faceLandmarks[0]; } catch (e) { /* bỏ qua khung lỗi */ }
     paint(video, video.videoWidth, video.videoHeight, cover(video.videoWidth, video.videoHeight), lm, true);
-    onStatus(lm ? '' : 'Đưa mặt vào giữa gương nha');
+    onStatus(lm ? hint : 'Đưa mặt vào giữa gương nha');
   }
 
   function drawPhoto() {
     if (!photo) return;
     paint(photo, photo.naturalWidth, photo.naturalHeight, photoCrop, photoLm, false);
+    if (photoLm) onStatus(hint);
   }
 
   function stop() {

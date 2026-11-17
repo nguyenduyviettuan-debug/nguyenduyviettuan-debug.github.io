@@ -14,8 +14,10 @@
     links   : { shopee: 'link affiliate', tiktok: 'link affiliate' }  — để trống thì nút mua sẽ mở trang tìm kiếm
     image   : (tuỳ chọn) đường dẫn ảnh sản phẩm thật, hiện trong thẻ sản phẩm
     overlay : (khuyên tai, kính — đặt trong sản phẩm hoặc trong từng màu) ảnh PNG nền trong suốt để gắn lên mặt thật khi thử bằng camera/ảnh
-              khuyên tai: { src, size: chiều cao so với mặt (mặc định 0.27), anchor: [x, y] vị trí dái tai trên ảnh, tính theo tỉ lệ 0–1 }
-              kính      : { src, eyes: [[x, y], [x, y]] tâm tròng trái và phải trên ảnh (px), faces: 'right' | 'left' nếu ảnh chụp nghiêng }
+              khuyên tai: { src, size: chiều cao so với mặt (mặc định 0.27), anchor: [x, y] vị trí lỗ xỏ trên ảnh (tỉ lệ 0–1),
+                            hide: [[x, y], …] vùng khuyên nằm sau dái tai cần che đi (tỉ lệ 0–1) }
+              kính      : { src, eyes: [[x, y], [x, y]] tâm tròng trái và phải trên ảnh (px), faces: 'right' | 'left' nếu ảnh chụp nghiêng,
+                            temple: { hinge: [x, y] bản lề, tip: [x, y] chỗ càng bắt đầu uốn xuống sau tai } (px) }
 */
 window.PRODUCTS = [
   // ───────── Son ─────────
@@ -168,12 +170,12 @@ window.PRODUCTS = [
   // Hai món dưới đây dùng ảnh sản phẩm thật đã tách nền. CHƯA có giá và link — điền vào trước khi quảng bá.
   { id: 'khuyen-no', name: 'Khuyên tai nơ bạc', cat: 'acc', shape: 'earrings', price: 0,
     variants: [{ name: 'Bạc', color: '#d9dcdf' }],
-    overlay: { src: 'img/earring-bow.png', size: 0.13, anchor: [0.66, 0.12] },
+    overlay: { src: 'img/earring-bow.png', size: 0.115, anchor: [0.66, 0.07], hide: [[0.45, -0.1], [1.1, -0.1], [1.1, 0.1], [0.45, 0.1]] },
     tip: 'Khuyên tròn ôm dái tai, đính nơ nhỏ — đeo hằng ngày nhẹ nhàng mà vẫn có điểm nhấn.',
     kw: 'khuyên tai nơ bạc', links: { shopee: '', tiktok: '' } },
   { id: 'kinh-gong', name: 'Kính gọng kim loại bạc', cat: 'acc', shape: 'glasses', price: 0,
     variants: [{ name: 'Bạc', color: '#b9bec3' }],
-    overlay: { src: 'img/glasses-silver.png', eyes: [[338, 135], [531, 85]], faces: 'right' },
+    overlay: { src: 'img/glasses-silver.png', eyes: [[338, 135], [531, 85]], faces: 'right', temple: { hinge: [240, 112], tip: [30, 45] } },
     tip: 'Gọng kim loại mảnh, dáng vuông bo góc — hợp mặt tròn và mặt trái xoan, đeo lên trông gọn gàng tri thức.',
     kw: 'kính gọng kim loại bạc', links: { shopee: '', tiktok: '' } },
   { id: 'mu-bucket', name: 'Mũ bucket', cat: 'acc', shape: 'bucket', price: 99000,
