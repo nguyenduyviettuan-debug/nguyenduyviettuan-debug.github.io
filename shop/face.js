@@ -13,7 +13,7 @@
   ];
   const CHEEKS = [205, 425];
 
-  let landmarker = null, loading = null;
+  let landmarker = null, loading = null, meshConns = null;
   let canvas, ctx, video, stream = null, raf = 0;
   let source = null;      // 'camera' | 'photo'
   let photo = null, photoLm = null, photoCrop = null;
@@ -25,6 +25,7 @@
     if (loading) return loading;
     loading = (async () => {
       const v = await import(CDN + '/vision_bundle.mjs');
+      meshConns = v.FaceLandmarker.FACE_LANDMARKS_TESSELATION;
       const fs = await v.FilesetResolver.forVisionTasks(CDN + '/wasm');
       const make = delegate => v.FaceLandmarker.createFromOptions(fs, {
         baseOptions: { modelAssetPath: MODEL, delegate }, runningMode: 'VIDEO', numFaces: 1,
@@ -128,8 +129,8 @@
           ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         }
       }
-      const accs = [look.eyewear, look.ear].filter(o => o && o.src);
-      const imgs = accs.map(o => overlayImg(o.src));
+      const accs = [look.eyewear, look.ear].filter(o => o && (o.src || o.model));
+      const imgs = accs.filter(o => o.src).map(o => overlayImg(o.src));
       if (accs.length && imgs.every(im => im.complete && im.naturalWidth)) {
         // Phụ kiện vẽ lên một lớp riêng ở đúng độ phân giải của ảnh gốc rồi mới phóng lên,
         // để sản phẩm mềm nét bằng ảnh (ảnh nhỏ bị phóng to thì kính cũng mờ theo, không bị "dán" lên)
@@ -157,6 +158,13 @@
         const earRoot = sign => earPt(sign > 0 ? 356 : 127, sign, 0.14, 0.012, -0.065);   // chỗ vành tai nối vào đầu — nơi càng kính gác lên
         const lobe = sign => earPt(sign > 0 ? 323 : 93, sign, 0.09, 0.025, 0.03);         // lỗ xỏ khuyên trên dái tai
 
+        if (look.eyewear && look.eyewear.model && window.Glasses3D) {   // kính dựng 3D: đúng ở mọi góc quay đầu
+          if (Glasses3D.ready(() => { if (source === 'photo') drawPhoto(); })) {
+            const pts = lm.map((_, i) => P3(i)), rw = Math.min(1400, lw * 2), rh = Math.round(rw * lh / lw);
+            const gl = Glasses3D.render(pts, meshConns, W, H, rw, rh, Object.assign({ color: look.eyewear.color }, look.eyewear.model));
+            if (gl) L.drawImage(gl, 0, 0, W, H);
+          }
+        }
         const turned = Math.max(dL, dR) / (dL + dR) > 0.7;
         if (look.eyewear && look.eyewear.faces && !turned) hint = 'Kính này chụp nghiêng — quay mặt nghiêng một chút để thử nha';
         if (look.eyewear && look.eyewear.src && look.eyewear.eyes && (turned || !look.eyewear.faces)) {

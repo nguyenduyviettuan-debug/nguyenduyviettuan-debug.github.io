@@ -16,7 +16,8 @@
     overlay : (khuyên tai, kính — đặt trong sản phẩm hoặc trong từng màu) ảnh PNG nền trong suốt để gắn lên mặt thật khi thử bằng camera/ảnh
               khuyên tai: { src, size: chiều cao so với mặt (mặc định 0.27), anchor: [x, y] vị trí lỗ xỏ trên ảnh (tỉ lệ 0–1),
                             hide: [[x, y], …] vùng khuyên nằm sau dái tai cần che đi (tỉ lệ 0–1) }
-              kính      : { src, eyes: [[x, y], [x, y]] tâm tròng trái và phải trên ảnh (px), faces: 'right' | 'left' nếu ảnh chụp nghiêng,
+              kính 3D   : { model: { lensW, lensH, bridge (mm), rim: độ dày vành, square: độ vuông của tròng, taper: độ thu hẹp ở đáy } } — đúng ở mọi góc quay đầu
+              kính ảnh  : { src, eyes: [[x, y], [x, y]] tâm tròng trái và phải trên ảnh (px), faces: 'right' | 'left' nếu ảnh chụp nghiêng,
                             temple: { hinge: [x, y] bản lề, tip: [x, y] chỗ càng bắt đầu uốn xuống sau tai } (px) }
 */
 window.PRODUCTS = [
@@ -175,7 +176,7 @@ window.PRODUCTS = [
     kw: 'khuyên tai nơ bạc', links: { shopee: '', tiktok: '' } },
   { id: 'kinh-gong', name: 'Kính gọng kim loại bạc', cat: 'acc', shape: 'glasses', price: 0,
     variants: [{ name: 'Bạc', color: '#b9bec3' }],
-    overlay: { src: 'img/glasses-silver.png', eyes: [[338, 135], [531, 85]], faces: 'right', temple: { hinge: [240, 112], tip: [30, 45] } },
+    overlay: { model: { lensW: 47, lensH: 39, bridge: 21, rim: 0.9, square: 3.4, taper: 0.12 } },   // kính dựng 3D, kích thước theo mm
     tip: 'Gọng kim loại mảnh, dáng vuông bo góc — hợp mặt tròn và mặt trái xoan, đeo lên trông gọn gàng tri thức.',
     kw: 'kính gọng kim loại bạc', links: { shopee: '', tiktok: '' } },
   { id: 'mu-bucket', name: 'Mũ bucket', cat: 'acc', shape: 'bucket', price: 99000,
