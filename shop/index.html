@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tiệm Thử — dạo tiệm, thử đồ, chốt đơn</title>
+<meta name="description" content="Tiệm thời trang & mỹ phẩm ảo: chạm một món là thử ngay lên người mẫu hoặc lên chính khuôn mặt bạn, có nhân viên tư vấn set đồ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#f7f0e6; --paper:#fffaf3; --wall:#f3e4d7; --wall2:#ead4c4;
+  --ink:#2b2320; --mute:#7c6b62; --line:#e4d5c5;
+  --rose:#b9485e; --rose-d:#96364a; --gold:#c9a15a;
+  --wood:#c79a6b; --wood-d:#9a6d44;
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.45;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;-webkit-tap-highlight-color:transparent}
+h1,h2,h3,p{margin:0}
+.serif{font-family:"Playfair Display",Georgia,serif}
+:focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:6px}
+
+/* ── Đầu trang ── */
+.top{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;max-width:1180px;margin:0 auto}
+.brand{font-size:22px;letter-spacing:.2px}
+.brand i{color:var(--rose)}
+.brand small{display:block;font-family:"Be Vietnam Pro",sans-serif;font-size:11.5px;color:var(--mute);font-weight:400;letter-spacing:0}
+.cart-btn{display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;padding:9px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.cart-btn b{background:var(--gold);color:var(--ink);min-width:22px;height:22px;border-radius:11px;display:grid;place-items:center;font-size:12px;padding:0 6px}
+
+.floor{max-width:1180px;margin:0 auto;padding:0 16px}
+
+/* ── Phòng thử ── */
+.fitting{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:stretch;padding:8px 0 10px;background:linear-gradient(var(--cream) 88%,transparent)}
+.mirror{position:relative;height:34svh;min-height:240px;max-height:330px;aspect-ratio:3/5;border-radius:999px 999px 16px 16px;overflow:hidden;
+  background:radial-gradient(120% 70% at 50% 0,#fff 0,#f4ebe6 45%,#e2d3cc 100%);
+  box-shadow:0 0 0 3px var(--gold),0 0 0 7px #fff7ea,0 0 0 8px var(--line),0 14px 28px -10px rgba(70,40,20,.45);margin:8px}
+.mirror svg,.mirror canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.mirror canvas{object-fit:cover}
+.mirror::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.5) 0,rgba(255,255,255,0) 22%,rgba(255,255,255,0) 70%,rgba(255,255,255,.18) 100%)}
+.mirror-msg{position:absolute;left:8px;right:8px;bottom:10px;z-index:3;text-align:center;font-size:12px;font-weight:600;color:#fff;background:rgba(43,35,32,.72);padding:6px 8px;border-radius:10px}
+.face-start{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:38% 12px 12px;text-align:center;background:rgba(250,243,236,.94)}
+.face-start p{font-size:11.5px;color:var(--mute);line-height:1.35}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;background:var(--rose);color:#fff;white-space:nowrap;text-decoration:none}
+.btn:active{background:var(--rose-d)}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.dark{background:var(--ink)}
+.btn.sm{padding:7px 12px;font-size:13px}
+[hidden]{display:none!important}
+
+.side{display:flex;flex-direction:column;gap:7px;min-width:0;padding:8px 0;height:calc(clamp(240px,34svh,330px) + 16px)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:#eadfd2;border-radius:999px;padding:3px}
+.seg button{padding:7px 2px;border-radius:999px;font-size:12.5px;white-space:nowrap;font-weight:600;color:var(--mute)}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tones{display:flex;gap:6px;align-items:center}
+.tones span{font-size:12px;color:var(--mute);display:none}
+.tone{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 2px #fff,0 0 0 1.5px var(--line)}
+.tone[aria-pressed=true]{box-shadow:inset 0 0 0 2px #fff,0 0 0 2px var(--ink)}
+.chip{font-size:12.5px;font-weight:600;padding:6px 10px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1.5px var(--line);white-space:nowrap}
+.advisor{display:flex;gap:8px;align-items:flex-start;flex:1;min-height:0}
+.advisor .face{flex:none;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#f3bcc4,#f2976f);display:grid;place-items:center;font-weight:700;color:#fff;font-size:14px}
+.bubble{background:#fff;border-radius:4px 14px 14px 14px;padding:8px 10px;font-size:12.5px;line-height:1.4;box-shadow:0 2px 8px -4px rgba(70,40,20,.3);overflow:auto;max-height:100%;min-width:0}
+.bubble b{color:var(--rose-d)}
+.worn{grid-column:1/-1;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.worn::-webkit-scrollbar{display:none}
+.worn:empty{display:none}
+.worn .chip{display:flex;gap:6px;align-items:center}
+.worn .chip i{width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.worn .chip span{color:var(--mute);font-weight:700}
+
+/* ── Kệ hàng ── */
+.store{padding-top:4px}
+.shelf-head{display:flex;align-items:baseline;gap:10px;margin:18px 2px 8px}
+.shelf-head h2{font-size:20px}
+.shelf-head p{font-size:12.5px;color:var(--mute)}
+.shelf{overflow-x:auto;border-radius:var(--r);scrollbar-width:thin;scrollbar-color:var(--wall2) transparent;
+  background:linear-gradient(var(--wall),var(--wall2));box-shadow:inset 0 0 0 1px rgba(150,110,80,.14),inset 0 14px 22px -14px rgba(120,70,40,.25)}
+.track{position:relative;display:flex;gap:2px;min-width:max-content;padding:0 10px 12px}
+.item{position:relative;z-index:1;width:116px;flex:none;display:flex;flex-direction:column;align-items:center;border-radius:14px}
+.item::before{content:"";position:absolute;left:50%;top:0;width:150px;height:70%;transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(60% 100% at 50% 0,rgba(255,250,235,.85),rgba(255,250,235,0) 70%)}
+.stage{position:relative;display:flex;justify-content:center;width:100%;transition:transform .18s}
+.stage svg,.stage img{filter:drop-shadow(0 5px 5px rgba(70,35,15,.28));display:block}
+.item:hover .stage,.item:focus-visible .stage{transform:translateY(-4px)}
+.item:active .stage{transform:translateY(-1px) scale(.97)}
+.tag{position:relative;margin-top:22px;width:106px;background:var(--paper);border-radius:10px;padding:6px 6px 7px;text-align:center;box-shadow:0 2px 5px -2px rgba(70,40,20,.35)}
+.tag .n{font-size:11.5px;line-height:1.25;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:29px}
+.tag .p{font-size:13px;font-weight:700;color:var(--rose-d);margin-top:2px}
+.tag .dots{display:flex;justify-content:center;gap:3px;margin-top:4px}
+.tag .dots i{width:9px;height:9px;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.14)}
+.item.on .tag{background:var(--ink);color:#fff}
+.item.on .tag .p{color:#f5c9a0}
+.item.on::after{content:"Đang thử";position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:2;white-space:nowrap;font-size:10.5px;font-weight:700;background:var(--rose);color:#fff;padding:2px 8px;border-radius:999px}
+/* kệ gỗ */
+.plank .stage{height:124px;align-items:flex-end}
+.plank .track::after{content:"";position:absolute;left:0;right:0;top:124px;height:13px;
+  background:linear-gradient(#dcb488 0,var(--wood) 35%,var(--wood-d) 100%);box-shadow:0 7px 9px -3px rgba(70,35,15,.4),inset 0 1px 0 rgba(255,255,255,.45)}
+/* thanh treo */
+.rail .stage{height:var(--h,200px);align-items:flex-start;padding-top:13px}
+.rail .tag{margin-top:6px}
+.rail .track::before{content:"";position:absolute;left:0;right:0;top:15px;height:6px;border-radius:3px;z-index:2;
+  background:linear-gradient(#f6e2b8,#c9a15a 55%,#9c7a3d);box-shadow:0 3px 4px -1px rgba(70,35,15,.35)}
+.rail .item.on::after{top:auto;bottom:calc(100% - var(--h,200px) + 4px)}
+.foot{margin:26px 2px 0;font-size:12px;color:var(--mute);line-height:1.5}
+
+/* ── Thẻ sản phẩm đang chọn ── */
+.pbar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(255,250,243,.96);backdrop-filter:blur(10px);
+  box-shadow:0 -8px 24px -12px rgba(70,40,20,.4);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .22s}
+.pbar.show{transform:none}
+.pbar-in{max-width:1148px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center}
+.pbar .name{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbar .price{font-weight:700;color:var(--rose-d)}
+.pbar .price small{font-weight:400;color:var(--mute);font-size:11.5px}
+.pbar .info{min-width:0}
+.pbar .acts{display:flex;gap:8px}
+.sw{grid-column:1/-1;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.sw::-webkit-scrollbar{display:none}
+.sw button{display:flex;align-items:center;gap:6px;padding:5px 11px 5px 5px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1.5px var(--line);font-size:12.5px;font-weight:500;white-space:nowrap}
+.sw button i{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.sw button[aria-pressed=true]{box-shadow:inset 0 0 0 2px var(--ink);font-weight:700}
+
+/* ── Hộp thoại ── */
+dialog{border:0;padding:0;border-radius:22px;width:min(520px,calc(100vw - 24px));max-height:min(86svh,720px);background:var(--paper);color:var(--ink);box-shadow:0 30px 60px -20px rgba(40,20,10,.6)}
+dialog::backdrop{background:rgba(43,35,32,.5)}
+.dlg{display:flex;flex-direction:column;max-height:inherit}
+.dlg-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px}
+.dlg-head h3{font-size:21px}
+.x{width:34px;height:34px;border-radius:50%;background:#efe5d8;font-size:18px;line-height:1}
+.dlg-body{padding:4px 18px 18px;overflow:auto}
+.dlg-foot{padding:12px 18px 16px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.total small{display:block;color:var(--mute);font-size:12px}
+.total b{font-size:19px}
+.row{display:grid;grid-template-columns:54px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.row .th{width:54px;height:54px;border-radius:12px;background:var(--wall);display:grid;place-items:center;overflow:hidden}
+.row .nm{font-weight:600;font-size:14px}
+.row .vr{font-size:12.5px;color:var(--mute)}
+.row .buy{grid-column:1/-1;display:flex;gap:8px}
+.row .buy .btn{flex:1}
+.row .rm{color:var(--mute);font-size:12.5px;text-decoration:underline}
+.empty{text-align:center;color:var(--mute);padding:30px 10px}
+.note{font-size:12px;color:var(--mute);margin-top:12px;line-height:1.5}
+.q{font-size:16px;font-weight:600;margin:6px 0 12px}
+.opts{display:grid;gap:8px}
+.opts button{text-align:left;padding:13px 14px;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1.5px var(--line);font-weight:500;display:flex;align-items:center;gap:10px}
+.opts button:hover{box-shadow:inset 0 0 0 2px var(--rose)}
+.opts button i{width:24px;height:24px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
+.steps{display:flex;gap:6px;margin-bottom:12px}
+.steps i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.steps i.done{background:var(--rose)}
+.toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:60;background:var(--ink);color:#fff;padding:9px 16px;border-radius:999px;font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;transition:.2s;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ── Màn hình rộng ── */
+@media (min-width:900px){
+  .floor{display:grid;grid-template-columns:372px 1fr;gap:30px;align-items:start}
+  .fitting{top:10px;grid-template-columns:1fr;justify-items:center;background:none;padding:0}
+  .mirror{height:min(66vh,600px);max-height:none;margin:10px}
+  .side{width:100%;padding:6px 0 0;height:auto}
+  .tones span{display:inline}
+  .seg button{font-size:13px}
+  .bubble{font-size:13px}
+  .advisor .face{width:34px;height:34px}
+  .bubble{max-height:150px}
+  .shelf-head:first-child{margin-top:6px}
+  .item{width:128px}
+}
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1 class="brand serif">Tiệm <i>Thử</i><small>Dạo tiệm · thử đồ · chốt đơn</small></h1>
+  <button class="cart-btn" id="cartBtn" aria-label="Mở giỏ hàng">Giỏ hàng <b id="cartCount">0</b></button>
+</header>
+
+<main class="floor">
+  <aside class="fitting" aria-label="Phòng thử">
+    <div class="mirror" id="mirror">
+      <svg id="avatar" viewBox="-42 0 384 640" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Người mẫu đang thử đồ"></svg>
+      <canvas id="faceCanvas" hidden></canvas>
+      <video id="faceVideo" playsinline muted hidden></video>
+      <div class="face-start" id="faceStart" hidden>
+        <button class="btn sm" id="camBtn">Bật camera</button>
+        <button class="btn sm ghost" id="photoBtn">Chọn ảnh của bạn</button>
+        <input type="file" id="photoInput" accept="image/*" hidden>
+        <p>Hình chỉ xử lý ngay trên máy bạn, không gửi đi đâu cả.</p>
+      </div>
+      <div class="mirror-msg" id="mirrorMsg" hidden></div>
+    </div>
+
+    <div class="side">
+      <div class="seg" role="group" aria-label="Thử trên">
+        <button id="modeModel" aria-pressed="true">Người mẫu</button>
+        <button id="modeFace" aria-pressed="false">Mặt tôi</button>
+      </div>
+      <div class="tools">
+        <div class="tones" role="group" aria-label="Tông da"><span>Tông da</span>
+          <button class="tone" data-tone="light" style="background:#f7d9c6" aria-label="Da sáng"></button>
+          <button class="tone" data-tone="medium" style="background:#e9bc98" aria-label="Da trung bình"></button>
+          <button class="tone" data-tone="tan" style="background:#c98f68" aria-label="Da ngăm"></button>
+        </div>
+        <button class="chip" id="zoomBtn">Cận mặt</button>
+        <button class="chip" id="resetBtn">Cởi hết</button>
+      </div>
+      <div class="advisor">
+        <div class="face" aria-hidden="true">M</div>
+        <div class="bubble" id="bubble" aria-live="polite"></div>
+      </div>
+      <button class="btn sm dark" id="quizBtn">Nhờ Mây phối cả set</button>
+    </div>
+    <div class="worn" id="worn" aria-label="Đang mặc"></div>
+  </aside>
+
+  <section class="store" id="store" aria-label="Kệ hàng"></section>
+</main>
+
+<p class="foot floor">Giá trên kệ là giá tham khảo, giá thật theo trang bán tại thời điểm mua. Nút mua dẫn sang Shopee / TikTok Shop; một số là link tiếp thị liên kết — tiệm có thể nhận hoa hồng, bạn không trả thêm đồng nào.</p>
+
+<div class="pbar" id="pbar"><div class="pbar-in" id="pbarIn"></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<dialog id="cartDlg" aria-labelledby="cartTitle"><div class="dlg">
+  <div class="dlg-head"><h3 class="serif" id="cartTitle">Giỏ hàng</h3><button class="x" data-close aria-label="Đóng">×</button></div>
+  <div class="dlg-body" id="cartBody"></div>
+  <div class="dlg-foot" id="cartFoot"></div>
+</div></dialog>
+
+<dialog id="quizDlg" aria-labelledby="quizTitle"><div class="dlg">
+  <div class="dlg-head"><h3 class="serif" id="quizTitle">Mây tư vấn</h3><button class="x" data-close aria-label="Đóng">×</button></div>
+  <div class="dlg-body" id="quizBody"></div>
+</div></dialog>
+
+<script src="products.js"></script>
+<script src="avatar.js"></script>
+<script src="face.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
