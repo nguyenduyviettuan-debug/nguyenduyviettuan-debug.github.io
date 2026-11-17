@@ -1183,5 +1183,101 @@ function boot(fresh){
 addEventListener('resize',fit);fit();
 boot(false);tickHud();life();
 </script>
+<!-- =====================================================================
+     ART LAYER: nếu có file trong art/ (theo art/manifest.json) thì dùng ảnh/video thật,
+     thiếu file nào thì game tự quay về hình emoji cũ.
+     ===================================================================== -->
+<style>
+#artbg{inset:0;background-size:cover;background-position:50% 100%;display:none}
+#scene.art #artbg{display:block}
+#scene.art #sky,#scene.art #props,#scene.art #ground,#scene.art #road,#scene.art #park{visibility:hidden}
+#artvid,#artdream{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;background:#000}
+#artvid{z-index:1}#artdream{z-index:3}
+#scene.artride #artvid{display:block}
+#scene.artride #flip,#scene.artride #veh,#scene.artride #pet{display:none}
+#scene.artdream #artdream{display:block}
+#scene.artdream #actor{visibility:hidden}
+#char img.artch{position:absolute;left:50%;bottom:-4px;height:104%;transform:translateX(-50%);filter:drop-shadow(0 8px 6px #0008);pointer-events:none}
+#actor.cat #char img.artch{height:62%}
+#npc.artn{width:130px;height:236px}
+#npc.artn.sm{height:190px}
+#npc.artn #npce{display:none}
+#npcimg{display:none;position:absolute;right:0;bottom:-10px;height:100%;filter:drop-shadow(0 8px 6px #0008)}
+#npc.artn #npcimg{display:block}
+#npc.artn #npcsay{right:96px;top:-8px}
+</style>
+<script>
+"use strict";
+(function(){
+  const A='art/', LOOK=[0,1,1,2,2,3,3,4,4,4];
+  let HAS=new Set();
+  const has=f=>HAS.has(f), scene=$('#scene');
+  const mk=(tag,id,after)=>{const e=document.createElement(tag);e.id=id;e.className='abs';after.insertAdjacentElement('afterend',e);return e};
+  const bgEl=mk('div','artbg',$('#ground'));
+  const vid=mk('video','artvid',bgEl), dream=mk('video','artdream',$('#actor'));
+  for(const v of [vid,dream]){v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto'}
+  const nimg=document.createElement('img');nimg.id='npcimg';nimg.alt='';$('#npc').appendChild(nimg);
+
+  /* bối cảnh */
+  const _setBackdrop=setBackdrop;
+  setBackdrop=function(key,idx){
+    _setBackdrop(key,idx);
+    const f=key=='home'?`${PK.id}/home-${Math.min(5,idx??S.eq.nha)}.jpg`:`bg/${key}.jpg`;
+    if(has(f)){bgEl.style.backgroundImage=`url("${A+f}")`;scene.classList.add('art')}else scene.classList.remove('art');
+  };
+  /* nhân vật theo 5 chặng đời */
+  for(const id in PACKS){const d=PACKS[id].draw;
+    PACKS[id].draw=(eq,st)=>{const f=`${id}/look-${LOOK[Math.max(0,Math.min(9,st|0))]}.png`;return has(f)?`<img class="artch" alt="" src="${A+f}">`:d(eq,st)}}
+  /* cảnh chạy xe bằng video */
+  const _resetActor=resetActor;
+  resetActor=function(x){scene.classList.remove('artride');vid.pause();_resetActor(x)};
+  const _rideOn=rideOn;
+  rideOn=function(t){
+    _rideOn(t);
+    const f=`${PK.id}/ride-${t}.mp4`;
+    if(t&&has(f)){if(vid.dataset.f!=f){vid.dataset.f=f;vid.src=A+f}scene.classList.add('artride');vid.play().catch(()=>{})}
+  };
+  /* giấc mơ VIP bằng video */
+  const _dreamCut=dreamCut;
+  dreamCut=async function(){
+    const f=`${PK.id}/dream.mp4`;
+    if(!has(f))return _dreamCut();
+    if(S.ended||story)return; lock=true; const slot=SLOTS[dayNo()%SLOTS.length];
+    await wipe(()=>{dreamOn=true;resetActor(195);$('#npc').className='abs';setBackdrop('home',5);$('#shade').style.background='radial-gradient(circle,#0000 55%,#a855f788)';
+      if(dream.dataset.f!=f){dream.dataset.f=f;dream.src=A+f}else dream.currentTime=0;scene.classList.add('artdream');dream.play().catch(()=>{});
+      $('#tag').innerHTML=`💭 ${esc(S.ch.name)} đang mơ…<small>phiên bản VIP PRO</small>`;render();ladder(slot)});
+    cap(`💭 ${esc(S.ch.name)} mơ thấy mình có đủ đồ <b>Huyền Thoại</b>… Quay trúng là thành thật!`,7000);sfx.reveal(5);
+    await sleep(7500);
+    await wipe(()=>{dreamOn=false;scene.classList.remove('artdream');dream.pause();ladder();render();applyBase()});lock=false;
+  };
+  /* nhân vật phụ: đổi emoji thành ảnh khi có */
+  const NPC={'👨‍💼':'boss','🐕':'dog','🤵':'partner','🧔':'old-friend','🕴️':'stranger','🧎':'beggar','👧':'owner-girl','🐱':'kitten','🐈‍⬛':'rival-cat'};
+  function npcFile(e){
+    if(e=='😈')return `npc/villain-${PK.id}.png`;
+    if(e=='👵')return PK.id=='muop'?'':/vé số/.test($('#npcsay').textContent)?'npc/lottery-granny.png':'npc/landlady.png';
+    if(e=='👩')return PK.id=='bom'?'npc/girlfriend.png':'';
+    if(e=='🧑')return PK.id=='na'?'npc/boyfriend.png':'';
+    return NPC[e]?`npc/${NPC[e]}.png`:'';
+  }
+  function npcSync(){const n=$('#npc'),f=npcFile($('#npce').textContent);
+    if(f&&has(f)){if(nimg.dataset.f!=f){nimg.dataset.f=f;nimg.src=A+f}if(!n.classList.contains('artn'))n.classList.add('artn')}else if(n.classList.contains('artn'))n.classList.remove('artn')}
+  new MutationObserver(npcSync).observe($('#npc'),{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true});
+
+  /* phản diện riêng của từng nhân vật */
+  PACKS.bom.CRISES.push({t:'Thiếu gia Khang chặn đường, doạ cướp mối làm ăn!',bg:'street',at:['street','road','cafe','office','boss','pub','golf','bar','date','fair'],npc:'😈',say:'Loại như mày mà cũng đòi lên đời à? 😏'});
+  PACKS.bom.CHOICES.push({bg:'cafe',at:['cafe','street','pub','bar','golf','date'],npc:'😈',say:'Cược không? Thua thì cút khỏi thành phố này.',q:'Thiếu gia Khang thách {n} một ván cược trước mặt mọi người.',a:['Chơi tới',{k:0,c:.15,risk:.5,t:'Khang tái mặt, ném chìa khoá xe xuống bàn!',tf:'Khang cười khẩy: "Biết thân biết phận đi."'}],b:['Mỉm cười bỏ đi',{k:2,c:.02,t:'{n} không cần chứng minh gì với hắn cả.'}]});
+  PACKS.na.CRISES.push({t:'Tiểu thư Trâm Anh bóc phốt, giành hết khách!',bg:'shop',at:['shop','market','live','mall','atelier','studio','runway','party','street'],npc:'😈',say:'Đồ chợ mà cũng đòi làm thời trang? 💅'});
+  PACKS.na.CHOICES.push({bg:'party',at:['party','runway','mall','shop','atelier','studio','live'],npc:'😈',say:'Mẫu này tôi mua đứt. Ra giá đi.',q:'Tiểu thư Trâm Anh đòi mua đứt mẫu thiết kế tâm huyết của {n} để gắn mác của cô ta.',a:['Bán',{k:-2,c:.12,t:'Tiền nhiều, nhưng tên {n} không còn trên chiếc váy ấy.'}],b:['Không bán',{k:2,c:.03,clue:.2,t:'{n} ngẩng cao đầu: "Tên tôi không bán."'}]});
+  PACKS.muop.CRISES.push({t:'Đại ca Sẹo chặn ngõ, đòi nộp cá!',bg:'alley',at:['alley','market','roof','home','park','street'],npc:'😈',say:'Khu này của tao. Nộp cá đây! 😾',ok:awake});
+  PACKS.muop.CHOICES.push({bg:'roof',at:['roof','alley','market','park','home'],npc:'😈',say:'Vào băng tao thì khỏi lo đói.',q:'Đại ca Sẹo rủ {n} nhập băng mèo hoang.',a:['Nhập băng',{k:-2,c:.1,risk:.4,t:'Có cá ăn mỗi ngày… do đi giật của mèo khác.',tf:'Bị Sẹo lừa canh gác cả đêm, đói meo.'}],b:['Xù lông từ chối',{k:2,c:.02,t:'Sẹo gầm gừ, nhưng lũ mèo con trong ngõ nhìn {n} đầy ngưỡng mộ.'}]});
+
+  fetch(A+'manifest.json',{cache:'no-cache'}).then(r=>r.ok?r.json():[]).then(L=>{
+    HAS=new Set(L);
+    for(const f of L)if(/look-\d\.png$|home-\d\.jpg$/.test(f)&&f.startsWith(PK.id+'/')){const i=new Image();i.src=A+f}
+    if(!lock&&!story){setBackdrop(base.bg);if(base.pose=='ride'&&!dreamOn)rideOn(shownXe)}
+    render();npcSync();
+  }).catch(()=>{});
+})();
+</script>
 </body>
 </html>

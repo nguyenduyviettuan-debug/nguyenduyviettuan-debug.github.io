@@ -6,7 +6,9 @@ Dùng cho Muse AI hoặc công cụ tạo ảnh/video bất kỳ. Lệnh viết 
 
 **Câu phong cách** (dán vào cuối MỌI lệnh để cả bộ đồng nhất):
 
-> 3D animated film style, soft cinematic lighting, vibrant colors, Vietnamese setting, highly detailed, no text, no watermark
+> photorealistic, cinematic photography, real human proportions, realistic skin texture, soft cinematic lighting, Vietnamese setting, highly detailed, no text, no logo, no watermark
+
+(Bản đầu dùng "3D animated film style"; từ 17/11/2026 cả bộ chuyển sang ảnh thật.)
 
 **Kích thước**
 
@@ -137,3 +139,33 @@ boss (ông sếp cau có), landlady (bà chủ trọ), girlfriend (bạn gái c�
 3. Nhà và 6 bối cảnh dùng nhiều nhất: road, market, street, office, cafe, park.
 4. Video chạy xe và giấc mơ.
 5. Phần còn lại.
+
+## 8. Hiện trạng bộ hình (17–18/11/2026, tạo bằng Muse AI)
+
+Đã có đủ và game đã nạp qua `art/manifest.json` (thiếu file nào game tự dùng lại hình emoji):
+
+- Nhân vật: `look-0` … `look-4` cho `bom`, `na`, `muop` (PNG nền trong suốt, đã cắt sát người).
+- Nhà: `home-0` … `home-5` cho cả ba; Na dùng chung cấp 1, 2, 3, 5 với Bờm.
+- Bối cảnh: 30 cảnh trong `bg/`.
+- Nhân vật phụ: 13 hình mục 6 + 3 phản diện trong `npc/`.
+- Video: `ride-1` … `ride-5` và `dream.mp4` cho cả ba (640x546, đúng tỉ lệ khung sân khấu 540x460, không tiếng).
+
+Game ánh xạ 10 mốc đời sang 5 hình: mốc 0 → look-0, mốc 1–2 → look-1, mốc 3–4 → look-2, mốc 5–6 → look-3, mốc 7–9 → look-4.
+
+Khi thêm hoặc bớt file trong `art/`, nhớ cập nhật danh sách trong `art/manifest.json`.
+
+### Phản diện riêng (file `npc/villain-<nhân vật>.png`, emoji 😈 trong mã)
+
+| Nhân vật | Phản diện | Mô tả |
+|---|---|---|
+| Bờm | Thiếu gia Khang | arrogant handsome 26-year-old rich heir, slicked-back undercut, burgundy velvet blazer, black turtleneck, gold watch, showing off a car key, contemptuous smirk |
+| Na | Tiểu thư Trâm Anh | glamorous haughty 24-year-old rich girl, long glossy straight hair, red lipstick, red blazer dress, high heels, arms crossed, plain black handbag, mocking smile |
+| Mướp | Đại ca Sẹo | big fat tough dark grey alley boss cat, one torn ear, scar across one eye, spiked black collar, menacing squint |
+
+### Kinh nghiệm khi tạo bằng Muse
+
+- Mỗi lượt tối đa 4 ảnh hoặc 3 clip (Muse tự làm lại tối đa 6 video mỗi lượt); clip luôn ra 1280x720, 10 giây.
+- Chốt gương mặt trước, rồi tạo **bộ ảnh nhiều góc** (3/4 và nghiêng 90 độ) và đính kèm vào mọi lệnh video; không có ảnh nghiêng thì mặt trong cảnh chạy xe bị sai người.
+- Lệnh video phải ghi rõ: máy quay ngang hông chạy song song, khoảng cách cố định, hướng chạy trái sang phải, xe chiếm bao nhiêu phần khung, từng món trang phục, cảnh nền, và danh sách cấm (biển hiệu, chữ, logo, kính, mũ).
+- Xe hơi luôn bị phóng to gần kín khung; khi đưa vào game phải thu nhỏ và độn nền mờ trên dưới.
+- Không xuống dòng khi dán lệnh vào ô chat của Muse (mỗi lần xuống dòng là gửi đi một tin).
