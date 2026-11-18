@@ -169,3 +169,39 @@ Khi thêm hoặc bớt file trong `art/`, nhớ cập nhật danh sách trong `a
 - Lệnh video phải ghi rõ: máy quay ngang hông chạy song song, khoảng cách cố định, hướng chạy trái sang phải, xe chiếm bao nhiêu phần khung, từng món trang phục, cảnh nền, và danh sách cấm (biển hiệu, chữ, logo, kính, mũ).
 - Xe hơi luôn bị phóng to gần kín khung; khi đưa vào game phải thu nhỏ và độn nền mờ trên dưới.
 - Không xuống dòng khi dán lệnh vào ô chat của Muse (mỗi lần xuống dòng là gửi đi một tin).
+
+## 9. Bản đánh bóng 18/11/2026: âm thanh, pet, cảnh ngủ, hoạt cảnh có hành động
+
+Phần mã nằm ở khối "POLISH LAYER" cuối `game/index.html`.
+
+### File mới (game tự nhận theo `art/manifest.json`)
+
+```
+game/art/<nv>/pet-1.png … pet-5.png        thú cưng của Bờm / ổ nằm của Mướp (nền trong suốt)
+game/art/<nv>/sleep-0.jpg … sleep-5.jpg    nhân vật ngủ trong chỗ ở theo 6 cấp nhà
+game/art/<nv>/act-<buổi>-<cảnh>-<mốc>.mp4  hoạt cảnh có hành động, vd act-2-street-0.mp4 = buổi tối, vỉa hè, mốc đời 0
+game/snd/*.mp3                              nhạc nền theo mood + tiếng động
+```
+
+Tên clip hoạt cảnh lấy từ `ph`, `bg`, `min` của từng mục trong `ACTS`. Việc nào chưa có clip thì game vẫn dùng nền tĩnh + nhân vật.
+
+### Âm thanh
+
+- Nhạc nền lặp theo mood, tự đổi theo tình huống: `day`, `day2`, `rich` (ban ngày theo mốc đời), `night` (ngủ), `love` (hẹn hò), `dream` (giấc mơ VIP), `tense` / `sad` (biến cố), `choice` (ngã rẽ). Nhạc do mã tổng hợp, không dùng bài có bản quyền.
+- Tiếng động lấy từ thư viện SFX của chủ kênh (nhóm sparkle, cash, impact, whoosh).
+- Quà tặng ăn mừng theo mức: 1 xu (ting), 10 xu (tada + cha-ching), 100 xu (tada lớn + pháo giấy), 1000 xu (boom + lấp lánh + rung màn hình).
+- Biến cố: tiếng hồi hộp khi mở, nhịp tim suốt lúc đếm giờ; ngã rẽ: tiếng báo khi mở, tiếng bấm khi khán giả gõ 1 / 2, tiếng đúng / sai khi chốt.
+
+### Đồ áp lên người
+
+Hình nhân vật giờ chọn theo đồ đang mặc: trung bình bậc của tóc, áo, giày, phụ kiện (mèo: bộ lông và vòng cổ), không thấp hơn mốc đời quá một bậc. Món vừa nhận bay vào người, hiện thành thẻ nhỏ dưới chân; đổi hình thì có hiệu ứng loé sáng.
+
+### Gợi ý kết game
+
+Giấc mơ VIP chỉ hiện vào đêm của ngày chia hết cho 3 (ngày 3, 6, 9, 12, 15).
+
+### Ghi chú khi tạo bằng Muse lần này
+
+- Muse chỉ trả ảnh xem trước rộng 498px trong khung chat (trước đó là 1280px); pet đủ nét, cảnh ngủ phải phóng lên nên hơi mềm.
+- Muse từ chối cảnh họp đông người quay lưng ở tiền cảnh và cảnh tiệc có đầm hở vai; đổi sang một mình trong phòng làm việc hoặc trang phục kín đáo thì được.
+- Máy quay của Muse luôn đứng gần hơn yêu cầu; khi đưa vào game cắt giữa khung 846x720 rồi thu về 640x546.

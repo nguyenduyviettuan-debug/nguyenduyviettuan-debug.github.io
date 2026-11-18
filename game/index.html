@@ -1444,8 +1444,13 @@ boot(false);tickHud();life();
   render=function(){
     _render();
     $('#actor').classList.toggle('hasart',!!$('#char img.artch'));
-    if(PK.petShow){const t=dreamOn?5:S.eq.pet,f=`${PK.id}/pet-${t}.png`;if(t&&has(f))$('#pet').innerHTML=`<img alt="" src="${A+f}">`}
+    petSync();
     drawWear()};
+  /* thú cưng của Bờm đi theo mọi nơi; ổ nằm của Mướp chỉ đặt ở nhà */
+  function petSync(){
+    if(!PK.petShow)return; const t=dreamOn?5:S.eq.pet,f=`${PK.id}/pet-${t}.png`;
+    if(!t||!has(f))return;
+    $('#pet').innerHTML=PK.id=='muop'&&base.bg!='home'&&!dreamOn?'':`<img alt="" src="${A+f}">`}
 
   /* ================= NGỦ TRONG PHÒNG + HOẠT CẢNH CÓ HÀNH ĐỘNG ================= */
   const _resetActor=resetActor;
@@ -1458,7 +1463,7 @@ boot(false);tickHud();life();
     const f=actFile();
     if(f&&has(f)){if(vid.dataset.f!=f){vid.dataset.f=f;vid.src=A+f}scene.classList.add('artact');vid.play().catch(()=>{})}}
   const _applyBase=applyBase;
-  applyBase=function(){_applyBase();sceneSync()};
+  applyBase=function(){_applyBase();petSync();sceneSync()};
   window.ART.onReady=()=>{if(!lock&&!story)sceneSync();render()};
 })();
 </script>
