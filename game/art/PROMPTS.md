@@ -205,3 +205,19 @@ Giấc mơ VIP chỉ hiện vào đêm của ngày chia hết cho 3 (ngày 3, 6,
 - Muse chỉ trả ảnh xem trước rộng 498px trong khung chat (trước đó là 1280px); pet đủ nét, cảnh ngủ phải phóng lên nên hơi mềm.
 - Muse từ chối cảnh họp đông người quay lưng ở tiền cảnh và cảnh tiệc có đầm hở vai; đổi sang một mình trong phòng làm việc hoặc trang phục kín đáo thì được.
 - Máy quay của Muse luôn đứng gần hơn yêu cầu; khi đưa vào game cắt giữa khung 846x720 rồi thu về 640x546.
+
+## 10. Nhân vật động nền trong suốt (18/11/2026)
+
+Nhân vật là video nền trong suốt (WebM VP9 alpha) đặt trên bối cảnh tĩnh, nên cảnh không đổi khi nhân vật cử động. Mã nằm ở mục "NHÂN VẬT ĐỘNG" trong khối POLISH LAYER của `game/index.html`.
+
+```
+game/art/<nv>/anim-<hình>-idle.webm   đứng thở, theo từng bộ đồ (hình 0..4)
+game/art/<nv>/anim-<hình>-walk.webm   bước đi tại chỗ, nhìn ngang, mặt hướng sang phải
+game/art/<nv>/gs-<buổi>-<cảnh>-<mốc>.webm  hành động có đạo cụ; có file này thì game không dùng clip toàn cảnh act-*.mp4
+```
+
+- Tạo bằng Muse trên phông xanh #00B140 (nền và sàn liền một mảng, không bóng đổ, máy khoá cứng, 10 giây), đính kèm ảnh mặt chính diện, 3/4, nghiêng và ảnh toàn thân của bộ đồ.
+- Tách nền bằng `gs2.py` (lưu cạnh thư mục ảnh gốc): `gs2.py <clip.mp4> <ra.webm> <pingpong|cycle|plain> [cao] [fps] [số vòng]`. `cycle` dành cho bước đi: ghim người theo đầu, cắt vòng lặp đúng số bước chẵn, in ra `speed_css_px_per_s` để điền vào bảng `WALKV` trong game. Đồ trắng hoặc tóc sáng thì chạy kèm `DESPILL=white`.
+- Clip ngồi mà Muse quay sát (chân chạm mép dưới) được game tự phóng to và neo vào mép dưới khung cảnh.
+- Safari / iPhone không phát được WebM alpha: game tự quay về ảnh tĩnh.
+- Đã có: Bờm đủ 5 bộ đồ (đứng, đi) và 11 hành động. Na và Mướp chưa làm.
