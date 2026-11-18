@@ -234,3 +234,8 @@ game/art/<nv>/pet-<bậc>-idle.webm, pet-<bậc>-walk.webm   thú cưng đứng 
 - `gs2.py` có thêm chế độ: `loop` (lặp xuôi, hoà 10 khung cuối về đầu clip; dùng cho hành động và pet), `once` (phát một lần, tự cắt đoạn đứng yên; biến `MAXS`, `THR` chỉnh điểm cắt), `SOFT=1` (thú cưng lông xám/trắng hắt xanh).
 - Muse hay cắt ngang đùi ở clip ít cử động: thêm câu "cảnh toàn thân cực rộng, máy cách 6 mét, nhân vật chỉ cao 70% khung" thì ra đúng.
 - Danh sách video trong khung chat Muse là danh sách ảo, cuộn ngược (scrollTop âm): phải cuộn quét rồi lọc theo đường dẫn đã tải, nếu không sẽ lấy nhầm clip lượt trước.
+
+## 11. Tương tác live và mảnh ký ức có hình (19/11/2026)
+
+- Sự kiện xoay vòng 3 kiểu, khoảng 45–70 giây một lần (`CFG.eventEvery`): ngã rẽ (bình luận 1/2/3; tặng quà sau khi chọn thì phiếu nặng hơn), biến cố (thả tim, gõ từ khoá `kw` tính x5, tặng quà là cứu ngay), đoán đúng ăn điểm (`GUESS`, đáp án ngẫu nhiên, người đoán trúng được xướng tên). Chuyện đã ra không lặp lại cho tới khi hết danh sách. Kết game có dòng "Cầm lái số phận" (người chọn trúng hướng đi nhiều nhất).
+- Ảnh mảnh ký ức: `game/art/<nv>/clue-1.jpg … clue-6.jpg` (vật chứng, hiện trong bảng báo khi nhặt được) và `clue-0.jpg` (bức ảnh sự thật, nằm dưới 6 ô ghép trong khung 🧩 và hiện ở kết cục bí mật). Tạo bằng Muse, ngang 4:3, tông phim cũ, không chữ đọc được.
