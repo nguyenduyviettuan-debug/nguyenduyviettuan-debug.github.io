@@ -1213,8 +1213,9 @@ boot(false);tickHud();life();
   let HAS=new Set();
   const has=f=>HAS.has(f), scene=$('#scene');
   /* hình theo đồ đang mặc: trung bình bậc tóc/áo/giày/phụ kiện (mèo: bộ lông + vòng cổ), không thấp hơn mốc đời quá 1 bậc */
-  const lookOf=(eq,st,id=PK.id)=>{const e=id=='muop'?(eq.toc+eq.ao)/2:(eq.toc+eq.ao+eq.giay+eq.pk)/4;
-    return Math.max(0,Math.min(4,Math.max(Math.round(e*.8+.001),LOOK[Math.max(0,Math.min(9,st|0))]-1)))};
+  const TIER=[0,1,2,3,4,4];   // bậc món đồ → hình: nhận áo (mèo: bộ lông) bậc nào là mặc lên người ngay bậc đó
+  const lookOf=(eq,st,id=PK.id)=>{const e=id=='muop'?(eq.toc+eq.ao)/2:(eq.toc+eq.ao+eq.giay+eq.pk)/4, main=TIER[id=='muop'?eq.toc:eq.ao]||0;
+    return Math.max(0,Math.min(4,Math.max(main,Math.round(e*.8+.001),LOOK[Math.max(0,Math.min(9,st|0))]-1)))};
   const mk=(tag,id,after)=>{const e=document.createElement(tag);e.id=id;e.className='abs';after.insertAdjacentElement('afterend',e);return e};
   const bgEl=mk('div','artbg',$('#ground'));
   const vid=mk('video','artvid',bgEl), dream=mk('video','artdream',$('#actor'));
@@ -1305,12 +1306,15 @@ boot(false);tickHud();life();
 #actor.newlook #char img.artch{animation:a_new 1.3s ease-out}
 @keyframes a_new{0%{filter:brightness(3) drop-shadow(0 0 22px #fde047);transform:translateX(-50%) scale(1.22)}60%{filter:brightness(1.4) drop-shadow(0 0 16px #fde047);transform:translateX(-50%) scale(.98)}100%{filter:none;transform:translateX(-50%)}}
 /* đồ đang mặc */
-#wear{position:absolute;left:50%;bottom:-34px;transform:translateX(-50%);display:flex;gap:3px;z-index:3;pointer-events:none}
-#wear i{font-style:normal;font-size:15px;line-height:1;width:24px;height:24px;display:grid;place-items:center;border-radius:8px;background:#000a;border:2px solid var(--c)}
-#wear i.new{animation:a_chip .9s}
-@keyframes a_chip{0%{transform:scale(2.4) translateY(-40px);opacity:0}60%{transform:scale(1.3)}100%{transform:none}}
+#wear{position:absolute;inset:0;z-index:3;pointer-events:none}
+#wear i{position:absolute;font-style:normal;font-size:17px;line-height:1;width:28px;height:28px;margin:-14px 0 0 -14px;display:grid;place-items:center;border-radius:50%;background:#000b;border:2px solid var(--c);box-shadow:0 0 8px var(--c)}
+#wear i.toc{left:50%;top:1%}#wear i.ao{left:84%;top:36%}#wear i.pk{left:14%;top:50%}#wear i.giay{left:80%;top:95%}
+#actor.cat #wear i.toc{left:50%;top:40%}#actor.cat #wear i.ao{left:84%;top:62%}#actor.cat #wear i.pk{left:12%;top:94%}#actor.cat #wear i.giay{left:88%;top:94%}
+#wear i.new{animation:a_chip 1s}
+@keyframes a_chip{0%{transform:scale(3.2);opacity:0;filter:brightness(2.5)}40%{transform:scale(1.6);opacity:1}70%{transform:scale(.9)}100%{transform:none}}
+#actor.left #wear{transform:scaleX(-1)}#actor.left #wear i{transform:scaleX(-1)}
 #actor.ride #wear,#scene.artride #wear,#scene.artact #wear,#scene.artsleep #wear,#scene.artdream #wear,#actor.sleep #wear{display:none}
-.itemfly{position:absolute;z-index:7;font-size:64px;line-height:1;pointer-events:none;filter:drop-shadow(0 0 12px #fde047);animation:a_fly .9s cubic-bezier(.4,0,.6,1) forwards}
+.itemfly{position:absolute;z-index:7;font-size:64px;line-height:1;pointer-events:none;filter:drop-shadow(0 0 12px #fde047);animation:a_fly .55s cubic-bezier(.4,0,.6,1) forwards}
 @keyframes a_fly{0%{transform:translate(var(--x0),var(--y0)) scale(1.4) rotate(-20deg);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translate(0,0) scale(.3) rotate(15deg);opacity:0}}
 /* pet bằng ảnh */
 #pet img{height:78px;display:block;filter:drop-shadow(0 6px 5px #0008)}
@@ -1421,22 +1425,21 @@ boot(false);tickHud();life();
   let lastWear='';
   function drawWear(newSlot){
     const key=WEAR.map(s=>S.eq[s]).join('')+PK.id; if(key===lastWear&&!newSlot)return; lastWear=key;
-    wear.innerHTML=WEAR.map(s=>S.eq[s]?`<i class="${s==newSlot?'new':''}" style="--c:${RC[S.eq[s]]}" title="${esc(ITEMS[s].t[S.eq[s]])}">${ITEMS[s].e[S.eq[s]]}</i>`:'').join('')}
+    wear.innerHTML=WEAR.map(s=>S.eq[s]?`<i class="${s}${s==newSlot?' new':''}" style="--c:${RC[S.eq[s]]}" title="${esc(ITEMS[s].t[S.eq[s]])}">${ITEMS[s].e[S.eq[s]]}</i>`:'').join('')}
   function itemFly(emoji){
     const sc=scene.getBoundingClientRect(),ac=$('#actor').getBoundingClientRect(),z=sc.width/540||1;
     const d=document.createElement('div');d.className='abs itemfly';d.textContent=emoji;
     d.style.left=((ac.left-sc.left)/z+45)+'px';d.style.top=((ac.top-sc.top)/z+70)+'px';
     d.style.setProperty('--x0',(250-((ac.left-sc.left)/z+45))+'px');d.style.setProperty('--y0',(-((ac.top-sc.top)/z)-40)+'px');
-    scene.appendChild(d);setTimeout(()=>d.remove(),950)}
+    scene.appendChild(d);setTimeout(()=>d.remove(),600)}
   const _applyRes=applyRes;
   applyRes=function(res,job){
     const was=lookOf(S.eq,S.stage);
     _applyRes(res,job);
     if(res.upg&&WEAR.includes(res.slot)){
-      itemFly(ITEMS[res.slot].e[res.r]);play('whoosh2',.45);
-      setTimeout(()=>{drawWear(res.slot);play('ting',.7);
-        if(lookOf(S.eq,S.stage)!==was){const a=$('#actor');a.classList.remove('newlook');void a.offsetWidth;a.classList.add('newlook');setTimeout(()=>a.classList.remove('newlook'),1400);
-          play('glitter',.85);play('tada',.7,.1);cap(`✨ <b>${esc(S.ch.name)}</b> lột xác với ${esc(ITEMS[res.slot].t[res.r])}!`,2600)}},820)}
+      drawWear(res.slot);itemFly(ITEMS[res.slot].e[res.r]);play('whoosh2',.45);play('ting',.7,.12);
+      if(lookOf(S.eq,S.stage)!==was){const a=$('#actor');a.classList.remove('newlook');void a.offsetWidth;a.classList.add('newlook');setTimeout(()=>a.classList.remove('newlook'),1400);
+        play('glitter',.85,.1);play('tada',.7,.2);cap(`✨ <b>${esc(S.ch.name)}</b> lột xác với ${esc(ITEMS[res.slot].t[res.r])}!`,2600)}}
     else if(res.upg&&res.slot=='pet'){play('pop',.8);play('lunglinh',.6,.1)}};
 
   /* ================= PET BẰNG ẢNH + class hasart ================= */
