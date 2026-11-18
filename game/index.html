@@ -133,7 +133,10 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
 .evc{border-radius:14px;padding:8px 12px;background:linear-gradient(135deg,#7f1d1d,#b91c1c);border:2px solid #fca5a5}
 .evc.choice{background:linear-gradient(135deg,#1e3a8a,#3730a3);border-color:#93c5fd}
 @keyframes evin{from{transform:translateY(30px);opacity:0}}
-.evc h3{font-size:15px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evc h3{font-size:15px;font-weight:900;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.evc.guess{background:linear-gradient(135deg,#065f46,#0f766e);border-color:#5eead4}
+.evc .gw{font-size:11.5px;margin:2px 0 5px;opacity:.9}
+.evc .opts.n3{gap:5px}.evc .opts.n3 .opt{font-size:12px;padding:7px 6px}
 .evc p{font-size:12.5px;margin:2px 0 6px;line-height:1.3}
 .evc .opts{display:flex;gap:8px}
 .evc .opt{flex:1;min-width:0;background:#0006;border-radius:10px;padding:7px 9px;font-size:14px;font-weight:800;position:relative;overflow:hidden;white-space:nowrap}
@@ -266,6 +269,7 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
     <div class="g">
       <button data-a="like">❤️ 10 tim</button><button data-a="cmt">💬 Bình luận</button>
       <button data-a="v1">💬 "1"</button><button data-a="v2">💬 "2"</button>
+      <button data-a="v3">💬 "3"</button><button data-a="kw">💬 Gõ từ khoá cứu</button>
       <button data-a="follow">➕ Follow</button><button data-a="share">↗ Chia sẻ</button>
       <button class="gift" data-a="g1">🎁 Quà 1 xu</button><button class="gift" data-a="g10">🥈 Quà 10 xu</button>
       <button class="gift" data-a="g100">🥇 Quà 100 xu</button><button class="gift" data-a="g1000">💎 Quà 1000 xu</button>
@@ -293,7 +297,7 @@ const CFG={
   stageAt:[0,5e5,3e6,15e6,6e7,2.5e8,1e9,4e9,1.2e10,3e10],
   dupPct:[0,.01,.02,.04,.10,.25],    // đồ trùng: cộng bao nhiêu phần chặng đường lên đời
   upPct:[0,.04,.08,.16,.35,1],       // đồ mới xịn hơn (Huyền Thoại = lên thẳng 1 đời)
-  questPct:.03, eventEvery:[70,110]
+  questPct:.03, eventEvery:[45,70]   // giây giữa hai sự kiện tương tác (biến cố / ngã rẽ / đoán)
 };
 const RN=['','Thường','Khá','Hiếm','Sử Thi','Huyền Thoại'], RC=['#334','var(--r1)','var(--r2)','var(--r3)','var(--r4)','var(--r5)'];
 let STAGES=['Tay trắng','Chạy vặt','Có đồng ra đồng vào','Nhân viên quèn','Trưởng nhóm','Chủ shop','Giám đốc','Đại gia','Triệu phú đô','Tỷ phú'];
@@ -374,7 +378,14 @@ let CRISES=[
  {t:'Cổ phiếu lao dốc không phanh!',bg:'boss',at:['boss','tower'],npc:'📉',sm:1,ok:()=>S.stage>=6},
  {t:'Bạn gái giận vì quên ngày kỷ niệm!',bg:'date',at:['date','cinema','beach','yacht','bar','fair'],npc:'👩',say:'Anh quên hôm nay là ngày gì à?! 😤',ok:()=>S.stage>=3},
  {t:'Hoá đơn bar 200 triệu, quẹt thẻ không qua!',bg:'bar',at:['bar'],npc:'🧾',sm:1},
- {t:'Sóng đánh rơi điện thoại xuống biển!',bg:'beach',at:['beach','yacht'],npc:'🌊',sm:1}];
+ {t:'Sóng đánh rơi điện thoại xuống biển!',bg:'beach',at:['beach','yacht'],npc:'🌊',sm:1},
+ {t:'Nhà trọ bên cạnh cháy, khói tràn sang!',bg:'home',at:['home'],npc:'🔥',sm:1,kw:'chạy đi',ok:()=>S.eq.nha<=2&&base.pose!='sleep'},
+ {t:'Dính bẫy lừa chuyển khoản, sắp mất sạch tiền!',bg:'street',at:['street','cafe','office','road','home'],npc:'📲',sm:1,kw:'báo công an'},
+ {t:'Bị xe quẹt ngã giữa đường!',bg:'road',at:['road'],npc:'🚗',sm:1,kw:'cố lên'},
+ {t:'Mất điện đúng lúc nộp báo cáo cho sếp!',bg:'office',at:['office','boss'],npc:'🔌',sm:1,kw:'sạc pin'},
+ {t:'Đoàn kiểm toán ập vào công ty!',bg:'boss',at:['boss','tower'],npc:'🕵️',say:'Mở hết sổ sách ra!',ok:()=>S.stage>=6},
+ {t:'Ngộ độc vì ăn vỉa hè!',bg:'street',at:['street','fair','market'],npc:'🤢',sm:1,kw:'uống nước'},
+ {t:'Bị giật điện thoại ngay trên tay!',bg:'street',at:['street','park','fair','road'],npc:'🥷',say:'Hề hề… 💨',kw:'bắt cướp'}];
 let CHOICES=[
  {bg:'park',at:['park','home','street','fair'],npc:'🧎',say:'Cậu ơi… cho tôi xin chút gì ăn…',q:'{n} gặp một người ăn xin trên đường.',a:['Cho tiền',{k:2,c:-.02,clue:.25,t:'Ông cụ nhìn {n} rất lâu, như nhận ra điều gì…'}],b:['Lướt qua',{k:-1,c:0,t:'{n} cúi mặt bước nhanh.'}],ok:()=>base.pose!='sleep'},
  {bg:'street',at:['street','market','park','fair'],npc:'👛',sm:1,q:'{n} nhặt được một chiếc ví dày cộp.',a:['Trả lại',{k:2,c:.02,clue:.3,t:'Chủ ví cảm động hậu tạ.'}],b:['Giữ luôn',{k:-2,c:.09,t:'Tiền vào túi, nhưng đêm đó khó ngủ.'}]},
@@ -393,7 +404,22 @@ let CHOICES=[
  {bg:'fair',at:['fair'],npc:'🎯',sm:1,q:'Trò ném vòng treo giải một chiếc xe máy.',a:['Chơi tất tay',{k:0,c:.12,risk:.6,t:'Trúng thật!',tf:'Vòng bị dán keo… mất sạch.'}],b:['Chỉ đứng xem',{k:0,c:.01,t:'Xem người khác thua cũng vui.'}]},
  {bg:'bar',at:['bar','yacht'],npc:'🕴️',say:'Chai này tôi mời. Bàn chuyện làm ăn chứ?',q:'Người lạ mời {n} một phi vụ "nhanh gọn".',a:['Nghe thử',{k:-2,c:.14,risk:.4,t:'Tiền về nhanh thật.',tf:'Hoá ra là một cái bẫy…'}],b:['Từ chối',{k:1,c:.02,clue:.2,t:'Người lạ cười: "Giống hệt cha cậu."'}]},
  {bg:'golf',at:['golf'],npc:'🏌️',say:'Cược một gậy, 1 tỷ nhé?',q:'Đối tác rủ {n} cá một gậy golf.',a:['Cược',{k:-1,c:.14,risk:.5,t:'Một gậy ăn ngay!',tf:'Bóng bay thẳng xuống hồ…'}],b:['Chơi vui thôi',{k:1,c:.02,t:'Thua gậy nhưng được việc.'}]},
- {bg:'beach',at:['beach'],npc:'🧒',say:'Mua giúp con cái vòng ốc đi ạ…',q:'Một đứa bé bán vòng ốc dạo trên bãi biển.',a:['Mua hết',{k:2,c:-.02,luck:.15,t:'Con bé chạy đi khoe mẹ.'}],b:['Lắc đầu',{k:-1,c:0,t:'{n} quay ra nhìn biển.'}]}];
+ {bg:'beach',at:['beach'],npc:'🧒',say:'Mua giúp con cái vòng ốc đi ạ…',q:'Một đứa bé bán vòng ốc dạo trên bãi biển.',a:['Mua hết',{k:2,c:-.02,luck:.15,t:'Con bé chạy đi khoe mẹ.'}],b:['Lắc đầu',{k:-1,c:0,t:'{n} quay ra nhìn biển.'}]},
+ {bg:'street',at:['street','market','road'],npc:'🧑‍🦯',say:'Cậu dắt giúp tôi qua đường với…',q:'Cụ già mù chờ qua đường giữa giờ cao điểm, mà {n} sắp trễ làm.',a:['Dắt cụ qua',{k:2,c:-.02,clue:.2,t:'Cụ nắm tay {n}: "Bàn tay này giống một người tôi quen…"'}],b:['Chạy cho kịp',{k:-1,c:.03,t:'Kịp giờ, nhưng cứ ngoái lại.'}]},
+ {bg:'cafe',at:['cafe','street','pub','home'],npc:'🧔',say:'Có 50 triệu thì mày làm gì?',q:'{n} trúng thưởng 50 triệu. Tiêu thế nào đây?',a:['Gửi về cho mẹ',{k:2,c:.02,t:'Mẹ gọi điện, khóc mà không nói nên lời.'}],b:['Mua xe mới',{k:0,c:.06,t:'Xe mới, đi làm nhanh hẳn.'}],c:['Đầu tư coin',{k:0,c:.18,risk:.55,t:'Coin tăng gấp 5!',tf:'Coin về 0 trong một đêm…'}],ok:()=>S.stage<6},
+ {bg:'office',at:['office','boss'],npc:'👨‍💼',say:'Vào Sài Gòn mở chi nhánh không?',q:'Sếp mời {n} vào Nam mở chi nhánh, lương gấp đôi nhưng phải xa người yêu.',a:['Đi',{k:0,c:.12,t:'Chi nhánh mới chạy như mơ.'}],b:['Ở lại',{k:1,c:.02,t:'Bạn gái ôm chầm lấy {n}.'}],c:['Rủ nàng đi cùng',{k:1,c:.07,risk:.3,t:'Hai đứa cùng nhau gây dựng.',tf:'Nàng không quen chỗ mới, giận cả tháng…'}],ok:()=>S.stage>=3&&S.stage<7},
+ {bg:'road',at:['road'],npc:'🧋',sm:1,q:'Khách đặt 20 cốc trà sữa rồi bom hàng.',a:['Phát cho lũ trẻ',{k:2,c:-.02,t:'Lũ trẻ reo hò, có người quay clip lên mạng.'}],b:['Tự uống hết',{k:0,c:-.01,t:'Mất ngủ ba đêm liền.'}],c:['Bán lại nửa giá',{k:0,c:.02,t:'Gỡ được một nửa.'}],ok:()=>S.stage>=1&&S.stage<=3},
+ {bg:'market',at:['market','street','home'],npc:'👵',say:'Con vác giúp bà bao gạo…',q:'Bà cụ nhờ {n} vác bao gạo lên tầng 5, không có tiền trả.',a:['Vác',{k:2,c:-.01,luck:.15,t:'Bà dúi cho {n} một tờ vé số.'}],b:['Xin lỗi bà',{k:-1,c:0,t:'{n} quay đi.'}],ok:()=>base.pose!='sleep'},
+ {bg:'yacht',at:['yacht','party','bar','tower'],npc:'🤵',say:'Mua đảo không? Giá hữu nghị.',q:'Đại gia rủ {n} góp vốn mua một hòn đảo.',a:['Góp vốn',{k:0,c:.2,risk:.5,t:'Đảo thành khu nghỉ dưỡng hot nhất năm!',tf:'Hoá ra đảo… chỉ có trên giấy.'}],b:['Thôi',{k:0,c:.02,t:'Giữ tiền mua nhà cho mẹ.'}],c:['Xây trường học',{k:3,c:-.04,t:'Báo chí gọi {n} là "đại gia tử tế".'}],ok:()=>S.stage>=7},
+ {bg:'gym',at:['gym','park'],npc:'💪',say:'Uống cái này, một tháng sáu múi!',q:'Có người mời {n} dùng thuốc tăng cơ cấp tốc.',a:['Thử',{k:-1,c:.08,risk:.5,t:'Lên cơ thật!',tf:'Nổi mụn khắp người, phải nghỉ tập.'}],b:['Tập chậm mà chắc',{k:1,c:.02,t:'Tháng sau vẫn có hai múi.'}]},
+ {bg:'pub',at:['pub','cafe','bar'],npc:'🧔',say:'Mày đứng tên giúp tao khoản vay này nhé?',q:'Bạn nối khố nhờ {n} đứng tên vay ngân hàng giúp.',a:['Giúp bạn',{k:1,c:.03,risk:.4,t:'Bạn trả đủ, còn mời một chầu.',tf:'Bạn bỏ trốn, ngân hàng gọi {n} mỗi ngày…'}],b:['Từ chối',{k:0,c:.01,t:'Bạn giận, nhưng {n} ngủ ngon.'}],c:['Cho mượn ít',{k:1,c:-.02,t:'Bạn rưng rưng: "Mày tốt quá."'}]}];
+let GUESS=[   // minigame "đoán đúng ăn điểm": đáp án ngẫu nhiên, ai đoán trúng được xướng tên
+ {npc:'🎁',sm:1,q:'Đoán xem: hộp quà bí ẩn gửi tới {n} có gì?',o:['Cục vàng','Đôi dép tổ ong','Một con mèo'],r:['Một cục vàng nhỏ xíu! {n} cười không khép được miệng.','Đúng là… một đôi dép tổ ong mới tinh 😂','Một chú mèo con nhảy ra, kêu "meo" một tiếng!']},
+ {npc:'📞',sm:1,q:'Đoán xem: ai gọi cho {n} lúc nửa đêm?',o:['Mẹ ở quê','Chủ nợ','Crush'],r:['Mẹ hỏi: "Con ăn cơm chưa?" {n} nghẹn lời.','Chủ nợ… nhầm số. Hú hồn!','Crush nhắn: "Ngủ chưa?" {n} thức tới sáng.']},
+ {npc:'🍜',sm:1,q:'Đoán xem: tối nay {n} ăn gì?',o:['Mì tôm','Phở bò','Buffet hải sản'],r:['Mì tôm, thêm quả trứng là sang rồi.','Phở bò tái chín, nước dùng thơm lừng.','Buffet hải sản! Ăn bù cho cả tháng.']},
+ {npc:'🪙',sm:1,q:'{n} tung đồng xu xem mai có xin nghỉ phép không. Ra mặt nào?',o:['Sấp','Ngửa'],r:['Sấp: mai đi làm như thường, hic.','Ngửa: nghỉ! … nhưng rồi vẫn đi làm vì tiếc lương 😅']},
+ {npc:'⏰',sm:1,q:'Đoán xem: sáng mai {n} dậy lúc mấy giờ?',o:['5 giờ','7 giờ','11 giờ trưa'],r:['5 giờ sáng, chạy bộ ba vòng hồ!','7 giờ, vừa kịp giờ làm.','11 giờ trưa… muộn mất rồi!']},
+ {npc:'🎤',sm:1,q:'Đoán xem: đi karaoke {n} hát bài gì đầu tiên?',o:['Bolero','Rap','Nhạc thiếu nhi'],r:['Bolero não nề, cả phòng vỗ tay.','Rap liên thanh, hết hơi giữa chừng.','"Con cò bé bé"… cả phòng cười lăn.']}];
 let TEASE=['','Có người sắp trả công cho {n} lần đầu tiên…','Cuối tháng túi sẽ không còn rỗng…','Một chiếc thẻ nhân viên đang chờ in tên…','Sắp có người phải báo cáo cho {n}…','Một tấm biển hiệu mang tên {n}…','Chiếc ghế xoay to nhất phòng…','Người ta bắt đầu gọi {n} là "anh Hai"…','Tài khoản bắt đầu tính bằng đô…','Tạp chí đang cần một gương mặt trang bìa…'];
 let CLUES=[
  'Chiếc đồng hồ cũ, mặt sau khắc chữ "L.G". {n} không nhớ ai đã tặng.',
@@ -524,7 +550,7 @@ Object.assign(STORY,{
  roof:{sky:'linear-gradient(#0b1026,#312e81)',gr:'#7c2d12',it:[['🌕',380,330,80],['✨',80,340,36],['✨',220,370,30],['🏘️',60,70,220,.8],['📡',420,80,70]]}});
 const awake=()=>base.pose!='sleep', XE_E=['🦶','🚲','🛵','🏍️','🚗','🏎️'];
 const PACKS={};
-PACKS.bom={id:'bom',kind:'CHÀNG TRAI TAY TRẮNG',top:'Tỷ phú',petShow:1,STAGES,ITEMS,HOME,ACTS,CRISES,CHOICES,TEASE,CLUES,ENDS,SAY,EMO,draw:drawBom,
+PACKS.bom={id:'bom',kind:'CHÀNG TRAI TAY TRẮNG',top:'Tỷ phú',petShow:1,STAGES,ITEMS,HOME,ACTS,CRISES,CHOICES,GUESS,TEASE,CLUES,ENDS,SAY,EMO,draw:drawBom,
  names:['Tèo','Tí','Bờm','Tủn','Còi','Sửu','Đậu','Mít'],
  origins:['shipper chạy đơn 18 tiếng mỗi ngày','sinh viên nợ 7 môn','phụ hồ công trình','người bán vé số dạo','nhân viên rửa bát quán phở','bảo vệ ca đêm'],
  goals:['mua nhà cho mẹ','cưới được crush','trả hết nợ 200 triệu','mở quán phở riêng','đưa bà đi du lịch','chuộc lại mảnh vườn của ba'],
@@ -585,7 +611,13 @@ PACKS.na={id:'na',kind:'CÔ GÁI BÁN HÀNG RONG',top:'Nữ hoàng thời trang'
   {t:'Đối thủ nhái trọn bộ sưu tập!',bg:'atelier',at:['atelier','tower','shop'],npc:'🕵️',say:'Mẫu này giờ là của tôi.',ok:()=>S.stage>=4},
   {t:'Trẹo chân vì giày cao gót!',bg:'mall',at:['mall','park','yoga','fair'],npc:'🩹',sm:1},
   {t:'Sếp bắt gánh chỉ tiêu gấp đôi!',bg:'office',at:['office'],npc:'👩‍💼',say:'Cuối tuần không đủ số thì nghỉ!'},
-  {t:'Người yêu giận vì bận suốt!',bg:'date',at:['date','cinema','beach','yacht','party'],npc:'🧑',say:'Em có còn nhớ tới anh không?',ok:()=>S.stage>=4}],
+  {t:'Người yêu giận vì bận suốt!',bg:'date',at:['date','cinema','beach','yacht','party'],npc:'🧑',say:'Em có còn nhớ tới anh không?',ok:()=>S.stage>=4},
+  {t:'Mưa lớn cuốn trôi cả gánh hàng!',bg:'rain',at:['market','street'],npc:'🌧️',sm:1,kw:'cố lên'},
+  {t:'Phiên live sập ngay lúc chốt đơn!',bg:'live',at:['live'],npc:'📵',sm:1,kw:'lên lại đi'},
+  {t:'Máy may cháy, hàng không kịp giao!',bg:'atelier',at:['atelier','shop','tower'],npc:'🔥',sm:1,kw:'may tiếp',ok:()=>S.stage>=4},
+  {t:'Bị giật túi giữa phố!',bg:'street',at:['street','mall','market','fair'],npc:'🥷',say:'Hề hề… 💨',kw:'bắt cướp'},
+  {t:'Đèn sân khấu tắt phụt khi {n} vừa bước ra!',bg:'runway',at:['runway','party'],npc:'💡',sm:1,kw:'bật đèn'},
+  {t:'Khách quen bóc phốt hàng lỗi trên mạng!',bg:'shop',at:['shop','live','mall'],npc:'🤳',say:'Váy mặc một lần đã bung chỉ!',ok:()=>S.stage>=3}],
  CHOICES:[
   {bg:'park',at:['park','street','market','fair','mall'],npc:'👧',say:'Cô ơi, con đói…',q:'Một đứa bé lem luốc níu áo {n}.',a:['Mua cơm cho bé',{k:2,c:-.02,clue:.25,t:'Con bé dúi vào tay {n} một chiếc cúc áo cũ rất lạ…'}],b:['Gỡ tay ra',{k:-1,c:0,t:'{n} bước đi, không dám ngoái lại.'}],ok:awake},
   {bg:'market',at:['market','street','shop'],npc:'💵',sm:1,q:'Khách đưa thừa một xấp tiền rồi đi mất.',a:['Chạy theo trả',{k:2,c:.02,clue:.2,t:'Khách thành mối ruột.'}],b:['Im lặng',{k:-2,c:.08,t:'Tiền thì có, mà cứ thấy gờn gợn.'}]},
@@ -598,7 +630,19 @@ PACKS.na={id:'na',kind:'CÔ GÁI BÁN HÀNG RONG',top:'Nữ hoàng thời trang'
   {bg:'alley',at:['home'],npc:'🕴️',say:'… Của mẹ cô để lại.',q:'Nửa đêm, có người đặt trước cửa một hộp kim chỉ cũ.',a:['Mở ra',{k:0,c:.01,clue:1,t:'Trong hộp có một bản vẽ ký tên mẹ…'}],b:['Để yên',{k:1,c:.02,t:'Sáng ra chiếc hộp đã biến mất.'}],ok:()=>base.ph==3},
   {bg:'tower',at:['tower','atelier'],npc:'🧵',sm:1,q:'Cố vấn đề nghị chuyển xưởng đi xa, cho 200 thợ may nghỉ việc.',a:['Chuyển xưởng',{k:-3,c:.12,t:'Lãi tăng, xưởng cũ tắt đèn.'}],b:['Giữ thợ',{k:3,c:-.03,t:'Cả xưởng đứng dậy vỗ tay.'}],ok:()=>S.stage>=6},
   {bg:'fair',at:['fair'],npc:'🎯',sm:1,q:'Trò ném vòng treo giải một chiếc xe máy.',a:['Chơi tất tay',{k:0,c:.12,risk:.6,t:'Trúng thật!',tf:'Vòng bị dán keo… mất sạch.'}],b:['Chỉ đứng xem',{k:0,c:.01,t:'Xem người khác thua cũng vui.'}]},
-  {bg:'date',at:['date','beach','cinema'],npc:'🧑',say:'Về gặp ba mẹ anh nhé?',q:'Người yêu rủ ra mắt đúng hôm có show lớn.',a:['Về ra mắt',{k:2,c:-.02,t:'Mẹ chàng nắm tay {n} mãi không buông.'}],b:['Đi diễn',{k:-1,c:.1,t:'Show thành công, tin nhắn chưa ai trả lời.'}],ok:()=>S.stage>=4}],
+  {bg:'date',at:['date','beach','cinema'],npc:'🧑',say:'Về gặp ba mẹ anh nhé?',q:'Người yêu rủ ra mắt đúng hôm có show lớn.',a:['Về ra mắt',{k:2,c:-.02,t:'Mẹ chàng nắm tay {n} mãi không buông.'}],b:['Đi diễn',{k:-1,c:.1,t:'Show thành công, tin nhắn chưa ai trả lời.'}],ok:()=>S.stage>=4},
+  {bg:'live',at:['live','shop'],npc:'📱',sm:1,q:'Phiên live đầu tiên của {n} chỉ có 3 người xem. Làm gì đây?',a:['Vẫn live hết mình',{k:1,c:.06,t:'Ba người ấy thành khách ruột.'}],b:['Mua view ảo',{k:-2,c:.1,risk:.4,t:'Lên xu hướng!',tf:'Bị lộ, khách bỏ đi hết.'}],c:['Rủ hội chị em vào',{k:1,c:.04,t:'Phiên live vui như hội.'}],ok:()=>S.stage<=4},
+  {bg:'mall',at:['mall','shop','party'],npc:'👜',sm:1,q:'Chiếc túi hiệu trong tủ kính giá bằng 3 tháng lương của {n}.',a:['Quẹt thẻ',{k:0,c:-.05,t:'Đẹp thật, nhưng tháng này ăn mì.'}],b:['Chụp ảnh rồi về',{k:0,c:.02,t:'Có thêm động lực kiếm tiền.'}],c:['Tự may một chiếc',{k:1,c:.08,t:'Chiếc túi tự may lên xu hướng!'}]},
+  {bg:'street',at:['street','market'],npc:'👵',say:'Con bán hộ bà gánh rau với…',q:'Bà bán rau bị ốm, nhờ {n} bán hộ, trong khi gánh của mình còn ế.',a:['Bán hộ',{k:2,c:-.01,clue:.2,t:'Bà kể: "Hồi xưa mẹ con may áo cho cả xóm…"'}],b:['Lo gánh mình',{k:-1,c:.03,t:'Bán được thêm vài mớ.'}]},
+  {bg:'date',at:['date','cafe','cinema'],npc:'🧑',say:'Anh có hai vé đi Đà Lạt cuối tuần…',q:'Người theo đuổi rủ {n} đi Đà Lạt đúng tuần ra mắt bộ sưu tập.',a:['Đi',{k:1,c:-.03,t:'Đà Lạt mộng mơ, về muộn hai ngày.'}],b:['Ở lại làm',{k:0,c:.08,t:'Bộ sưu tập ra mắt đúng hẹn.'}],c:['Rủ anh phụ việc',{k:2,c:.05,t:'Anh ấy khâu cúc vụng mà dễ thương.'}],ok:()=>S.stage>=4},
+  {bg:'studio',at:['runway','studio','party'],npc:'📸',say:'Chụp bạo hơn cho ảnh "cháy" nhé?',q:'Nhiếp ảnh gia khuyên {n} chụp ảnh hở bạo để nổi nhanh.',a:['Từ chối',{k:2,c:.02,t:'Bộ ảnh kín đáo mà sang.'}],b:['Chiều theo',{k:-2,c:.12,t:'Ảnh nổ tung mạng, kèm đủ lời ra tiếng vào.'}]},
+  {bg:'office',at:['office'],npc:'👩‍💼',say:'Chị cho em làm trưởng nhóm, nhưng…',q:'Sếp hứa thăng chức nếu {n} làm ngơ chuyện chị ấy ăn chặn lương nhân viên.',a:['Làm ngơ',{k:-2,c:.1,t:'Lên trưởng nhóm, nhưng không ai cười với {n}.'}],b:['Tố cáo',{k:2,c:-.02,t:'Cả phòng được trả đủ lương.'}],c:['Nói riêng với sếp',{k:1,c:.03,risk:.4,t:'Sếp tự trả lại tiền, còn cảm ơn {n}.',tf:'Sếp trù dập {n} cả tháng.'}]}],
+ GUESS:[
+  {npc:'👗',sm:1,q:'Đoán xem: tối nay {n} diện váy màu gì đi tiệc?',o:['Đỏ rực','Trắng tinh','Đen huyền bí'],r:['Váy đỏ rực, cả phòng ngoái lại nhìn.','Váy trắng tinh khôi như thiên thần.','Váy đen huyền bí, sang không chịu được.']},
+  {npc:'📦',sm:1,q:'Đoán xem: món nào bán chạy nhất phiên live hôm nay?',o:['Son môi','Áo dài','Dép tổ ong'],r:['Son môi cháy hàng sau 5 phút!','Áo dài bán hết sạch size.','Dép tổ ong… bất ngờ chưa! 😂']},
+  {npc:'💌',sm:1,q:'Đoán xem: lá thư không tên trước cửa là của ai?',o:['Người theo đuổi','Chủ trọ','Mẹ ở quê'],r:['Thư tình viết tay, nắn nót từng chữ.','Thư… nhắc đóng tiền nhà 😅','Mẹ gửi kèm một bọc ô mai và lời dặn ăn uống.']},
+  {npc:'🧵',sm:1,q:'Đoán xem: {n} may xong chiếc váy này trong bao lâu?',o:['Một đêm','Ba ngày','Một tuần'],r:['Một đêm thức trắng, sáng ra váy đã xong!','Ba ngày tỉ mẩn từng đường kim.','Một tuần, nhưng đẹp như mơ.']},
+  {npc:'🛍️',sm:1,q:'Đoán xem: đi chợ với 100 nghìn, {n} mua được gì?',o:['Một bó hoa','Một con gà','Ba bộ đồ si'],r:['Một bó hoa cúc, cắm đầy phòng trọ.','Một con gà, nấu cháo cho cả tuần.','Ba bộ đồ si, phối lại xinh như hàng hiệu!']}],
  CLUES:['Chiếc cúc áo cũ khâu trong gấu áo của {n}, khắc chữ "M.A".','Tấm ảnh ố vàng: mẹ đứng cạnh một ma-nơ-canh, tay cầm kéo.','Bà hàng xóm kể: "Mẹ mày hồi trẻ vẽ đẹp lắm, rồi tự dưng bỏ nghề."','Bìa tạp chí cũ: bộ sưu tập đoạt giải năm ấy… giống hệt nét vẽ của mẹ.','Một bà chủ thương hiệu lớn tái mặt khi nghe họ của {n}.','Bản vẽ gốc có chữ ký mẹ: bộ sưu tập làm nên đế chế M.A vốn là của mẹ {n}!'],
  ENDS:[
   {id:'secret',e:'👗',t:'Đòi lại tên cho mẹ',d:'Sự thật hé lộ: bộ sưu tập làm nên đế chế M.A là của mẹ {n}, bị cướp công 25 năm trước. {n} đứng trên sân khấu và gọi tên mẹ trước cả khán phòng.',h:'Gom đủ 6 mảnh ký ức'},
@@ -666,7 +710,12 @@ PACKS.muop={id:'muop',kind:'CHÚ MÈO HOANG',top:'Mèo hoàng gia',petShow:1,dra
   {t:'Mèo hàng xóm tới giành lãnh thổ!',bg:'roof',at:['roof','home','park'],npc:'🐈‍⬛',say:'Khu này của tao! 😾',ok:awake},
   {t:'Bác sĩ thú y gọi tên… tiêm phòng!',bg:'spa',at:['spa','sofa'],npc:'💉',sm:1,ok:()=>S.stage>=3},
   {t:'Clip mới bị chê "hết thời"!',bg:'live',at:['live','studio','runway','party'],npc:'📉',sm:1,ok:()=>S.stage>=5},
-  {t:'Đang đi dạo thì lật giỏ, văng ra giữa đường!',bg:'road',at:['road'],npc:'💥',sm:1}],
+  {t:'Đang đi dạo thì lật giỏ, văng ra giữa đường!',bg:'road',at:['road'],npc:'💥',sm:1},
+  {t:'Kẹt trong ống cống, kêu không ai nghe!',bg:'alley',at:['alley','market','home'],npc:'🕳️',sm:1,kw:'meo meo',ok:awake},
+  {t:'Cô chủ đi vắng, quên đổ cơm!',bg:'sofa',at:['sofa','home'],npc:'🍽️',sm:1,kw:'đói quá',ok:()=>S.stage>=3&&awake()},
+  {t:'Ngủ quên trong máy giặt, cô chủ sắp bấm nút!',bg:'sofa',at:['sofa'],npc:'🌀',sm:1,kw:'cứu mèo'},
+  {t:'Diều hâu sà xuống mái nhà!',bg:'roof',at:['roof','park'],npc:'🦅',sm:1,kw:'chạy đi',ok:awake},
+  {t:'Kẻ trộm chó mèo tóm {n} vào bao tải!',bg:'alley',at:['alley','market','park'],npc:'🥷',say:'Con này béo, bán được giá!',kw:'thả ra',ok:()=>S.stage<5&&awake()}],
  CHOICES:[
   {bg:'market',at:['market','alley','home','park'],npc:'👧',say:'Về với tớ nha, tớ chỉ có cơm nguội thôi…',q:'Một cô bé nghèo và một bà chủ giàu cùng muốn nuôi {n}.',a:['Theo cô bé',{k:3,c:.02,clue:.25,t:'Cơm nguội mà ấm lạ.'}],b:['Theo bà chủ',{k:-1,c:.1,t:'Pa-tê ngon, nhưng ít ai vuốt ve.'}],ok:()=>S.stage<5&&awake()},
   {bg:'market',at:['market'],npc:'🐟',sm:1,q:'Một con cá rơi khỏi sạp, không ai để ý.',a:['Ngoạm rồi chạy',{k:-1,c:.08,risk:.4,t:'No một bữa!',tf:'Ăn nguyên cái chổi vào mông…'}],b:['Ngồi nhìn và kêu',{k:1,c:.03,t:'Cô bán cá mủi lòng, cho hẳn cái đầu.'}]},
@@ -676,7 +725,18 @@ PACKS.muop={id:'muop',kind:'CHÚ MÈO HOANG',top:'Mèo hoàng gia',petShow:1,dra
   {bg:'studio',at:['studio','live'],npc:'🤵',say:'Quảng cáo giúp loại hạt này, tiền gấp ba.',q:'Hãng thức ăn kém chất lượng mời {n} làm gương mặt đại diện.',a:['Nhận',{k:-3,c:.14,t:'Tiền về, bụng fan đau.'}],b:['Từ chối',{k:2,c:.02,t:'Fan càng thương.'}]},
   {bg:'sofa',at:['sofa','live','party'],npc:'🤳',say:'Cho chụp một tấm nha!',q:'Fan dí điện thoại vào mặt lúc {n} đang ngủ.',a:['Chiều fan',{k:1,c:.05,t:'Ảnh ngáp lên xu hướng.'}],b:['Cào nhẹ một cái',{k:-1,c:.1,risk:.5,t:'Clip "mèo cào" thành trend!',tf:'Bị bóc phốt "mèo chảnh"…'}]},
   {bg:'alley',at:['home','roof'],npc:'🕴️',say:'Có ai thấy con mèo này không…',q:'Nửa đêm, một người lạ cầm tấm ảnh mèo con đi tìm khắp xóm.',a:['Lại gần',{k:0,c:.01,clue:1,t:'Người ấy sững lại khi thấy chiếc vòng cổ…'}],b:['Trốn kỹ',{k:0,c:.02,t:'Tiếng bước chân xa dần.'}],ok:()=>base.ph==3},
-  {bg:'runway',at:['runway','party'],npc:'🐩',say:'Tránh ra, thảm này của ta!',q:'Một cô chó xù nổi tiếng chen hàng {n} trên thảm đỏ.',a:['Nhường',{k:2,c:.02,t:'Cả hội trường khen {n} lịch sự.'}],b:['Xù lông',{k:-1,c:.12,risk:.5,t:'Ảnh xù lông lên trang nhất!',tf:'Bị mời ra khỏi thảm đỏ…'}]}],
+  {bg:'runway',at:['runway','party'],npc:'🐩',say:'Tránh ra, thảm này của ta!',q:'Một cô chó xù nổi tiếng chen hàng {n} trên thảm đỏ.',a:['Nhường',{k:2,c:.02,t:'Cả hội trường khen {n} lịch sự.'}],b:['Xù lông',{k:-1,c:.12,risk:.5,t:'Ảnh xù lông lên trang nhất!',tf:'Bị mời ra khỏi thảm đỏ…'}]},
+  {bg:'sofa',at:['sofa','home'],npc:'🐟',sm:1,q:'Trên bàn có đĩa cá rán cô chủ để dành đãi khách.',a:['Ăn vụng',{k:-1,c:.06,risk:.5,t:'Ngon tuyệt cú mèo!',tf:'Bị bắt quả tang, cấm vào bếp.'}],b:['Ngồi canh giúp',{k:2,c:.02,t:'Cô chủ thưởng nguyên con cá.'}],c:['Gạt đĩa rơi',{k:-1,c:.1,risk:.4,t:'Clip "mèo phá" lên xu hướng!',tf:'Bị mắng một trận ra trò.'}],ok:()=>S.stage>=3&&awake()},
+  {bg:'roof',at:['roof','alley'],npc:'🐈',say:'Đi phiêu lưu với em không?',q:'Cô mèo trắng nhà bên rủ {n} bỏ nhà đi phiêu lưu.',a:['Đi luôn',{k:0,c:.08,risk:.4,t:'Một chuyến phiêu lưu nhớ đời!',tf:'Lạc đường ba ngày mới mò về.'}],b:['Ở nhà với cô chủ',{k:2,c:.02,t:'Cô chủ ôm {n} ngủ cả đêm.'}],ok:()=>S.stage>=2&&awake()},
+  {bg:'studio',at:['studio','live','runway'],npc:'👑',sm:1,q:'Hãng thời trang bắt {n} đội vương miện nặng 2 kg để chụp ảnh.',a:['Đội',{k:0,c:.12,t:'Bức ảnh để đời!'}],b:['Hất văng',{k:-1,c:.06,risk:.3,t:'Ảnh "mèo nổi loạn" còn hot hơn!',tf:'Hãng huỷ hợp đồng.'}],c:['Đòi đổi thành nơ',{k:1,c:.05,t:'Nơ hồng xinh xỉu.'}],ok:()=>S.stage>=5},
+  {bg:'market',at:['market','alley'],npc:'🐕',say:'Gâu… chia anh nửa miếng xương…',q:'Một chú chó già bị thương xin {n} chia phần ăn.',a:['Chia phần',{k:2,c:-.01,clue:.2,t:'Chú chó dẫn {n} tới góc phố có mùi sơn dầu quen thuộc…'}],b:['Trèo lên mái nhà',{k:-1,c:.02,t:'{n} ngồi trên cao nhìn xuống.'}],ok:awake},
+  {bg:'live',at:['live','sofa'],npc:'🤳',say:'Nhảy trend "mèo lắc hông" đi!',q:'Cô chủ bắt {n} mặc váy nhảy theo nhạc trend.',a:['Nhảy',{k:1,c:.08,t:'Triệu view!'}],b:['Nằm ăn vạ',{k:0,c:.05,t:'Clip "mèo ăn vạ" cũng triệu view 😹'}],c:['Cắn cô chủ',{k:-2,c:.02,t:'Cô chủ dán băng cá nhân, giận cả buổi.'}],ok:()=>S.stage>=4}],
+ GUESS:[
+  {npc:'📦',sm:1,q:'Đoán xem: {n} có chui vừa cái hộp này không?',o:['Vừa khít','Kẹt mông','Không thèm chui'],r:['Vừa khít như đo ni đóng giày!','Kẹt mông, ngoe nguẩy cả phút 😹','Liếc cái hộp một cái rồi đi ngủ.']},
+  {npc:'🐭',sm:1,q:'Đoán xem: {n} có vồ được con chuột không?',o:['Vồ trúng','Vồ hụt','Kết bạn luôn'],r:['Vồ trúng! Chiến lợi phẩm mang về khoe.','Vồ hụt, đâm sầm vào chậu cây.','Hai đứa ngồi chia nhau mẩu bánh mì.']},
+  {npc:'🛏️',sm:1,q:'Đoán xem: hôm nay {n} ngủ ở đâu?',o:['Trên sofa','Trong bồn rửa','Trên đầu cô chủ'],r:['Trên sofa, chiếm trọn chỗ ngồi.','Trong bồn rửa, mát lạnh dễ chịu.','Trên đầu cô chủ, ấm như mũ len.']},
+  {npc:'🔴',sm:1,q:'Đoán xem: {n} đuổi chấm laser được bao lâu?',o:['5 giây','5 phút','Tới khi hết pin'],r:['5 giây rồi nằm ra thở.','5 phút, chạy tung cả nhà.','Tới khi đèn laser hết pin. Bất bại!']},
+  {npc:'🥒',sm:1,q:'Cô chủ đặt quả dưa chuột sau lưng {n}. Đoán phản ứng?',o:['Nhảy dựng','Ngửi rồi ăn','Mặc kệ'],r:['Nhảy dựng cao nửa mét 🙀','Ngửi ngửi… rồi gặm thử.','Ngáp một cái, ngủ tiếp.']}],
  CLUES:['Chiếc vòng cổ cũ của {n} có khắc mờ một số điện thoại.','Một tờ rơi "TÌM MÈO LẠC" đã bạc màu dán trên cột điện.','Bà bán cá bảo: "Con này giống y con mèo của ông hoạ sĩ cuối phố."','Trong giấc mơ, {n} nghe tiếng chuông gió và ngửi thấy mùi sơn dầu.','Một bức tranh trong phòng triển lãm: chú mèo con có đúng cái đốm trên tai {n}.','Số điện thoại trên vòng cổ vẫn đổ chuông… Đầu dây bật khóc: "Tôi tìm nó 3 năm rồi!"'],
  ENDS:[
   {id:'secret',e:'🖼️',t:'Đường về nhà',d:'Ông hoạ sĩ già đã tìm {n} suốt 3 năm. Tiếng chuông gió vang lên, {n} nhảy phốc vào lòng ông: về nhà rồi.',h:'Gom đủ 6 mảnh ký ức'},
@@ -691,7 +751,7 @@ const ORDER=['bom','na','muop'];
 let PK=PACKS.bom;
 function usePack(id){
   PK=PACKS[id]||PACKS.bom;
-  ({STAGES,ITEMS,HOME,ACTS,CRISES,CHOICES,TEASE,CLUES,ENDS,SAY,EMO}=PK);
+  ({STAGES,ITEMS,HOME,ACTS,CRISES,CHOICES,GUESS,TEASE,CLUES,ENDS,SAY,EMO}=PK);
   $('#actor').classList.toggle('cat',PK.id=='muop');
 }
 const SVG0=`<svg viewBox="0 0 200 320" width="100%" height="100%" style="overflow:visible"><defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fef08a"/><stop offset=".5" stop-color="#f59e0b"/><stop offset="1" stop-color="#fde047"/></linearGradient><radialGradient id="aura"><stop offset="0" stop-color="#fde047" stop-opacity=".7"/><stop offset="1" stop-color="#fde047" stop-opacity="0"/></radialGradient></defs>`;
@@ -781,11 +841,12 @@ function pop(){const a=$('#actor');a.classList.remove('pop');void a.offsetWidth;
 const cut=fn=>(cutQ=cutQ.then(fn).catch(e=>console.error(e)));
 
 /* Bờm: đồ mặc chỉ thay khi ĐỦ BỘ -> báo còn thiếu mấy món để lên bộ mới */
+const FULLSET=['bom','na'];   // nhân vật video người thật: gom đủ bộ (tóc, áo, giày, phụ kiện cùng bậc) mới thay cả bộ đồ
 function setNote(slot){
-  if(PK.id!='bom'||!['toc','ao','giay','pk'].includes(slot))return '';
+  if(!FULLSET.includes(PK.id)||!['toc','ao','giay','pk'].includes(slot))return '';
   const T=[0,1,2,3,4,4],SL=['toc','ao','giay','pk'],cur=Math.min(...SL.map(k=>T[S.eq[k]]||0));if(cur>=4)return '';
   const nx=cur+1,got=SL.filter(k=>(T[S.eq[k]]||0)>=nx).length;
-  return got>=4?'':`<br>👕 Gom bộ mới: <b>${got}/4 món</b> (tóc, áo, giày, phụ kiện) là thay đồ`}
+  return got>=4?'':`<br>👕 Gom bộ mới: <b>${got}/4 món</b> (${SL.map(k=>ITEMS[k].n.toLowerCase()).join(', ')}) là thay đồ`}
 async function rideCut(o,n,by){   // lên xe mới: chạy xe cũ một đoạn rồi "đổi đời" sang xe mới
   lock=true;$('#npc').className='abs';rideOn(o);cap(`${ITEMS.xe.e[o]} ${ITEMS.xe.t[o]}… lần cuối cùng!`,1300);await sleep(1300);
   flash();PK.commute===false?sfx.reveal(2):sfx.vroom();shownXe=n;rideOn(n);confetti(30);
@@ -883,9 +944,10 @@ function render(){
 function drawTodo(){
   const h=$('#todoh'),b=$('#todob'),n=esc(S.ch.name);
   if(ev&&ev.type=='crisis'){h.innerHTML=`🚨 CỨU ${n} NGAY!`;
-    b.innerHTML=`<div class="evc"><h3>${esc(ev.d.t)}</h3><p>❤️ Thả tim hoặc 🎁 tặng quà để cứu</p><div class="opts"><div class="opt"><i style="width:${Math.min(100,ev.got/ev.need*100)}%"></i><span>❤️ ${ev.got} / ${ev.need} tim</span></div></div><div class="cd"><i style="width:${ev.left/ev.total*100}%"></i></div></div>`;return}
-  if(ev){const t=ev.v[0]+ev.v[1]||1;h.innerHTML='🔀 BÌNH LUẬN <b>1</b> HOẶC <b>2</b> ĐỂ CHỌN';
-    b.innerHTML=`<div class="evc choice"><h3>${esc(tx(ev.d.q))}</h3><div class="opts"><div class="opt"><i style="width:${ev.v[0]/t*100}%"></i><span>1️⃣ ${esc(ev.d.a[0])} · ${ev.v[0]}</span></div><div class="opt"><i style="width:${ev.v[1]/t*100}%"></i><span>2️⃣ ${esc(ev.d.b[0])} · ${ev.v[1]}</span></div></div><div class="cd"><i style="width:${ev.left/ev.total*100}%"></i></div></div>`;return}
+    b.innerHTML=`<div class="evc"><h3>${esc(tx(ev.d.t))}</h3><p>❤️ Thả tim${ev.d.kw?` · 💬 gõ “<b>${esc(ev.d.kw)}</b>” (x5)`:''} · 🎁 tặng quà là cứu ngay</p><div class="opts"><div class="opt"><i style="width:${Math.min(100,ev.got/ev.need*100)}%"></i><span>❤️ ${Math.round(ev.got)} / ${ev.need}</span></div></div><div class="cd"><i style="width:${ev.left/ev.total*100}%"></i></div></div>`;return}
+  if(ev){const O=ev.opts,t=ev.v.reduce((x,y)=>x+y,0)||1,gs=ev.type=='guess',nums=O.map((_,k)=>`<b>${k+1}</b>`).join(gs?' / ':O.length>2?', ':' HOẶC ');
+    h.innerHTML=gs?`🎯 ĐOÁN ĐÚNG ĂN ĐIỂM · BÌNH LUẬN ${nums}`:`🔀 BÌNH LUẬN ${nums} ĐỂ CHỌN`;
+    b.innerHTML=`<div class="evc choice${gs?' guess':''}"><h3>${esc(tx(ev.d.q))}</h3><p class="gw">${gs?'Ai đoán trúng được xướng tên + cộng điểm ân nhân':'🎁 Tặng quà sau khi chọn = phiếu của bạn nặng gấp bội'}</p><div class="opts${O.length>2?' n3':''}">${O.map((o,k)=>`<div class="opt"><i style="width:${ev.v[k]/t*100}%"></i><span>${['1️⃣','2️⃣','3️⃣'][k]} ${esc(tx(o))} · ${ev.v[k]}</span></div>`).join('')}</div><div class="cd"><i style="width:${ev.left/ev.total*100}%"></i></div></div>`;return}
   const q=S.quest,o=S.omen;
   h.innerHTML='👉 NHIỆM VỤ CẢ PHÒNG';
   b.innerHTML=`<div class="bar" id="qbar"><i style="width:${Math.min(100,q.p/q.n*100)}%"></i><span><u>${q.i}</u>${esc(tx(q.t))}<em>${Math.min(q.p,q.n)}/${q.n}</em></span></div>
@@ -1048,13 +1110,25 @@ function chest(user,coins){
 /* =====================================================================
    NÚT THẮT: biến cố & ngã rẽ, mỗi cái có bối cảnh riêng
    ===================================================================== */
+/* Xoay vòng 3 kiểu tương tác: ngã rẽ (chọn 1/2/3), biến cố (thả tim / gõ từ khoá / tặng quà để cứu), đoán đúng ăn điểm.
+   Chuyện vừa ra thì không lặp lại cho tới khi đã đi hết danh sách. */
+const EV_ROT=['choice','crisis','choice','guess','choice','crisis','guess'];
 function startEvent(){
-  if(ev||S.ended)return; S.evFlip^=1;
-  const ok=L=>L.filter(c=>!c.ok||c.ok()), here=L=>ok(L).filter(c=>c.at.includes(base.bg));
-  let crisis=!!S.evFlip; if(crisis&&!here(CRISES).length&&here(CHOICES).length)crisis=false; else if(!crisis&&!here(CHOICES).length&&here(CRISES).length)crisis=true;
-  const L=crisis?CRISES:CHOICES, d=pick(here(L).length?here(L):ok(L));
-  if(crisis){ev={type:'crisis',d,need:Math.round(40*CFG.scale),got:0,left:25,total:25};sfx.alarm()}
-  else{ev={type:'choice',d,v:[0,0],voters:{},left:20,total:20};sfx.reveal(1)}
+  if(ev||S.ended)return; S.evN=(S.evN||0)+1; S.evSeen=S.evSeen||{};
+  const ok=L=>L.filter(c=>!c.ok||c.ok()), here=L=>ok(L).filter(c=>!c.at||c.at.includes(base.bg));
+  const L0=key=>key=='c'?CRISES:key=='h'?CHOICES:(GUESS||[]);
+  const isNew=(c,key)=>!S.evSeen[key+L0(key).indexOf(c)];
+  // ưu tiên: chuyện CHƯA ra tại chỗ đang đứng → chuyện chưa ra ở nơi khác (đổi cảnh) → chuyện cũ tại chỗ → bất kỳ
+  const choose=key=>{const A=ok(L0(key)),H=here(L0(key)),n=L=>L.filter(c=>isNew(c,key));for(const P of [n(H),n(A),H,A])if(P.length)return pick(P);return null};
+  let type=EV_ROT[S.evN%EV_ROT.length];
+  if(type=='guess'&&!ok(GUESS||[]).length)type='choice';
+  let d,key;
+  if(type=='guess'){key='g';const g=choose(key);d=Object.assign({},g,{at:[base.bg],bg:base.bg,_i:GUESS.indexOf(g)})}
+  else{key=type=='crisis'?'c':'h';const L=L0(key);d=choose(key);if(!d)return;d=Object.assign({},d,{_i:L.indexOf(d)})}
+  S.evSeen[key+d._i]=1; if(Object.keys(S.evSeen).filter(k=>k[0]==key).length>=L0(key).length)for(const k in S.evSeen)if(k[0]==key)delete S.evSeen[k];
+  if(type=='crisis'){ev={type,d,need:Math.round(40*CFG.scale),got:0,left:25,total:25};sfx.alarm()}
+  else if(type=='guess'){ev={type,d,opts:d.o,v:d.o.map(()=>0),voters:{},left:18,total:18};sfx.reveal(1)}
+  else{const R=[d.a,d.b,d.c].filter(Boolean);ev={type,d,opts:R.map(r=>r[0]),res:R,v:R.map(()=>0),voters:{},left:R.length>2?24:20,total:R.length>2?24:20};sfx.reveal(1)}
   cut(()=>storyIn(d)); drawTodo();
 }
 function endEvent(win,hero){
@@ -1062,8 +1136,14 @@ function endEvent(win,hero){
   if(e.type=='crisis'){
     if(win){banner('🦸 THOÁT NẠN!',hero?`<b>${esc(hero)}</b> đã ra tay cứu ${esc(S.ch.name)}!`:`Cả phòng đã cứu ${esc(S.ch.name)}!`,2200,()=>sfx.reveal(3));addProg(.05,'thưởng');if(Math.random()<.2)giveClue();say('Hú hồn… cảm ơn cả nhà!');emote('😮‍💨')}
     else{banner('💥 TOANG RỒI…',`Không ai kịp cứu. ${esc(S.ch.name)} mất một khoản.`,2200,sfx.bad);addProg(-.15);say('Huhu… đời mà.');emote('😭')}
+  }else if(e.type=='guess'){
+    const ans=e.d.ans??(Math.random()*e.opts.length|0), win=Object.keys(e.voters).filter(u=>e.voters[u]-1==ans), n=Object.keys(e.voters).length;
+    win.forEach(u=>credit(u,15)); if(n&&win.length/n>=.5)addProg(.03,'đoán trúng');
+    emote(win.length?'🎯':'😹');
+    banner(`🎯 Đáp án: ${esc(tx(e.opts[ans]))}`,esc(tx(e.d.r[ans]))+'<br>'+(win.length?`<b style="color:#fde047">Đoán trúng:</b> ${win.slice(0,4).map(esc).join(', ')}${win.length>4?` và ${win.length-4} người khác`:''}${n&&win.length/n>=.5?'<br><i style="opacity:.8">Quá nửa phòng đoán trúng → thưởng cả phòng!</i>':''}`:n?'Không ai đoán trúng! 😹':'Không ai đoán… lần sau chơi cùng nhé!'),3600);
   }else{
-    const i=e.v[0]==e.v[1]?(Math.random()*2|0):(e.v[0]>e.v[1]?0:1), o=(i?e.d.b:e.d.a), r=o[1], none=!(e.v[0]+e.v[1]);
+    const mx=Math.max(...e.v), top=e.v.map((x,k)=>x==mx?k:-1).filter(k=>k>=0), i=pick(top), o=e.res[i], r=o[1], none=!e.v.some(x=>x);
+    S.dec=S.dec||{}; for(const u in e.voters)if(e.voters[u]-1==i)S.dec[u]=(S.dec[u]||0)+1;
     let txt=r.t, c=r.c;
     if(r.risk&&Math.random()<r.risk){txt=r.tf;c=-Math.abs(c)}
     if(r.luck&&Math.random()<r.luck){txt+=' Và… TRÚNG ĐỘC ĐẮC!';c=.3}
@@ -1089,11 +1169,12 @@ async function finish(id){
   await sleep(bannerQ.length||bannerBusy?4500:800);
   const key=PK.id+':'+id,e=ENDS.find(x=>x.id==id),un=store.get('ld_ends',[]).map(x=>x.includes(':')?x:'bom:'+x),isNew=!un.includes(key); if(isNew)un.push(key);store.set('ld_ends',un);
   const top=Object.entries(S.contrib).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const dec=Object.entries(S.dec||{}).sort((a,b)=>b[1]-a[1]).slice(0,3);
   const keeps=SLOTS.filter(s=>S.by[s]).sort((a,b)=>S.eq[b]-S.eq[a]).slice(0,3).map(s=>`${ITEMS[s].e[S.eq[s]]} ${ITEMS[s].t[S.eq[s]]} — quà của <b>${esc(S.by[s])}</b>`);
   const thanks=(S.patron?`👑 Người đỡ đầu: <b style="color:#fde047">${esc(S.patron.u)}</b><br>`:'')+keeps.join('<br>');
   const el=$('#ending'); let cd=25;
   el.innerHTML=`<div class="tag">KẾT CỤC ${isNew?'MỚI ĐƯỢC MỞ KHOÁ':''} · ĐỜI #${S.ch.no}</div><div class="big">${e.e}</div><h1>${e.t}</h1><p>${esc(tx(e.d))}</p>
-   <div class="mvp">Thành tích cuối: <b style="color:#fde047">${fm(worth())}</b> · ${S.spins} lượt quay${top.length?'<br>Ân nhân: '+top.map(([u],k)=>'🥇🥈🥉'.slice(k*2,k*2+2)+' '+esc(u)).join(' · '):''}</div>
+   <div class="mvp">Thành tích cuối: <b style="color:#fde047">${fm(worth())}</b> · ${S.spins} lượt quay${top.length?'<br>Ân nhân: '+top.map(([u],k)=>'🥇🥈🥉'.slice(k*2,k*2+2)+' '+esc(u)).join(' · '):''}${dec.length?'<br>🧭 Cầm lái số phận: '+dec.map(([u,v])=>`<b>${esc(u)}</b> (${v} lần chọn trúng hướng đi)`).join(' · '):''}</div>
    ${thanks?`<div class="mvp" style="font-size:13px"><b>Lời tri ân của ${esc(S.ch.name)}</b><br>${thanks}</div>`:''}
    <div class="mvp" style="font-size:12px;padding:4px 14px">Bộ sưu tập kết cục: <b>${un.length}/${ORDER.length*6}</b> (3 nhân vật)</div>
    <div class="gal">${ENDS.map(x=>un.includes(PK.id+':'+x.id)?`<div><u>${x.e}</u>${x.t}</div>`:`<div class="lock"><u>❔</u>${x.h}</div>`).join('')}</div>
@@ -1124,10 +1205,13 @@ function onEvent(e){
   const t=String(e.text||'').trim(); welcome(u);
   if(e.type=='like'){credit(u,n*.1);questHit('like',n,u,'');jarAdd(n);if(ev&&ev.type=='crisis'){ev.got+=n;if(ev.got>=ev.need)endEvent(true)}}
   else if(e.type=='comment'){credit(u,1);questHit('comment',1,u,t);
-    if(ev&&ev.type=='choice'&&(t=='1'||t=='2')&&!ev.voters[u]){ev.voters[u]=1;ev.v[t-1]++}}
+    const k=+t; if(ev&&ev.opts&&k>=1&&k<=ev.opts.length&&!ev.voters[u]){ev.voters[u]=k;ev.v[k-1]++}
+    if(ev&&ev.type=='crisis'&&ev.d.kw&&t.toLowerCase().includes(ev.d.kw)){ev.got+=5;if(ev.got>=ev.need){endEvent(true,u);return render()}}}
   else if(e.type=='follow'||e.type=='share'){credit(u,5);questHit(e.type,1,u,'');Q.push({user:u,min:1});toast(`<b>${esc(u)}</b> ${e.type=='follow'?'đã follow':'đã chia sẻ'} → +1 lượt quay`,2);pump()}
   else if(e.type=='gift'){const coins=Math.max(1,Math.round((+e.coins||1)*n));credit(u,coins*10);S.gifts[u]=(S.gifts[u]||0)+coins;
-    if(ev&&ev.type=='crisis')endEvent(true,u); thank(u,coins); chest(u,coins)}
+    if(ev&&ev.type=='crisis')endEvent(true,u);
+    else if(ev&&ev.type=='choice'&&ev.voters[u]){const w=coins>=1000?60:coins>=100?25:coins>=10?8:3,k=ev.voters[u]-1;ev.v[k]+=w;toast(`🎁 <b>${esc(u)}</b> tiếp sức phiếu ${k+1} <b>+${w}</b>`,coins>=100?4:coins>=10?3:2)}
+    thank(u,coins); chest(u,coins)}
   render();
 }
 window.LiveGame={event:onEvent,state:()=>S,config:CFG,startEvent:()=>startEvent()};
@@ -1140,7 +1224,7 @@ let lastTip=0;
 setInterval(()=>{
   if(!S||!started||S.ended)return; S.t+=.25*ff;
   if(ev){ev.left-=.25; const cd=$('#todob .cd i'); if(cd)cd.style.width=Math.max(0,ev.left/ev.total*100)+'%'; if(ev.left<=0)endEvent(false)}
-  else if(S.t>=S.nextEv&&!bannerBusy&&!lock)startEvent();
+  else if(S.t>=S.nextEv&&!lock&&(!bannerBusy||S.t>=S.nextEv+25))startEvent();   // phòng đông quà liên tục: quá hạn 25 giây thì vẫn chen sự kiện vào
   if(S.t-S.quest.t0>90){newQuest();drawTodo()}
   if(S.t-lastTip>50*ff||S.t<lastTip){lastTip=S.t;if(!lock&&!busy)cap(`👋 Mới vào? ${esc(S.ch.name)} đang là <b>${STAGES[S.stage]}</b>. Thả tim, bình luận hoặc tặng quà để nuôi ${esc(S.ch.name)} thành ${PK.top}!`,5500)}
   maybeEnd();
@@ -1154,12 +1238,12 @@ const NAMES=['mẹ_bỉm_sữa','anh_ba_khía','hoa.hong.den','Tuấn Kiệt','b
 let autoT=null;
 function simAct(a){
   const u=pick(NAMES),E=o=>onEvent(Object.assign({user:u},o));
-  ({like:()=>E({type:'like',count:10}),cmt:()=>E({type:'comment',text:'cố lên'}),v1:()=>E({type:'comment',text:'1'}),v2:()=>E({type:'comment',text:'2'}),
+  ({like:()=>E({type:'like',count:10}),cmt:()=>E({type:'comment',text:'cố lên'}),v1:()=>E({type:'comment',text:'1'}),v2:()=>E({type:'comment',text:'2'}),v3:()=>E({type:'comment',text:'3'}),kw:()=>E({type:'comment',text:ev&&ev.d.kw||'cố lên'}),
     follow:()=>E({type:'follow'}),share:()=>E({type:'share'}),g1:()=>E({type:'gift',coins:1}),g10:()=>E({type:'gift',coins:10}),g100:()=>E({type:'gift',coins:100}),g1000:()=>E({type:'gift',coins:1000}),
     evt:()=>{if(started&&!lock)startEvent()},
     auto:()=>{if(autoT){clearInterval(autoT);autoT=null}else autoT=setInterval(()=>{const x=Math.random(),v=pick(NAMES);
         onEvent({type:'like',user:v,count:1+Math.random()*6|0});
-        if(x<.12)onEvent({type:'comment',user:v,text:pick(['1','2','cố lên','ăn đi','haha','tội ghê'])});
+        if(x<.12)onEvent({type:'comment',user:v,text:pick(['1','2','3','cố lên','ăn đi','haha','tội ghê',ev&&ev.d.kw||'1'])});
         else if(x<.15)onEvent({type:'gift',user:v,coins:1});else if(x<.156)onEvent({type:'gift',user:v,coins:10});
         else if(x<.158)onEvent({type:'gift',user:v,coins:100});else if(x<.1584)onEvent({type:'gift',user:v,coins:1000});else if(x<.168)onEvent({type:'follow',user:v})},400/ff);
       $('#bauto').classList.toggle('on',!!autoT)},
@@ -1220,7 +1304,7 @@ boot(false);tickHud();life();
   const has=f=>HAS.has(f), scene=$('#scene');
   /* hình theo đồ đang mặc: trung bình bậc tóc/áo/giày/phụ kiện (mèo: bộ lông + vòng cổ), không thấp hơn mốc đời quá 1 bậc */
   const TIER=[0,1,2,3,4,4];   // bậc món đồ → hình: nhận áo (mèo: bộ lông) bậc nào là mặc lên người ngay bậc đó
-  const lookOf=(eq,st,id=PK.id)=>{if(id=='bom')return Math.max(0,Math.min(4,Math.min(...['toc','ao','giay','pk'].map(k=>TIER[eq[k]]||0))));   // Bờm: ĐỦ BỘ mới thay - bộ k khi cả tóc, áo, giày, phụ kiện đều đạt bậc k
+  const lookOf=(eq,st,id=PK.id)=>{if(FULLSET.includes(id))return Math.max(0,Math.min(4,Math.min(...['toc','ao','giay','pk'].map(k=>TIER[eq[k]]||0))));   // Bờm: ĐỦ BỘ mới thay - bộ k khi cả tóc, áo, giày, phụ kiện đều đạt bậc k
     const e=id=='muop'?(eq.toc+eq.ao)/2:(eq.toc+eq.ao+eq.giay+eq.pk)/4, main=TIER[id=='muop'?Math.max(eq.toc,eq.ao):Math.max(eq.toc,eq.ao,eq.giay,eq.pk)]||0;   // món mặc được bậc cao nhất → cả bộ đồ bậc đó
     return Math.max(0,Math.min(4,Math.max(main,Math.round(e*.8+.001),LOOK[Math.max(0,Math.min(9,st|0))]-1)))};
   const mk=(tag,id,after)=>{const e=document.createElement(tag);e.id=id;e.className='abs';after.insertAdjacentElement('afterend',e);return e};
@@ -1228,6 +1312,15 @@ boot(false);tickHud();life();
   const vid=mk('video','artvid',bgEl), dream=mk('video','artdream',$('#actor'));
   for(const v of [vid,dream]){v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto'}
   const nimg=document.createElement('img');nimg.id='npcimg';nimg.alt='';$('#npc').appendChild(nimg);
+  /* MẢNH KÝ ỨC CÓ HÌNH: khung 🧩 là ảnh "sự thật" (clue-0.jpg) bị che 6 ô, mỗi mảnh nhặt được mở một ô;
+     khi nhặt mảnh thứ k, bảng thông báo hiện ảnh vật chứng clue-k.jpg */
+  const cimg=document.createElement('img');cimg.id='clueimg';cimg.alt='';$('#photo').prepend(cimg);
+  const _render=render; render=function(){_render();const f=`${PK.id}/clue-0.jpg`,on=has(f);
+    $('#photo').classList.toggle('hasimg',on);if(on){if(cimg.dataset.f!=f){cimg.dataset.f=f;cimg.src=A+f}cimg.style.filter=`blur(${(6-S.clues)*.9}px) sepia(${.5-S.clues*.06})`}};
+  const _giveClue=giveClue; giveClue=function(){const n=S.clues,ok=_giveClue();const f=`${PK.id}/clue-${S.clues}.jpg`;
+    if(ok&&S.clues>n&&has(f)){const last=bannerQ[bannerQ.length-1];if(last&&/MẢNH KÝ ỨC/.test(last.h))last.p=`<img class="cluepic" src="${A+f}" alt="">`+last.p;else{const p=$('#banner p');if(/MẢNH KÝ ỨC/.test($('#banner h2').textContent))p.innerHTML=`<img class="cluepic" src="${A+f}" alt="">`+p.innerHTML}}
+    return ok};
+  const _finish=finish; finish=async function(id){await _finish(id);const f=`${PK.id}/clue-0.jpg`,b=$('#ending .big');if(id=='secret'&&b&&has(f))b.innerHTML=`<img class="cluepic" src="${A+f}" alt="">`};
 
   /* bối cảnh */
   const _setBackdrop=setBackdrop;
@@ -1357,6 +1450,11 @@ boot(false);tickHud();life();
 #how .t4 b{font-size:15px}
 #how .t4 u{font-size:26px;display:block;line-height:1.15}
 #cluetx:empty,#board:empty{display:none}
+#clueimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;transition:filter 1s}
+#photo.hasimg #clueimg{display:block}#photo.hasimg svg{display:none}
+#clue{width:124px}#photo{width:114px;height:86px;margin:0 auto}#cluetx{font-size:9.5px}
+#ending .big .cluepic{display:block;width:300px;height:225px;object-fit:cover;border-radius:12px;margin:0 auto;border:3px solid #fde68a;box-shadow:0 8px 30px #000a}
+#banner .cluepic{display:block;width:230px;height:172px;object-fit:cover;border-radius:10px;margin:2px auto 8px;border:2px solid #fde68a;box-shadow:0 6px 24px #0008}
 #tag small:empty{display:none}
 #info:empty{display:none}
 #qbar{height:54px}#qbar span{font-size:17.5px}
@@ -1465,19 +1563,19 @@ boot(false);tickHud();life();
   onEvent=function(e){
     if(S&&!S.ended&&started){const now=performance.now(),t=String(e.text||'').trim();
       if(e.type=='follow'||e.type=='share')play('notify',.8);
-      else if(e.type=='comment'&&ev&&ev.type=='choice'&&(t=='1'||t=='2')){if(now-lastTap>120){lastTap=now;play('popup',.6,0,t=='1'?1:1.18)}}
+      else if(e.type=='comment'&&ev&&ev.opts&&/^[123]$/.test(t)){if(now-lastTap>120){lastTap=now;play('popup',.6,0,[1,1.18,1.36][t-1])}}
       else if(e.type=='like'&&ev&&ev.type=='crisis'){if(now-lastTap>160){lastTap=now;play('punch',.35,0,1.3)}}
       else if(e.type=='like'||e.type=='comment'){if(now-lastTap>350){lastTap=now;play('pop',.3)}}}
     return _onEvent(e)};
   if(window.LiveGame)window.LiveGame.event=onEvent;
   /* biến cố / ngã rẽ: tiếng khi mở và khi chốt */
   const _startEvent=startEvent;
-  startEvent=function(){const had=ev;_startEvent();if(!had&&ev){if(ev.type=='choice'){play('notify',.9);play('flashback',.5,.2)}else if(SAD.test(ev.d.t||''))play('thunder',.6,.3)}};
+  startEvent=function(){const had=ev;_startEvent();if(!had&&ev){if(ev.type!='crisis'){play('notify',.9);play('flashback',.5,.2)}else if(SAD.test(ev.d.t||''))play('thunder',.6,.3)}};
   if(window.LiveGame)window.LiveGame.startEvent=()=>startEvent();
   const _endEvent=endEvent;
   endEvent=function(win,hero){
     const e=ev,before=S.prog+S.stage; _endEvent(win,hero);
-    if(e&&e.type=='choice'){const k=$('#emote').textContent;play('snap',.9);play(k=='😢'?'wrong':k=='😈'?'dundun':'right',.9,.25);if(k=='😊')play('ting2',.6,.6)}
+    if(e&&e.type!='crisis'){const k=$('#emote').textContent;play('snap',.9);play(k=='😢'?'wrong':k=='😈'?'dundun':'right',.9,.25);if(k=='😊')play('ting2',.6,.6)}
     else if(e&&win){play('right',.8);play('tada',.7,.2)}};
   const _wipe=wipe; wipe=function(fn){play('whoosh1',.3);return _wipe(fn)};
 
@@ -1506,7 +1604,7 @@ boot(false);tickHud();life();
       drawWear(res.slot);itemFly(ITEMS[res.slot].e[res.r]);play('whoosh2',.45);play('ting',.7,.12);
       if(lookOf(S.eq,S.stage)!==was){const a=$('#actor');a.classList.remove('newlook');void a.offsetWidth;a.classList.add('newlook');setTimeout(()=>a.classList.remove('newlook'),1400);
         play('glitter',.85,.1);play('tada',.7,.2);cap(`✨ <b>${esc(S.ch.name)}</b> lột xác với ${esc(ITEMS[res.slot].t[res.r])}!`,2600)}
-      else if(PK.id!='bom')cap(`👕 <b>${esc(S.ch.name)}</b> nhận ${esc(ITEMS[res.slot].t[res.r])}`,1800)}
+      else if(!FULLSET.includes(PK.id))cap(`👕 <b>${esc(S.ch.name)}</b> nhận ${esc(ITEMS[res.slot].t[res.r])}`,1800)}
     else if(res.upg&&res.slot=='pet'){play('pop',.8);play('lunglinh',.6,.1)}};
 
   /* ================= PET BẰNG ẢNH + class hasart ================= */
@@ -1606,7 +1704,7 @@ boot(false);tickHud();life();
       r/=n*255;g/=n*255;b/=n*255;const L=Math.max(.04,.299*r+.587*g+.114*b),br=Math.min(1.06,Math.max(.58,.62+.76*L)),k=c=>(1+.32*(c/L-1))*br;
       set(k(r).toFixed(3),k(g).toFixed(3),k(b).toFixed(3))}catch(e){set(1,1,1)}};im.src=u}
   /* bước đi: chân bước nhanh bao nhiêu thì người trượt ngang bấy nhiêu (px/giây đo từ clip), khỏi trượt chân */
-  const WALKV={'bom-0':140,'bom-1':121,'bom-2':126,'bom-3':125,'bom-4':118};   // theo <nhân vật>-<hình>, đo bằng gs2.py (speed_css_px_per_s)
+  const WALKV={'bom-0':140,'bom-1':121,'bom-2':126,'bom-3':125,'bom-4':118,'na-0':99,'na-1':75,'na-2':104,'na-3':72,'na-4':68};   // theo <nhân vật>-<hình>, đo bằng gs2.py (speed_css_px_per_s)
   const WALKF={'0-walk-s1':130,'0-walk-s2':150,'0-walk-s4':127,'1-walk-s0':106,'1-walk-s2':135,'1-walk-s4':133,'2-walk-s0':134,'2-walk-s1':114,'2-walk-s4':125};   // clip đi theo cặp áo-giày (chỉ Bờm)
   const _walkTo=walkTo; walkTo=function(x,ms,pp){const ac=$('#actor'); if(thxLv)return sleep(400);
     if(ac.classList.contains('hasanim')&&ac.classList.contains('haswalk')){ms=Math.max(350,Math.abs(x-actorX())/(WALKF[(vW.dataset.f||'').replace(/^.*anim-|\.webm$/g,'')]||WALKV[PK.id+'-'+(dreamOn?4:lookOf(S.eq,S.stage))]||130)*1000);try{vW.currentTime=0}catch(e){}}
