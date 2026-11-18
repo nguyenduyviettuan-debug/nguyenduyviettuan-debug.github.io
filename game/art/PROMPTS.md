@@ -239,3 +239,8 @@ game/art/<nv>/pet-<bậc>-idle.webm, pet-<bậc>-walk.webm   thú cưng đứng 
 
 - Sự kiện xoay vòng 3 kiểu, khoảng 45–70 giây một lần (`CFG.eventEvery`): ngã rẽ (bình luận 1/2/3; tặng quà sau khi chọn thì phiếu nặng hơn), biến cố (thả tim, gõ từ khoá `kw` tính x5, tặng quà là cứu ngay), đoán đúng ăn điểm (`GUESS`, đáp án ngẫu nhiên, người đoán trúng được xướng tên). Chuyện đã ra không lặp lại cho tới khi hết danh sách. Kết game có dòng "Cầm lái số phận" (người chọn trúng hướng đi nhiều nhất).
 - Ảnh mảnh ký ức: `game/art/<nv>/clue-1.jpg … clue-6.jpg` (vật chứng, hiện trong bảng báo khi nhặt được) và `clue-0.jpg` (bức ảnh sự thật, nằm dưới 6 ô ghép trong khung 🧩 và hiện ở kết cục bí mật). Tạo bằng Muse, ngang 4:3, tông phim cũ, không chữ đọc được.
+
+## 12. Na động (19/11/2026)
+
+- Na đủ 5 bộ đồ × (đứng, đi, 4 mức cảm ơn) = 30 clip trong `game/art/na/`, tách nền bằng `gs3.py` (cùng quy cách Bờm). Na cũng áp luật đủ bộ (`FULLSET` trong game): tóc, váy áo, giày, túi xách cùng bậc mới thay cả bộ.
+- Kinh nghiệm Muse với Na: ảnh mặt mẫu có nơ hồng / tóc đuôi ngựa hay bị lây sang bộ khác, nên dặn rõ "Ảnh 1-2 chỉ lấy gương mặt" và dùng ảnh nghiêng tóc xõa (`na_goc-4.jpg`) cho các bộ tóc thả. Clip đi bộ với đầm dài phải dặn "xẻ tà phía chân gần máy quay, gấu chạm mắt cá" thì mới thấy bước chân. Lỗi hay gặp: nhân đôi người, tự zoom giữa clip, mặt nhòe khi lau nước mắt (đã bỏ động tác này ở mức 4).

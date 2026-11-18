@@ -841,11 +841,12 @@ function pop(){const a=$('#actor');a.classList.remove('pop');void a.offsetWidth;
 const cut=fn=>(cutQ=cutQ.then(fn).catch(e=>console.error(e)));
 
 /* Bờm: đồ mặc chỉ thay khi ĐỦ BỘ -> báo còn thiếu mấy món để lên bộ mới */
+const FULLSET=['bom','na'];   // nhân vật video người thật: gom đủ bộ (tóc, áo, giày, phụ kiện cùng bậc) mới thay cả bộ đồ
 function setNote(slot){
-  if(PK.id!='bom'||!['toc','ao','giay','pk'].includes(slot))return '';
+  if(!FULLSET.includes(PK.id)||!['toc','ao','giay','pk'].includes(slot))return '';
   const T=[0,1,2,3,4,4],SL=['toc','ao','giay','pk'],cur=Math.min(...SL.map(k=>T[S.eq[k]]||0));if(cur>=4)return '';
   const nx=cur+1,got=SL.filter(k=>(T[S.eq[k]]||0)>=nx).length;
-  return got>=4?'':`<br>👕 Gom bộ mới: <b>${got}/4 món</b> (tóc, áo, giày, phụ kiện) là thay đồ`}
+  return got>=4?'':`<br>👕 Gom bộ mới: <b>${got}/4 món</b> (${SL.map(k=>ITEMS[k].n.toLowerCase()).join(', ')}) là thay đồ`}
 async function rideCut(o,n,by){   // lên xe mới: chạy xe cũ một đoạn rồi "đổi đời" sang xe mới
   lock=true;$('#npc').className='abs';rideOn(o);cap(`${ITEMS.xe.e[o]} ${ITEMS.xe.t[o]}… lần cuối cùng!`,1300);await sleep(1300);
   flash();PK.commute===false?sfx.reveal(2):sfx.vroom();shownXe=n;rideOn(n);confetti(30);
@@ -1303,7 +1304,7 @@ boot(false);tickHud();life();
   const has=f=>HAS.has(f), scene=$('#scene');
   /* hình theo đồ đang mặc: trung bình bậc tóc/áo/giày/phụ kiện (mèo: bộ lông + vòng cổ), không thấp hơn mốc đời quá 1 bậc */
   const TIER=[0,1,2,3,4,4];   // bậc món đồ → hình: nhận áo (mèo: bộ lông) bậc nào là mặc lên người ngay bậc đó
-  const lookOf=(eq,st,id=PK.id)=>{if(id=='bom')return Math.max(0,Math.min(4,Math.min(...['toc','ao','giay','pk'].map(k=>TIER[eq[k]]||0))));   // Bờm: ĐỦ BỘ mới thay - bộ k khi cả tóc, áo, giày, phụ kiện đều đạt bậc k
+  const lookOf=(eq,st,id=PK.id)=>{if(FULLSET.includes(id))return Math.max(0,Math.min(4,Math.min(...['toc','ao','giay','pk'].map(k=>TIER[eq[k]]||0))));   // Bờm: ĐỦ BỘ mới thay - bộ k khi cả tóc, áo, giày, phụ kiện đều đạt bậc k
     const e=id=='muop'?(eq.toc+eq.ao)/2:(eq.toc+eq.ao+eq.giay+eq.pk)/4, main=TIER[id=='muop'?Math.max(eq.toc,eq.ao):Math.max(eq.toc,eq.ao,eq.giay,eq.pk)]||0;   // món mặc được bậc cao nhất → cả bộ đồ bậc đó
     return Math.max(0,Math.min(4,Math.max(main,Math.round(e*.8+.001),LOOK[Math.max(0,Math.min(9,st|0))]-1)))};
   const mk=(tag,id,after)=>{const e=document.createElement(tag);e.id=id;e.className='abs';after.insertAdjacentElement('afterend',e);return e};
@@ -1603,7 +1604,7 @@ boot(false);tickHud();life();
       drawWear(res.slot);itemFly(ITEMS[res.slot].e[res.r]);play('whoosh2',.45);play('ting',.7,.12);
       if(lookOf(S.eq,S.stage)!==was){const a=$('#actor');a.classList.remove('newlook');void a.offsetWidth;a.classList.add('newlook');setTimeout(()=>a.classList.remove('newlook'),1400);
         play('glitter',.85,.1);play('tada',.7,.2);cap(`✨ <b>${esc(S.ch.name)}</b> lột xác với ${esc(ITEMS[res.slot].t[res.r])}!`,2600)}
-      else if(PK.id!='bom')cap(`👕 <b>${esc(S.ch.name)}</b> nhận ${esc(ITEMS[res.slot].t[res.r])}`,1800)}
+      else if(!FULLSET.includes(PK.id))cap(`👕 <b>${esc(S.ch.name)}</b> nhận ${esc(ITEMS[res.slot].t[res.r])}`,1800)}
     else if(res.upg&&res.slot=='pet'){play('pop',.8);play('lunglinh',.6,.1)}};
 
   /* ================= PET BẰNG ẢNH + class hasart ================= */
@@ -1703,7 +1704,7 @@ boot(false);tickHud();life();
       r/=n*255;g/=n*255;b/=n*255;const L=Math.max(.04,.299*r+.587*g+.114*b),br=Math.min(1.06,Math.max(.58,.62+.76*L)),k=c=>(1+.32*(c/L-1))*br;
       set(k(r).toFixed(3),k(g).toFixed(3),k(b).toFixed(3))}catch(e){set(1,1,1)}};im.src=u}
   /* bước đi: chân bước nhanh bao nhiêu thì người trượt ngang bấy nhiêu (px/giây đo từ clip), khỏi trượt chân */
-  const WALKV={'bom-0':140,'bom-1':121,'bom-2':126,'bom-3':125,'bom-4':118};   // theo <nhân vật>-<hình>, đo bằng gs2.py (speed_css_px_per_s)
+  const WALKV={'bom-0':140,'bom-1':121,'bom-2':126,'bom-3':125,'bom-4':118,'na-0':99,'na-1':75,'na-2':104,'na-3':72,'na-4':68};   // theo <nhân vật>-<hình>, đo bằng gs2.py (speed_css_px_per_s)
   const WALKF={'0-walk-s1':130,'0-walk-s2':150,'0-walk-s4':127,'1-walk-s0':106,'1-walk-s2':135,'1-walk-s4':133,'2-walk-s0':134,'2-walk-s1':114,'2-walk-s4':125};   // clip đi theo cặp áo-giày (chỉ Bờm)
   const _walkTo=walkTo; walkTo=function(x,ms,pp){const ac=$('#actor'); if(thxLv)return sleep(400);
     if(ac.classList.contains('hasanim')&&ac.classList.contains('haswalk')){ms=Math.max(350,Math.abs(x-actorX())/(WALKF[(vW.dataset.f||'').replace(/^.*anim-|\.webm$/g,'')]||WALKV[PK.id+'-'+(dreamOn?4:lookOf(S.eq,S.stage))]||130)*1000);try{vW.currentTime=0}catch(e){}}
