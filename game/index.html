@@ -780,6 +780,12 @@ function emote(e,ms=2000){const m=$('#emote');m.textContent=e;m.classList.add('o
 function pop(){const a=$('#actor');a.classList.remove('pop');void a.offsetWidth;a.classList.add('pop');setTimeout(()=>a.classList.remove('pop'),650)}
 const cut=fn=>(cutQ=cutQ.then(fn).catch(e=>console.error(e)));
 
+/* Bờm: đồ mặc chỉ thay khi ĐỦ BỘ -> báo còn thiếu mấy món để lên bộ mới */
+function setNote(slot){
+  if(PK.id!='bom'||!['toc','ao','giay','pk'].includes(slot))return '';
+  const T=[0,1,2,3,4,4],SL=['toc','ao','giay','pk'],cur=Math.min(...SL.map(k=>T[S.eq[k]]||0));if(cur>=4)return '';
+  const nx=cur+1,got=SL.filter(k=>(T[S.eq[k]]||0)>=nx).length;
+  return got>=4?'':`<br>👕 Gom bộ mới: <b>${got}/4 món</b> (tóc, áo, giày, phụ kiện) là thay đồ`}
 async function rideCut(o,n,by){   // lên xe mới: chạy xe cũ một đoạn rồi "đổi đời" sang xe mới
   lock=true;$('#npc').className='abs';rideOn(o);cap(`${ITEMS.xe.e[o]} ${ITEMS.xe.t[o]}… lần cuối cùng!`,1300);await sleep(1300);
   flash();PK.commute===false?sfx.reveal(2):sfx.vroom();shownXe=n;rideOn(n);confetti(30);
@@ -1002,7 +1008,7 @@ async function showChange(res,job,fast){   // cho người xem THẤY món quà 
   if(!res.upg)return; const it=ITEMS[res.slot],by=job.free?'':job.user;
   if(res.slot=='xe'){if(story||fast>1){shownXe=res.r;render()}else await cut(()=>rideCut(res.old,res.r,by))}
   else if(res.slot=='nha'){if(story){}else if(fast>1)setBackdrop('home');else await cut(()=>moveCut(res.old,res.r,by))}
-  else{cap(`✨ ${it.n} mới: <b>${it.t[res.r]}</b>${by?' · quà của <b>'+esc(by)+'</b>':''}`,2600);
+  else{cap(`✨ ${it.n} mới: <b>${it.t[res.r]}</b>${by?' · quà của <b>'+esc(by)+'</b>':''}${setNote(res.slot)}`,2600);
     if(!fast&&!dreamOn){ladder(res.slot);await sleep(2600);if(!dreamOn)ladder()}}
 }
 async function reveal(res,job,fast){
@@ -1214,7 +1220,7 @@ boot(false);tickHud();life();
   const has=f=>HAS.has(f), scene=$('#scene');
   /* hình theo đồ đang mặc: trung bình bậc tóc/áo/giày/phụ kiện (mèo: bộ lông + vòng cổ), không thấp hơn mốc đời quá 1 bậc */
   const TIER=[0,1,2,3,4,4];   // bậc món đồ → hình: nhận áo (mèo: bộ lông) bậc nào là mặc lên người ngay bậc đó
-  const lookOf=(eq,st,id=PK.id)=>{if(id=='bom')return Math.max(0,Math.min(4,TIER[eq.ao]||0));   // Bờm: thân theo đúng món áo; tóc, giày ghép riêng (xem GHÉP TỪNG MÓN)
+  const lookOf=(eq,st,id=PK.id)=>{if(id=='bom')return Math.max(0,Math.min(4,Math.min(...['toc','ao','giay','pk'].map(k=>TIER[eq[k]]||0))));   // Bờm: ĐỦ BỘ mới thay - bộ k khi cả tóc, áo, giày, phụ kiện đều đạt bậc k
     const e=id=='muop'?(eq.toc+eq.ao)/2:(eq.toc+eq.ao+eq.giay+eq.pk)/4, main=TIER[id=='muop'?Math.max(eq.toc,eq.ao):Math.max(eq.toc,eq.ao,eq.giay,eq.pk)]||0;   // món mặc được bậc cao nhất → cả bộ đồ bậc đó
     return Math.max(0,Math.min(4,Math.max(main,Math.round(e*.8+.001),LOOK[Math.max(0,Math.min(9,st|0))]-1)))};
   const mk=(tag,id,after)=>{const e=document.createElement(tag);e.id=id;e.className='abs';after.insertAdjacentElement('afterend',e);return e};
@@ -1500,7 +1506,7 @@ boot(false);tickHud();life();
       drawWear(res.slot);itemFly(ITEMS[res.slot].e[res.r]);play('whoosh2',.45);play('ting',.7,.12);
       if(lookOf(S.eq,S.stage)!==was){const a=$('#actor');a.classList.remove('newlook');void a.offsetWidth;a.classList.add('newlook');setTimeout(()=>a.classList.remove('newlook'),1400);
         play('glitter',.85,.1);play('tada',.7,.2);cap(`✨ <b>${esc(S.ch.name)}</b> lột xác với ${esc(ITEMS[res.slot].t[res.r])}!`,2600)}
-      else cap(`👕 <b>${esc(S.ch.name)}</b> nhận ${esc(ITEMS[res.slot].t[res.r])}`,1800)}
+      else if(PK.id!='bom')cap(`👕 <b>${esc(S.ch.name)}</b> nhận ${esc(ITEMS[res.slot].t[res.r])}`,1800)}
     else if(res.upg&&res.slot=='pet'){play('pop',.8);play('lunglinh',.6,.1)}};
 
   /* ================= PET BẰNG ẢNH + class hasart ================= */
@@ -1613,7 +1619,8 @@ boot(false);tickHud();life();
      Hành động có đạo cụ (gs-*.webm) mặc đồ riêng của hoạt động đó, không ghép. */
   const TIERP=[0,1,2,3,4,4];                                // bậc món đồ (0..5) -> hình (0..4)
   const STYPE=[0,1,2,2,4];                                   // hình giày -> kiểu giày (dép vàng, sneaker trắng, giày da đen, giày lười trắng)
-  const parts=()=>PK.id!='bom'||!canAlpha?null:dreamOn?{h:4,a:4,g:4}:{h:TIERP[S.eq.toc]||0,a:TIERP[S.eq.ao]||0,g:TIERP[S.eq.giay]||0};
+  const MIX=false;   // đã tắt: người dùng chọn 'đủ bộ mới thay' để không lệch; giữ mã để dùng lại nếu cần
+  const parts=()=>!MIX||PK.id!='bom'||!canAlpha?null:dreamOn?{h:4,a:4,g:4}:{h:TIERP[S.eq.toc]||0,a:TIERP[S.eq.ao]||0,g:TIERP[S.eq.giay]||0};
   const CW=540,CH=820;
   const cv=document.createElement('canvas');cv.id='artcv';cv.width=CW;cv.height=CH;anim.appendChild(cv);const cx=cv.getContext('2d');
   const offc=document.createElement('canvas');offc.width=CW;offc.height=CH;const ofx=offc.getContext('2d');
@@ -1641,10 +1648,17 @@ boot(false);tickHud();life();
     const i=fidx(B,tb),dx=Math.round((CW-B.videoWidth)/2),dy=CH-B.videoHeight;
     cx.globalCompositeOperation='source-over';cx.clearRect(0,0,CW,CH);cx.drawImage(B,dx,dy);
     if(swH){const ny=dy+tb.top[i]+tb.neck;cx.globalCompositeOperation='destination-out';cx.fillStyle=grad(cx,ny-3,ny+3,1,0);cx.fillRect(0,0,CW,ny+3)}
-    if(swF){const ay=dy+tb.bot[i]-tb.ank;cx.globalCompositeOperation='destination-out';cx.fillStyle=grad(cx,ay-4,ay+4,0,1);cx.fillRect(0,ay-4,CW,CH-ay+4)}
-    if(swF){const k=fidx(fI,tf),fx=dx+tb.fcx[i]-tf.fcx[k],fy=dy+tb.bot[i]-tf.bot[k],fa=fy+tf.bot[k]-tf.ank;
-      ofx.globalCompositeOperation='source-over';ofx.clearRect(0,0,CW,CH);ofx.drawImage(fI,Math.round(fx),Math.round(fy));
-      ofx.globalCompositeOperation='destination-in';ofx.fillStyle=grad(ofx,fa-4,fa+4,0,1);ofx.fillRect(0,0,CW,CH);
+    if(swF){const ay=Math.round(dy+tb.bot[i]-tb.ank),gap=Math.max(0,Math.round(tb.ank-tf.ank));   // cắt thân đúng miệng giày của nó
+      cx.globalCompositeOperation='destination-out';cx.fillStyle=grad(cx,ay-2,ay+2,0,1);cx.fillRect(0,ay-2,CW,CH-ay+2);
+      if(gap>0){cx.globalCompositeOperation='source-over';cx.drawImage(B,0,ay-dy-10,B.videoWidth,8,dx,ay-10,B.videoWidth,8+gap+3)}}   // giày mới thấp hơn giày cũ: kéo dài ống quần/ống chân xuống cho liền
+    if(swF){   // canh TỪNG bàn chân: tâm ống chân trái/phải của nguồn giày khớp tâm ống chân trái/phải của thân tại đường cắt (sát miệng giày)
+      const k=fidx(fI,tf),fy=Math.round(dy+tb.bot[i]-tf.bot[k]),fa=fy+tf.bot[k]-tf.ank,mid=dx+(tb.lx[i]+tb.rx[i])/2;
+      ofx.globalCompositeOperation='source-over';ofx.clearRect(0,0,CW,CH);
+      for(const sd of [0,1]){const bxk=sd?tb.rx[i]:tb.lx[i],sxk=sd?tf.rx[k]:tf.lx[k],smid=(tf.lx[k]+tf.rx[k])/2,ox=Math.round(dx+bxk-sxk);
+        ofx.save();ofx.beginPath();if(sd)ofx.rect(mid,0,CW-mid,CH);else ofx.rect(0,0,mid,CH);ofx.clip();
+        const sx0=sd?smid:0,sw=sd?fI.videoWidth-smid:smid;   // chỉ lấy nửa trái / nửa phải của clip nguồn
+        ofx.drawImage(fI,sx0,0,sw,fI.videoHeight,ox+sx0,fy,sw,fI.videoHeight);ofx.restore()}
+      ofx.globalCompositeOperation='destination-in';ofx.fillStyle=grad(ofx,fa-2,fa+2,0,1);ofx.fillRect(0,0,CW,CH);
       cx.globalCompositeOperation='source-over';cx.drawImage(offc,0,0)}
     if(swH){const k=fidx(Hs,th),hx=dx+tb.hcx[i]-th.hcx[k],hy=dy+tb.top[i]-th.top[k],hn=hy+th.top[k]+th.neck;
       ofx.globalCompositeOperation='source-over';ofx.clearRect(0,0,CW,CH);ofx.drawImage(Hs,Math.round(hx),Math.round(hy));
