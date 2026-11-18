@@ -1316,6 +1316,24 @@ boot(false);tickHud();life();
 #actor.ride #wear,#scene.artride #wear,#scene.artact #wear,#scene.artsleep #wear,#scene.artdream #wear,#actor.sleep #wear{display:none}
 .itemfly{position:absolute;z-index:7;font-size:64px;line-height:1;pointer-events:none;filter:drop-shadow(0 0 12px #fde047);animation:a_fly .55s cubic-bezier(.4,0,.6,1) forwards}
 @keyframes a_fly{0%{transform:translate(var(--x0),var(--y0)) scale(1.4) rotate(-20deg);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translate(0,0) scale(.3) rotate(15deg);opacity:0}}
+/* nhân vật động (video nền trong suốt) */
+#artanim{position:absolute;inset:0;display:none;pointer-events:none}
+#actor.hasanim #artanim{display:block}
+#actor.hasanim #char{display:none}
+#artanim video{position:absolute;left:50%;bottom:-6px;height:250px;transform:translateX(-50%);display:none;filter:drop-shadow(0 6px 5px #0007)}
+#actor.hasanim #artanim .idle{display:block}
+#actor.hasanim.haswalk.walk #artanim .idle{display:none}
+#actor.hasanim.haswalk.walk #artanim .walk{display:block}
+#actor.hasanim.hasgs #artanim .idle,#actor.hasanim.hasgs #artanim .walk{display:none}
+#actor.hasanim.hasgs #artanim .act{display:block}
+#actor.hasanim.hasgs #wear{display:none}
+#actor.hasanim.jump #artanim,#actor.hasanim.lift #artanim{animation:jump .55s 3}
+#actor.hasanim.pop #artanim{animation:pop .6s}
+#actor.hasanim.newlook #artanim{animation:a_new2 1.2s ease-out}
+@keyframes a_new2{0%{filter:brightness(3) drop-shadow(0 0 22px #fde047);transform:scale(1.2)}100%{filter:none;transform:none}}
+#actor.hasanim.ride #artanim{transform:translateY(-58px) scale(.6)}
+#scene.artride #artanim,#scene.artact #artanim,#scene.artsleep #artanim{display:none!important}
+#actor.cat.hasanim #artanim video{height:150px}
 /* pet bằng ảnh */
 #pet img{height:78px;display:block;filter:drop-shadow(0 6px 5px #0008)}
 #actor.cat #pet{left:-70px}#actor.cat #pet img{height:86px}
@@ -1447,13 +1465,35 @@ boot(false);tickHud();life();
   render=function(){
     _render();
     $('#actor').classList.toggle('hasart',!!$('#char img.artch'));
-    petSync();
+    petSync();animSync();
     drawWear()};
   /* thú cưng của Bờm đi theo mọi nơi; ổ nằm của Mướp chỉ đặt ở nhà */
   function petSync(){
     if(!PK.petShow)return; const t=dreamOn?5:S.eq.pet,f=`${PK.id}/pet-${t}.png`;
     if(!t||!has(f))return;
     $('#pet').innerHTML=PK.id=='muop'&&base.bg!='home'&&!dreamOn?'':`<img alt="" src="${A+f}">`}
+
+
+  /* ================= NHÂN VẬT ĐỘNG: video nền trong suốt đặt trên bối cảnh tĩnh =================
+     art/<nv>/anim-<hình>-idle.webm, anim-<hình>-walk.webm : đứng thở / bước đi theo từng bộ đồ
+     art/<nv>/gs-<buổi>-<cảnh>-<mốc>.webm                  : hành động kèm đạo cụ (ăn mì, bốc vác…) ghép lên nền của game
+     Có clip gs thì dùng nó thay cho clip toàn cảnh act-*.mp4, để bối cảnh không đổi. */
+  const canAlpha=(()=>{const v=document.createElement('video');return !!v.canPlayType&&v.canPlayType('video/webm; codecs="vp9"')!==''&&!/^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent)})();
+  const anim=document.createElement('div');anim.id='artanim';$('#flip').appendChild(anim);
+  const mkv=c=>{const v=document.createElement('video');v.className=c;v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';
+    v.addEventListener('loadedmetadata',()=>{v.style.height=(v.videoHeight*250/480)+'px'});anim.appendChild(v);return v};
+  const vI=mkv('idle'),vW=mkv('walk'),vA=mkv('act');
+  const setV=(v,f)=>{if(v.dataset.f!=f){v.dataset.f=f;v.src=A+f}if(v.paused)v.play().catch(()=>{})};
+  const gsFile=()=>{if(dreamOn||story)return '';const a=ACTS.find(a=>a.ph==base.ph&&a.bg==base.bg&&a.pose!='ride'&&a.pose!='sleep'&&base.label==a.icon+' '+a.label);
+    const f=a?`${PK.id}/gs-${a.ph}-${a.bg}-${a.min}.webm`:'';return f&&has(f)?f:''};
+  function animSync(){
+    const ac=$('#actor'),k=dreamOn?4:lookOf(S.eq,S.stage),fi=`${PK.id}/anim-${k}-idle.webm`,fw=`${PK.id}/anim-${k}-walk.webm`;
+    const on=canAlpha&&has(fi);
+    ac.classList.toggle('hasanim',on); if(!on){ac.classList.remove('haswalk','hasgs');return}
+    setV(vI,fi); const w=has(fw); ac.classList.toggle('haswalk',w); if(w)setV(vW,fw);
+    const g=gsFile(); ac.classList.toggle('hasgs',!!g); if(g)setV(vA,g);else vA.pause();
+  }
+  window.ART.animSync=animSync;window.ART.gsFile=gsFile;
 
   /* ================= NGỦ TRONG PHÒNG + HOẠT CẢNH CÓ HÀNH ĐỘNG ================= */
   const _resetActor=resetActor;
@@ -1464,10 +1504,12 @@ boot(false);tickHud();life();
     if(base.pose=='sleep'){const f=`${PK.id}/sleep-${Math.min(5,S.eq.nha)}.jpg`;
       if(has(f)){bgEl.style.backgroundImage=`url("${A+f}")`;scene.classList.add('art','artsleep')}return}
     const f=actFile();
+    if(canAlpha&&gsFile())return;   // đã có hành động ghép trên nền tĩnh thì không đổi sang clip toàn cảnh
     if(f&&has(f)){if(vid.dataset.f!=f){vid.dataset.f=f;vid.src=A+f}scene.classList.add('artact');vid.play().catch(()=>{})}}
   const _applyBase=applyBase;
-  applyBase=function(){_applyBase();petSync();sceneSync()};
+  applyBase=function(){_applyBase();petSync();sceneSync();animSync()};
   window.ART.onReady=()=>{if(!lock&&!story)sceneSync();render()};
+  const _storyIn=storyIn; storyIn=function(d){const r=_storyIn(d);Promise.resolve(r).then(animSync);return r};
 })();
 </script>
 </body>
