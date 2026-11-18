@@ -1320,7 +1320,11 @@ boot(false);tickHud();life();
 #artanim{position:absolute;inset:0;display:none;pointer-events:none}
 #actor.hasanim #artanim{display:block}
 #actor.hasanim #char{display:none}
-#artanim video{position:absolute;left:50%;bottom:-6px;height:250px;transform:translateX(-50%);display:none;filter:drop-shadow(0 6px 5px #0007)}
+#artanim video{position:absolute;left:50%;bottom:-6px;height:250px;transform:translateX(-50%);display:none;filter:url(#animtone)}
+/* bóng chạm đất của nhân vật động: một vệt rộng mờ + một vệt sẫm sát chân */
+#actor.hasanim::after{bottom:-13px;width:120px;height:24px;margin-left:-60px;background:radial-gradient(closest-side,#000c 0,#0008 35%,#0000 100%);filter:blur(1.5px);animation:none}
+#actor.hasanim.walk::after{animation:none}
+#actor.hasanim.hasgs::after{width:170px;margin-left:-85px}
 #actor.hasanim #artanim .idle{display:block}
 #actor.hasanim.haswalk.walk #artanim .idle{display:none}
 #actor.hasanim.haswalk.walk #artanim .walk{display:block}
@@ -1492,7 +1496,26 @@ boot(false);tickHud();life();
     ac.classList.toggle('hasanim',on); if(!on){ac.classList.remove('haswalk','hasgs');return}
     setV(vI,fi); const w=has(fw); ac.classList.toggle('haswalk',w); if(w)setV(vW,fw);
     const g=gsFile(); ac.classList.toggle('hasgs',!!g); if(g)setV(vA,g);else vA.pause();
+    toneSync();
   }
+  /* hoà màu nhân vật theo bối cảnh: lấy độ sáng + sắc màu vùng nền quanh chỗ đứng rồi chỉnh video cho khớp */
+  document.body.insertAdjacentHTML('beforeend','<svg width="0" height="0" style="position:absolute"><filter id="animtone" color-interpolation-filters="sRGB"><feColorMatrix id="animtoneM" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"/></filter></svg>');
+  let toneUrl='';
+  function toneSync(){
+    const m=/url\("?([^")]+)"?\)/.exec(bgEl.style.backgroundImage||''),u=scene.classList.contains('art')&&m?m[1]:'';
+    if(u==toneUrl)return; toneUrl=u;
+    const set=(r,g,b)=>$('#animtoneM').setAttribute('values',`${r} 0 0 0 0 0 ${g} 0 0 0 0 0 ${b} 0 0 0 0 0 1 0`);
+    if(!u){set(1,1,1);return}
+    const im=new Image();im.onload=()=>{if(toneUrl!=u)return;try{
+      const c=document.createElement('canvas');c.width=32;c.height=28;const x=c.getContext('2d');x.drawImage(im,0,0,32,28);
+      const d=x.getImageData(6,12,20,16).data;let r=0,g=0,b=0,n=d.length/4;for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2]}
+      r/=n*255;g/=n*255;b/=n*255;const L=Math.max(.04,.299*r+.587*g+.114*b),br=Math.min(1.06,Math.max(.58,.62+.76*L)),k=c=>(1+.32*(c/L-1))*br;
+      set(k(r).toFixed(3),k(g).toFixed(3),k(b).toFixed(3))}catch(e){set(1,1,1)}};im.src=u}
+  /* bước đi: chân bước nhanh bao nhiêu thì người trượt ngang bấy nhiêu (px/giây đo từ clip), khỏi trượt chân */
+  const WALKV={bom:140};
+  const _walkTo=walkTo; walkTo=function(x,ms,pp){const ac=$('#actor');
+    if(ac.classList.contains('hasanim')&&ac.classList.contains('haswalk')){ms=Math.max(350,Math.abs(x-actorX())/(WALKV[PK.id]||130)*1000);try{vW.currentTime=0}catch(e){}}
+    return _walkTo(x,ms,pp)};
   window.ART.animSync=animSync;window.ART.gsFile=gsFile;
 
   /* ================= NGỦ TRONG PHÒNG + HOẠT CẢNH CÓ HÀNH ĐỘNG ================= */
