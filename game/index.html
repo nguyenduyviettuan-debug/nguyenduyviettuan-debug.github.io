@@ -1355,7 +1355,10 @@ boot(false);tickHud();life();
     await wipe(()=>{dreamOn=false;scene.classList.remove('artdream');dream.pause();ladder();render();applyBase()});lock=false;
   };
   /* nhân vật phụ: đổi emoji thành ảnh khi có */
-  const NPC={'👨‍💼':'boss','🐕':'dog','🤵':'partner','🧔':'old-friend','🕴️':'stranger','🧎':'beggar','👧':'owner-girl','🐱':'kitten','🐈‍⬛':'rival-cat'};
+  const NPC={'👨‍💼':'boss','🐕':'dog','🤵':'partner','🧔':'old-friend','🕴️':'stranger','🧎':'beggar','👧':'owner-girl','🐱':'kitten','🐈‍⬛':'rival-cat',
+    '👮':'guard','🏃':'thief','🥷':'thief','👩‍💼':'boss-woman','💅':'snob','👭':'friends','🧑‍💼':'supplier','💪':'trainer','🏌️':'golfer','🧒':'kid','👶':'baby',
+    '🤳':'fan','📸':'photographer','🐩':'poodle','🐈':'whitecat','🧑‍🦯':'blindman','🕵️':'auditor'};
+  const NPCH={dog:.62,kitten:.4,'rival-cat':.5,poodle:.5,whitecat:.46,baby:.42,kid:.66,'owner-girl':.68,'villain-muop':.58};   // con vật, trẻ em: thấp hơn người lớn
   function npcFile(e){
     if(e=='😈')return `npc/villain-${PK.id}.png`;
     if(e=='👵')return PK.id=='muop'?'':/vé số/.test($('#npcsay').textContent)?'npc/lottery-granny.png':'npc/landlady.png';
@@ -1364,7 +1367,7 @@ boot(false);tickHud();life();
     return NPC[e]?`npc/${NPC[e]}.png`:'';
   }
   function npcSync(){const n=$('#npc'),f=npcFile($('#npce').textContent);
-    if(f&&has(f)){if(nimg.dataset.f!=f){nimg.dataset.f=f;nimg.src=A+f}if(!n.classList.contains('artn'))n.classList.add('artn')}else if(n.classList.contains('artn'))n.classList.remove('artn')}
+    if(f&&has(f)){if(nimg.dataset.f!=f){nimg.dataset.f=f;nimg.src=A+f;nimg.style.height=((NPCH[f.slice(4,-4)]||1)*100)+'%'}if(!n.classList.contains('artn'))n.classList.add('artn')}else if(n.classList.contains('artn'))n.classList.remove('artn')}
   new MutationObserver(npcSync).observe($('#npc'),{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true});
 
   /* phản diện riêng của từng nhân vật */
@@ -1634,11 +1637,14 @@ boot(false);tickHud();life();
      Có clip gs thì dùng nó thay cho clip toàn cảnh act-*.mp4, để bối cảnh không đổi. */
   const canAlpha=(()=>{const v=document.createElement('video');return !!v.canPlayType&&v.canPlayType('video/webm; codecs="vp9"')!==''&&!/^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent)})();
   const anim=document.createElement('div');anim.id='artanim';$('#flip').appendChild(anim);
+  const GSCUT={'na/gs-1-atelier-5.webm':0,'na/gs-2-street-0.webm':1};
+  const ACTK=1.12;   // cỡ người trong khung cảnh cao 570px (250px × 1.12 ≈ 49% chiều cao cảnh)
   const mkv=c=>{const v=document.createElement('video');v.className=c;v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';
-    v.addEventListener('loadedmetadata',()=>{v.style.height=(v.videoHeight*250/672)+'px'});   // clip đứng cao chuẩn 672px = 250px trong cảnh
+    v.addEventListener('loadedmetadata',()=>{v.style.height=(v.videoHeight*250*ACTK/672)+'px'});   // clip đứng cao chuẩn 672px = 250px × ACTK trong cảnh
     if(c=='act')v.addEventListener('loadeddata',()=>{let cut=false;try{   // người chạm mép dưới clip = cảnh quay cận, bị cắt chân
         const w=Math.max(8,v.videoWidth>>2),h=Math.max(8,v.videoHeight>>2),cv=document.createElement('canvas');cv.width=w;cv.height=h;
         const x=cv.getContext('2d');x.drawImage(v,0,0,w,h);const d=x.getImageData(0,h-2,w,1).data;let n=0;for(let i=3;i<d.length;i+=4)if(d[i]>128)n++;cut=n>w*.06&&v.videoWidth/v.videoHeight>.7}catch(e){}   // người đứng (khung cao hẹp) hụt tí đế giày thì vẫn coi là toàn thân
+        if(GSCUT[v.dataset.f]!=null)cut=!!GSCUT[v.dataset.f];   // chỉ định tay khi máy đoán sai (đế ma-nơ-canh chạm mép, người ngồi mà mép dưới trống)
         v.classList.toggle('cut',cut);animSync()});
     anim.appendChild(v);return v};
   const vI=mkv('idle'),vW=mkv('walk'),vA=mkv('act'),vT=mkv('thx');vT.loop=false;
@@ -1672,7 +1678,9 @@ boot(false);tickHud();life();
     if(lv>thxQ){thxQ=lv;thxQt=now}};
   const _pump=pump; pump=function(){if((thxQ||thxLv)&&!busy){setTimeout(pump,300);return}return _pump()};   // cảm ơn xong mới mở rương
   /* trong lúc cảm ơn: không bước đi, không bắt đầu việc vặt mới */
-  const _idleStep=idleStep; idleStep=async function(){if(thxLv){idleAt=performance.now()+600;return}return _idleStep()};
+  const _idleStep=idleStep; idleStep=async function(){if(thxLv){idleAt=performance.now()+600;return}
+    if($('#actor').classList.contains('hasgs')){if(base.emo&&Math.random()<.6)emote(pick(base.emo),2200);idleAt=performance.now()+rnd(3500,6000);return}   // đang làm việc có đạo cụ (gánh hàng, bưng bún…): đứng tại chỗ, không trượt ngang
+    return _idleStep()};
   const setV=(v,f)=>{if(v.dataset.f!=f){const first=!v.dataset.f;v.dataset.f=f;
       if(first||getComputedStyle(v).display=='none'){v.src=A+f}
       else{anim.classList.add('fade');const done=()=>anim.classList.remove('fade');v.addEventListener('loadeddata',done,{once:true});setTimeout(done,1200);setTimeout(()=>{v.src=A+f;v.play().catch(()=>{})},170)}}   // đổi bộ đồ: mờ dần rồi hiện bộ mới
@@ -1701,8 +1709,53 @@ boot(false);tickHud();life();
     const im=new Image();im.onload=()=>{if(toneUrl!=u)return;try{
       const c=document.createElement('canvas');c.width=32;c.height=28;const x=c.getContext('2d');x.drawImage(im,0,0,32,28);
       const d=x.getImageData(6,12,20,16).data;let r=0,g=0,b=0,n=d.length/4;for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2]}
-      r/=n*255;g/=n*255;b/=n*255;const L=Math.max(.04,.299*r+.587*g+.114*b),br=Math.min(1.06,Math.max(.58,.62+.76*L)),k=c=>(1+.32*(c/L-1))*br;
-      set(k(r).toFixed(3),k(g).toFixed(3),k(b).toFixed(3))}catch(e){set(1,1,1)}};im.src=u}
+      r/=n*255;g/=n*255;b/=n*255;const L=Math.max(.04,.299*r+.587*g+.114*b),br=Math.min(1.02,Math.max(.46,.46+.86*L)),k=c=>(1+.6*(c/L-1))*br;
+      const s=Math.min(1,Math.max(.72,.66+.62*L)),R=k(r),G=k(g),B=k(b),lift=(.035*(1-L)).toFixed(3);   // cảnh tối: bớt bão hoà + nâng nhẹ vùng đen cho hợp không khí cảnh
+      const row=(K,a,b2,c2)=>[a,b2,c2].map(x=>(x*K).toFixed(3)).join(' ');
+      $('#animtoneM').setAttribute('values',`${row(R,.213+.787*s,.715-.715*s,.072-.072*s)} 0 ${lift} ${row(G,.213-.213*s,.715+.285*s,.072-.072*s)} 0 ${lift} ${row(B,.213-.213*s,.715-.715*s,.072+.928*s)} 0 ${lift} 0 0 0 1 0`)}catch(e){set(1,1,1)}};im.src=u}
+  /* ================= HOÀ NHÂN VẬT VÀO CẢNH =================
+     Bóng đổ thật: vẽ lại đúng dáng người của khung hình đang chiếu (đen, nhoè, đổ theo hướng nắng của từng cảnh).
+     Nền ướt / bóng loáng: thêm ảnh phản chiếu mờ dưới chân. dx = bóng ngả sang phải (+) / trái (-),
+     fw = 1 khi nguồn sáng ở phía sau (ngược sáng) nên bóng đổ về phía người xem, kèm viền sáng nhẹ quanh người. */
+  const LIGHT={alley:{dx:.8},atelier:{dx:.7},bar:{dx:0,len:.6},beach:{dx:-.3,fw:1},boss:{dx:0,fw:1,rf:.14},cafe:{dx:-.5},cinema:{dx:0,fw:1},
+    date:{dx:.3},fair:{dx:-.4,fw:1},golf:{dx:.5},gym:{dx:0,fw:1,rf:.08},live:{dx:-.6},mall:{dx:0,fw:1,rf:.16},market:{dx:.4},office:{dx:0,fw:1,rf:.08},
+    park:{dx:0,fw:1},party:{dx:0,fw:1,rf:.12},pub:{dx:.3},rain:{dx:0,fw:1,rf:.26},roof:{dx:-.5,fw:1},runway:{dx:0,fw:1,rf:.1},shop:{dx:.4},
+    sofa:{dx:-.7},spa:{dx:.7},street:{dx:.4},studio:{dx:0,len:.5,rf:.05},tower:{dx:-.4,fw:1},yacht:{dx:-.3,fw:1},yoga:{dx:0,fw:1,rf:.06},home:{dx:.5}};
+  const lightNow=()=>{const m=/art\/(?:bg\/([a-z]+)|[a-z]+\/(home)-\d)\.jpg/.exec(bgEl.style.backgroundImage||'');return LIGHT[m&&(m[1]||m[2])]||LIGHT.home};
+  const shc=document.createElement('canvas');shc.id='castsh';shc.width=600;shc.height=320;$('#actor').prepend(shc);const shx=shc.getContext('2d');
+  const grain=document.createElement('div');grain.id='grain';scene.appendChild(grain);
+  (()=>{const c=document.createElement('canvas');c.width=c.height=160;const x=c.getContext('2d'),d=x.createImageData(160,160);
+    for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255|0;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}x.putImageData(d,0,0);grain.style.backgroundImage=`url(${c.toDataURL()})`})();
+  let shOn=false,lastFp=-1;
+  /* khoảng trống trong suốt dưới đế giày của từng clip (tỉ lệ theo chiều cao clip), đo một lần trên khung đầu */
+  const FOOT={},fpc=document.createElement('canvas'),fpx=fpc.getContext('2d',{willReadFrequently:true});
+  const footPad=v=>{const f=v.dataset.f||v.currentSrc;if(FOOT[f]!=null)return FOOT[f];
+    try{const W=Math.max(8,v.videoWidth>>2),H=Math.max(8,v.videoHeight>>2);fpc.width=W;fpc.height=H;fpx.clearRect(0,0,W,H);fpx.drawImage(v,0,0,W,H);
+      const d=fpx.getImageData(0,0,W,H).data;let y=H-1;for(;y>H*.6;y--){let n=0;for(let x=0;x<W;x++)if(d[(y*W+x)*4+3]>140)n++;if(n>=2)break}
+      FOOT[f]=(H-1-y)/H}catch(e){FOOT[f]=0}return FOOT[f]};
+  function shadowDraw(){
+    requestAnimationFrame(shadowDraw);
+    const ac=$('#actor'),ok=ac.classList.contains('hasanim')&&scene.classList.contains('art')&&!ac.classList.contains('gscut')&&!ac.classList.contains('ride')&&!ac.classList.contains('sleep')
+      &&!scene.classList.contains('artride')&&!scene.classList.contains('artact')&&!scene.classList.contains('artsleep')&&!scene.classList.contains('artdream');
+    let v=null; if(ok)for(const c of ['thx','act','walk','idle']){const e=anim.querySelector('video.'+c);if(e&&e.readyState>=2&&getComputedStyle(e).display!='none'){v=e;break}}
+    if(!v){if(shOn){shx.clearRect(0,0,600,320);shOn=false}return}
+    const L=lightNow(),h=parseFloat(v.style.height)||250,w=h*v.videoWidth/v.videoHeight,flip=/matrix\(-1/.test(getComputedStyle($('#flip')).transform);
+    const fp=footPad(v)*h; if(Math.abs(fp-lastFp)>.5){lastFp=fp;ac.style.setProperty('--foot',fp.toFixed(1)+'px')}
+    const lift=parseFloat(getComputedStyle(anim).transform.split(',')[5])||0;   // nhảy lên: bóng nhạt và nhỏ lại
+    shx.setTransform(1,0,0,1,0,0);shx.clearRect(0,0,600,320);shOn=true;
+    const draw=()=>{if(flip){shx.scale(-1,1)}shx.drawImage(v,-w/2,-h+fp,w,h)};   // đế giày (không phải mép clip) đặt đúng tâm bóng
+    if(L.rf){   // phản chiếu trên nền bóng/ướt
+      shx.save();shx.translate(300,160);shx.scale(1,-1);shx.globalAlpha=L.rf;shx.filter='blur(1.5px)';draw();shx.restore();
+      const g=shx.createLinearGradient(0,160,0,160+h*.5);g.addColorStop(0,'#000');g.addColorStop(1,'#0000');
+      shx.save();shx.globalCompositeOperation='destination-in';shx.fillStyle=g;shx.fillRect(0,0,600,320);shx.restore()}
+    const fw=L.fw&&!L.rf?1:0,len=(L.len||1)*(L.rf?.45:1),up=Math.min(1,Math.max(0,-lift/40));
+    shx.save();shx.translate(300,160);shx.globalAlpha=(fw?.4:.5)*(1-.6*up);shx.filter=`brightness(0) blur(${4+3*up}px)`;
+    shx.transform(1,0,-L.dx*.55*len,fw?-.2*len:.3*len,0,0);draw();shx.restore();
+  }
+  requestAnimationFrame(shadowDraw);
+  const rainfx=document.createElement('div');rainfx.id='rainfx';scene.appendChild(rainfx);
+  const rimSync=()=>{const L=lightNow();$('#actor').classList.toggle('backlit',!!L.fw);scene.classList.toggle('raining',/bg\/rain\.jpg/.test(bgEl.style.backgroundImage||''))};
+  const _toneSync=toneSync; toneSync=function(){_toneSync();rimSync()};
   /* bước đi: chân bước nhanh bao nhiêu thì người trượt ngang bấy nhiêu (px/giây đo từ clip), khỏi trượt chân */
   const WALKV={'bom-0':140,'bom-1':121,'bom-2':126,'bom-3':125,'bom-4':118,'na-0':99,'na-1':75,'na-2':104,'na-3':72,'na-4':68};   // theo <nhân vật>-<hình>, đo bằng gs2.py (speed_css_px_per_s)
   const WALKF={'0-walk-s1':130,'0-walk-s2':150,'0-walk-s4':127,'1-walk-s0':106,'1-walk-s2':135,'1-walk-s4':133,'2-walk-s0':134,'2-walk-s1':114,'2-walk-s4':125};   // clip đi theo cặp áo-giày (chỉ Bờm)
@@ -1780,8 +1833,57 @@ boot(false);tickHud();life();
   const _applyBase=applyBase;
   applyBase=function(){if(thxLv){thxLv=0;clearTimeout(thxT);$('#actor').classList.remove('thx');vT.pause()}_applyBase();petSync();sceneSync();animSync()};
   window.ART.onReady=()=>{if(!lock&&!story)sceneSync();render()};
-  const _storyIn=storyIn; storyIn=function(d){const r=_storyIn(d);Promise.resolve(r).then(animSync);return r};
+  const _storyIn=storyIn; storyIn=function(d){
+    if(scene.classList.contains('artsleep')||scene.classList.contains('artact'))d=Object.assign({},d,{at:[]});   // đang chiếu ảnh ngủ / clip toàn cảnh: phải đổi hẳn nền, không giữ ảnh cũ sau lưng nhân vật
+    const r=_storyIn(d);Promise.resolve(r).then(animSync);return r};
 })();
 </script>
+<!-- =====================================================================
+     REAL LAYER 19/11/2026: khung cảnh lớn hơn, giao diện gọn, nhân vật hoà vào cảnh
+     ===================================================================== -->
+<style>
+/* bố cục mới: cảnh 570px (trước 460), ô đồ gọn một hàng thấp, khung việc cần làm chỉ một lời kêu gọi */
+#scene,#gacha{height:570px}
+#slots{top:670px;height:46px;padding:4px 8px;gap:4px}
+.slot{padding-top:1px;border-radius:9px}.slot .e{font-size:19px;line-height:1.15}.slot .l{font-size:8.5px}.slot .nx{font-size:10px;top:-5px}
+#todo{top:716px;height:106px;padding:6px 12px}
+#todoh{font-size:12.5px;margin-bottom:4px}
+#qbar{height:44px}#qbar span{font-size:15.5px}#qbar span u{font-size:21px}
+#jbar{height:20px;margin-top:5px}#jbar span{font-size:11.5px}
+#info{font-size:11px;margin-top:4px}
+.evc{padding:6px 10px}.evc h3{font-size:14px}.evc .gw,.evc p{font-size:11px;margin:1px 0 4px}.evc .opt{padding:5px 8px;font-size:13px}.evc .cd{margin-top:5px;height:4px}
+#todo{height:126px}
+#how{top:842px;height:118px;padding:6px 12px}
+#how .t3{display:none}#how h5{margin-top:2px}
+#how h5::after{content:' · ➕ Follow / chia sẻ = 1 lượt quay';color:#cbd5e1;font-weight:700}
+#npc.artn::after{content:'';position:absolute;right:10%;width:80%;bottom:-14px;height:16px;background:radial-gradient(closest-side,#000c,#0000);z-index:-1}
+#how .t3 div{font-size:11.5px;padding:4px 4px}#how .t3 b{font-size:12px}
+#how h5{font-size:11.5px;margin:5px 0 4px}
+#how .t4 div{padding:4px 4px 5px;font-size:11px}#how .t4 u{font-size:21px}#how .t4 b{font-size:14px}
+/* sắc trời theo giờ phủ lên cả nhân vật (trước chỉ phủ nền) */
+#shade{z-index:3}
+/* hạt phim chung cho cả cảnh: ảnh nền và nhân vật cùng một "chất ảnh" */
+#grain{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.075;mix-blend-mode:overlay;background-size:160px;animation:grain .5s steps(4) infinite;display:none}
+#scene.art #grain{display:block}
+#rainfx{position:absolute;inset:0;z-index:3;pointer-events:none;display:none;opacity:.32;background:repeating-linear-gradient(103deg,#0000 0 9px,#cfe3ff55 9px 10px,#0000 10px 23px);background-size:120px 120px;animation:rainf .35s linear infinite}
+#scene.art.raining #rainfx{display:block}
+@keyframes rainf{to{background-position:-26px 120px}}
+@keyframes grain{25%{background-position:-40px 30px}50%{background-position:60px -50px}75%{background-position:-70px -20px}}
+/* nhân vật: bớt "nét căng" so với ảnh nền, có bóng đổ thật từ canvas */
+#artanim video{filter:url(#animtone) blur(.35px)}
+#actor.backlit #artanim video{filter:url(#animtone) blur(.35px) drop-shadow(0 0 1.5px rgba(255,236,210,.55))}
+#castsh{position:absolute;left:-225px;bottom:-166px;width:600px;height:320px;pointer-events:none;z-index:-1}
+#actor.hasanim::after{width:96px;margin-left:-48px;height:14px;bottom:calc(var(--foot,0px) - 13px);background:radial-gradient(closest-side,#000e 0,#000a 40%,#0000 100%)}
+#castsh{transform:translateY(0)}
+#actor:not(.hasanim) #castsh{display:none}
+/* nhân vật phụ: cùng cỡ người và cùng chỉnh màu với nhân vật chính */
+#npc.artn{width:146px;height:264px}#npc.artn.sm{height:212px}
+#npcimg{filter:url(#animtone) blur(.3px) drop-shadow(0 8px 6px #0008)}
+/* vật/sự việc chưa có ảnh thật (lửa, điện thoại, hộp quà…): hiện như biểu tượng trong huy hiệu tròn, không đứng trơ giữa cảnh */
+#npc.on:not(.artn){bottom:250px;right:40px;font-size:0}
+#npc.on:not(.artn) #npce{display:grid;place-items:center;width:104px;height:104px;border-radius:50%;font-size:58px;line-height:1;background:radial-gradient(circle at 35% 30%,#ffffff40,#0b102099 70%);border:3px solid #fde68acc;box-shadow:0 0 0 6px #0004,0 0 34px #fde04766;backdrop-filter:blur(3px);animation:badge 1.6s ease-in-out infinite}
+@keyframes badge{50%{transform:translateY(-6px) scale(1.04)}}
+#npc.on:not(.artn) #npcsay{right:116px;top:24px}
+</style>
 </body>
 </html>

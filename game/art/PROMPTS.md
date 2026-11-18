@@ -244,3 +244,11 @@ game/art/<nv>/pet-<bậc>-idle.webm, pet-<bậc>-walk.webm   thú cưng đứng 
 
 - Na đủ 5 bộ đồ × (đứng, đi, 4 mức cảm ơn) = 30 clip trong `game/art/na/`, tách nền bằng `gs3.py` (cùng quy cách Bờm). Na cũng áp luật đủ bộ (`FULLSET` trong game): tóc, váy áo, giày, túi xách cùng bậc mới thay cả bộ.
 - Kinh nghiệm Muse với Na: ảnh mặt mẫu có nơ hồng / tóc đuôi ngựa hay bị lây sang bộ khác, nên dặn rõ "Ảnh 1-2 chỉ lấy gương mặt" và dùng ảnh nghiêng tóc xõa (`na_goc-4.jpg`) cho các bộ tóc thả. Clip đi bộ với đầm dài phải dặn "xẻ tà phía chân gần máy quay, gấu chạm mắt cá" thì mới thấy bước chân. Lỗi hay gặp: nhân đôi người, tự zoom giữa clip, mặt nhòe khi lau nước mắt (đã bỏ động tác này ở mức 4).
+
+## 13. Hoà nhân vật vào cảnh, giao diện gọn, nhân vật phụ ảnh thật (19/11/2026)
+
+- Khối "REAL LAYER" cuối `game/index.html`: khung cảnh cao 570px (trước 460), ô đồ / nhiệm vụ / bảng quà thu gọn; nhân vật cao 250 × `ACTK`(1.12).
+- Hoà vào cảnh: chỉnh màu + độ bão hoà theo ảnh nền (`toneSync`), sắc trời theo giờ phủ cả nhân vật, hạt phim chung cả cảnh, mưa rơi ở cảnh `rain`, bóng đổ thật vẽ từ khung hình đang chiếu theo hướng nắng từng cảnh (bảng `LIGHT`: `dx` ngả trái/phải, `fw` ngược sáng, `rf` phản chiếu nền bóng/ướt), viền sáng khi ngược sáng. Bóng neo đúng đế giày nhờ đo khoảng trống dưới chân từng clip.
+- Na có 14 hoạt cảnh hành động `gs-*.webm` (ăn vặt, bán rong, phụ quán, gọi điện, livestream, xưởng may, điều hành, trà sữa, xem phim, hẹn hò, dự tiệc, du thuyền, yoga, spa). Clip máy đoán sai cảnh cận / toàn thân thì chỉ định trong `GSCUT`. Đang làm việc có đạo cụ thì nhân vật đứng tại chỗ.
+- 16 nhân vật phụ ảnh thật mới trong `game/art/npc/` (quản lý chợ, kẻ móc túi, nữ trưởng phòng, quý cô chảnh, hai cô bạn, con buôn hàng nhái, PT gym, đại gia golf, cậu bé bán vòng ốc, em bé, fan quay clip, nhiếp ảnh gia, chó poodle, mèo trắng, cụ già khiếm thị, người đoàn kiểm tra), bảng emoji → ảnh `NPC`, cỡ con vật / trẻ em `NPCH`. Tách nền ảnh tĩnh bằng `art/keyimg.py` (xoá cả khe kín giữa tay và thân). Vật chưa có ảnh hiện trong huy hiệu tròn.
+- Sửa: có biến lúc đang ngủ thì nền đổi hẳn, không còn ảnh ngủ sau lưng nhân vật.
