@@ -243,16 +243,16 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
   <div id="todo" class="abs"><div id="todoh"></div><div id="todob"></div></div>
   <div id="how" class="abs">
     <div class="t3">
-      <div><b>❤️ THẢ TIM</b>giúp làm việc, đầy hũ tim</div>
-      <div><b>💬 BÌNH LUẬN</b>làm nhiệm vụ · gõ 1 / 2 để chọn</div>
-      <div><b>➕ FOLLOW</b>được 1 lượt quay đồ</div>
+      <div>❤️ <b>Thả tim</b></div>
+      <div>💬 <b>Bình luận</b></div>
+      <div>➕ <b>Follow</b> = 1 lượt quay</div>
     </div>
     <h5 id="howh"></h5>
     <div class="t4">
-      <div style="--c:var(--r2)"><u>🎁</u><b>1 xu</b>1 lượt quay</div>
-      <div style="--c:var(--r3)"><u>🥈</u><b>10 xu</b>5 lượt · chắc Hiếm</div>
-      <div style="--c:var(--r4)"><u>🥇</u><b>100 xu</b>10 lượt · chắc Sử Thi</div>
-      <div style="--c:var(--r5)"><u>💎</u><b>1000 xu</b>Huyền Thoại · lên 2 đời</div>
+      <div style="--c:var(--r2)"><u>🎁</u><b>1 xu</b>1 lượt</div>
+      <div style="--c:var(--r3)"><u>🥈</u><b>10 xu</b>5 lượt</div>
+      <div style="--c:var(--r4)"><u>🥇</u><b>100 xu</b>10 lượt</div>
+      <div style="--c:var(--r5)"><u>💎</u><b>1000 xu</b>Lên 2 đời</div>
     </div>
   </div>
   <div id="flash" class="abs"></div>
@@ -795,7 +795,7 @@ async function moveCut(o,n,by){   // có nhà mới: xe tải chuyển nhà, đ�
   await sleep(1600);applyBase();lock=false;
 }
 function storyIn(d){story=true;lock=true;const here=d.at.includes(base.bg);   // chuyện xảy ra ngay tại nơi nhân vật đang ở thì không đổi cảnh
-  return (here?async f=>{f();await sleep(300)}:wipe)(()=>{resetActor(70);if(!here)setBackdrop(d.bg);$('#shade').style.background='transparent';$('#tag').innerHTML='⚡ Có biến!<small>cả phòng quyết định ở ô bên dưới</small>';const n=$('#npc');n.className='abs on'+(d.sm?' sm':'');$('#npce').textContent=d.npc;$('#npcsay').textContent=d.say||''})}
+  return (here?async f=>{f();await sleep(300)}:wipe)(()=>{resetActor(70);if(!here)setBackdrop(d.bg);$('#shade').style.background='transparent';$('#tag').innerHTML='⚡ Có biến!';const n=$('#npc');n.className='abs on'+(d.sm?' sm':'');$('#npce').textContent=d.npc;$('#npcsay').textContent=d.say||''})}
 async function storyOut(){await sleep(1700);await wipe(applyBase);story=false;lock=false;render()}
 
 /* Một ngày của nhân vật: sáng thể dục → đi làm → tối đi chơi → đêm ngủ và mơ.
@@ -809,7 +809,7 @@ function applyBase(){
   const n=$('#npc');if(b.npc){n.className='abs on';$('#npce').textContent=b.npc;$('#npcsay').textContent=''}else n.className='abs';
   if(b.pose=='ride')rideOn(shownXe);else if(b.pose=='sleep'||b.pose=='lift')$('#actor').classList.add(b.pose);
   $('#shade').style.background=SHADE[b.ph??1];
-  $('#tag').innerHTML=b.label?`${b.label}<small>${(PK.PH||PH)[b.ph]} · ngày ${dayNo()}/${CFG.days}</small>`:'';
+  $('#tag').innerHTML=b.label?`${b.label}`:'';
 }
 function pickAct(ph){const L=ACTS.filter(a=>a.ph==ph&&S.stage>=a.min&&S.stage<=(a.max??9)&&(!a.ok||a.ok()));return ph==2?pick(L.slice(-3)):L[L.length-1]}
 async function runPhase(ph,key){
@@ -860,32 +860,32 @@ function render(){
   $('#who').textContent=`${c.name} · #${c.no}`; $('#title').textContent=STAGES[i];
   $('#prog i').style.width=(i>=9?100:Math.min(100,S.prog*100))+'%';
   $('#next').innerHTML=i>=9?'<b>ĐỈNH CAO</b>':`Mốc tới: <b>${mask(STAGES[i+1])}</b>`;
-  $('#goal').textContent=S.patron?`👑 Người đỡ đầu: ${S.patron.u} · Ước mơ của ${c.name}: ${c.goal}`:`⏳ Còn ${CFG.days-dayNo()+1} ngày để nuôi ${c.name} thành ${PK.top.toUpperCase()} · Ước mơ: ${c.goal}`;
+  $('#goal').textContent=S.patron?`👑 ${S.patron.u} · Ước mơ: ${c.goal}`:`⏳ Còn ${CFG.days-dayNo()+1} ngày · Ước mơ: ${c.goal}`;
   $('#char').innerHTML=dreamOn?drawChar({toc:5,ao:5,giay:5,pk:5,pet:5,xe:5,nha:5},9):drawChar();
   $('#pet').textContent=!PK.petShow?'':dreamOn?ITEMS.pet.e[5]:S.eq.pet?ITEMS.pet.e[S.eq.pet]:''; $('#park').textContent=dreamOn?ITEMS.xe.e[5]:shownXe?ITEMS.xe.e[shownXe]:'';
   $('#slots').innerHTML=SLOTS.map(s=>{const t=S.eq[s],it=ITEMS[s];
     return `<div class="slot" id="sl_${s}" style="--c:${RC[t]}"><div class="e">${it.e[t]}</div><div class="l${S.by[s]?' by':''}">${S.by[s]?'🎁 '+esc(S.by[s]):t?it.t[t]:it.n}</div>${t<5?`<div class="nx">${it.e[t+1]}</div>`:''}</div>`}).join('');
   drawTodo();
-  $('#howh').textContent=`🎁 TẶNG QUÀ = mở rương đồ cho ${c.name} (${PK.gifts})`;
+  $('#howh').textContent='🎁 TẶNG QUÀ = MỞ RƯƠNG ĐỒ';
   $('#clueh').textContent=`🧩 Ký ức ${S.clues}/6`;
   $('#tiles').innerHTML=[0,1,2,3,4,5].map(k=>`<i class="${k<S.clues?'off':''}">?</i>`).join('');
   $('#photo svg').style.filter=`blur(${(6-S.clues)*1.3}px) sepia(.6)`;
-  $('#cluetx').textContent=S.clues?tx(CLUES[S.clues-1]):PK.clue0;
+  $('#cluetx').textContent=S.clues?tx(CLUES[S.clues-1]):'';
   const top=Object.entries(S.contrib).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  $('#board').innerHTML=`<h4>🏆 Người nuôi ${esc(c.name)}</h4>`+(top.length?top.map(([u,v],k)=>`<div>${'🥇🥈🥉'.slice(k*2,k*2+2)}<span>${esc(u)}</span><b>${Math.round(v)}</b></div>`).join(''):'<div style="opacity:.6">Chưa có ai…</div>');
+  $('#board').innerHTML=top.length?top.map(([u,v],k)=>`<div>${'🥇🥈🥉'.slice(k*2,k*2+2)}<span>${esc(u)}</span><b>${Math.round(v)}</b></div>`).join(''):'';
 }
 function drawTodo(){
   const h=$('#todoh'),b=$('#todob'),n=esc(S.ch.name);
   if(ev&&ev.type=='crisis'){h.innerHTML=`🚨 CỨU ${n} NGAY!`;
-    b.innerHTML=`<div class="evc"><h3>${esc(ev.d.t)}</h3><p>Thả <b>${ev.need} tim</b> hoặc tặng <b>1 món quà bất kỳ</b> để cứu. Không kịp thì tụt 15% chặng đường.</p><div class="opts"><div class="opt"><i style="width:${Math.min(100,ev.got/ev.need*100)}%"></i><span>❤️ ${ev.got} / ${ev.need} tim</span></div></div><div class="cd"><i style="width:${ev.left/ev.total*100}%"></i></div></div>`;return}
-  if(ev){const t=ev.v[0]+ev.v[1]||1;h.innerHTML='🔀 CẢ PHÒNG QUYẾT ĐỊNH — bình luận số <b>1</b> hoặc <b>2</b>';
-    b.innerHTML=`<div class="evc choice"><h3>${esc(tx(ev.d.q))}</h3><p>Lựa chọn này ảnh hưởng tới kết cục của ${n}.</p><div class="opts"><div class="opt"><i style="width:${ev.v[0]/t*100}%"></i><span>1️⃣ ${esc(ev.d.a[0])} · ${ev.v[0]}</span></div><div class="opt"><i style="width:${ev.v[1]/t*100}%"></i><span>2️⃣ ${esc(ev.d.b[0])} · ${ev.v[1]}</span></div></div><div class="cd"><i style="width:${ev.left/ev.total*100}%"></i></div></div>`;return}
+    b.innerHTML=`<div class="evc"><h3>${esc(ev.d.t)}</h3><p>❤️ Thả tim hoặc 🎁 tặng quà để cứu</p><div class="opts"><div class="opt"><i style="width:${Math.min(100,ev.got/ev.need*100)}%"></i><span>❤️ ${ev.got} / ${ev.need} tim</span></div></div><div class="cd"><i style="width:${ev.left/ev.total*100}%"></i></div></div>`;return}
+  if(ev){const t=ev.v[0]+ev.v[1]||1;h.innerHTML='🔀 BÌNH LUẬN <b>1</b> HOẶC <b>2</b> ĐỂ CHỌN';
+    b.innerHTML=`<div class="evc choice"><h3>${esc(tx(ev.d.q))}</h3><div class="opts"><div class="opt"><i style="width:${ev.v[0]/t*100}%"></i><span>1️⃣ ${esc(ev.d.a[0])} · ${ev.v[0]}</span></div><div class="opt"><i style="width:${ev.v[1]/t*100}%"></i><span>2️⃣ ${esc(ev.d.b[0])} · ${ev.v[1]}</span></div></div><div class="cd"><i style="width:${ev.left/ev.total*100}%"></i></div></div>`;return}
   const q=S.quest,o=S.omen;
-  h.innerHTML='👉 VIỆC CẦN LÀM NGAY <small>· ai cũng làm được, không tốn xu</small>';
+  h.innerHTML='👉 NHIỆM VỤ CẢ PHÒNG';
   b.innerHTML=`<div class="bar" id="qbar"><i style="width:${Math.min(100,q.p/q.n*100)}%"></i><span><u>${q.i}</u>${esc(tx(q.t))}<em>${Math.min(q.p,q.n)}/${q.n}</em></span></div>
-   <div class="bar" id="jbar"><i style="width:${Math.min(100,S.jar/S.jarN*100)}%"></i><span>🫙 Hũ tim cả phòng: đầy là mở <b style="color:#fde68a">Rương miễn phí</b><em>${S.jar}/${S.jarN}</em></span></div>
-   <div id="info" class="${o?'on':''}">${o?`🔮 Linh cảm: ${o.left} lượt quay tới chắc chắn có đồ ${RN[o.min]} trở lên!`
-     :`🍀 ${2-S.qdone%2} nhiệm vụ nữa → 1 người được quay miễn phí · 🛡️ ${CFG.pity-S.pity} lượt nữa chắc Sử Thi`}</div>`;
+   <div class="bar" id="jbar"><i style="width:${Math.min(100,S.jar/S.jarN*100)}%"></i><span>🫙 Hũ tim → <b style="color:#fde68a">Rương miễn phí</b><em>${S.jar}/${S.jarN}</em></span></div>
+   <div id="info" class="${o?'on':''}">${o?`🔮 ${o.left} lượt tới chắc chắn ra đồ ${RN[o.min]}+`
+     :CFG.pity-S.pity<=10?`🛡️ Còn ${CFG.pity-S.pity} lượt là chắc Sử Thi`:''}</div>`;
 }
 function tickHud(){
   const w=worth(); if(Math.abs(w-shownWorth)>1){shownWorth+=(w-shownWorth)*.18; if(Math.abs(w-shownWorth)<w*.001+1)shownWorth=w}
@@ -1338,6 +1338,21 @@ boot(false);tickHud();life();
 #actor.hasanim.ride #artanim{transform:translateY(-58px) scale(.6)}
 #scene.artride #artanim,#scene.artact #artanim,#scene.artsleep #artanim{display:none!important}
 #actor.cat.hasanim #artanim video{height:150px}
+/* cảnh cận: phóng to, mép dưới clip trùng mép dưới khung cảnh nên không thấy chỗ bị cắt */
+#actor.gscut #artanim video.act{height:300px!important;bottom:-46px}
+#actor.hasanim.gscut::after{display:none}
+/* ---------- UI gọn: bớt chữ hướng dẫn ---------- */
+#how .t3 div{font-size:12.5px;padding:6px 4px;white-space:nowrap}
+#how .t3 b{display:inline;font-size:13px}
+#how h5{font-size:12.5px;margin:9px 0 6px;letter-spacing:.3px}
+#how .t4 div{padding:7px 4px 8px;font-size:12px}
+#how .t4 b{font-size:15px}
+#how .t4 u{font-size:26px;display:block;line-height:1.15}
+#cluetx:empty,#board:empty{display:none}
+#tag small:empty{display:none}
+#info:empty{display:none}
+#qbar{height:54px}#qbar span{font-size:17.5px}
+#jbar{height:30px;margin-top:8px}#jbar span{font-size:13.5px}
 /* pet bằng ảnh */
 #pet img{height:78px;display:block;filter:drop-shadow(0 6px 5px #0008)}
 #actor.cat #pet{left:-70px}#actor.cat #pet img{height:86px}
@@ -1485,7 +1500,12 @@ boot(false);tickHud();life();
   const canAlpha=(()=>{const v=document.createElement('video');return !!v.canPlayType&&v.canPlayType('video/webm; codecs="vp9"')!==''&&!/^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent)})();
   const anim=document.createElement('div');anim.id='artanim';$('#flip').appendChild(anim);
   const mkv=c=>{const v=document.createElement('video');v.className=c;v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';
-    v.addEventListener('loadedmetadata',()=>{v.style.height=(v.videoHeight*250/480)+'px'});anim.appendChild(v);return v};
+    v.addEventListener('loadedmetadata',()=>{v.style.height=(v.videoHeight*250/480)+'px'});
+    if(c=='act')v.addEventListener('loadeddata',()=>{let cut=false;try{   // người chạm mép dưới clip = cảnh quay cận, bị cắt chân
+        const w=Math.max(8,v.videoWidth>>2),h=Math.max(8,v.videoHeight>>2),cv=document.createElement('canvas');cv.width=w;cv.height=h;
+        const x=cv.getContext('2d');x.drawImage(v,0,0,w,h);const d=x.getImageData(0,h-2,w,1).data;let n=0;for(let i=3;i<d.length;i+=4)if(d[i]>128)n++;cut=n>w*.06}catch(e){}
+        v.classList.toggle('cut',cut);animSync()});
+    anim.appendChild(v);return v};
   const vI=mkv('idle'),vW=mkv('walk'),vA=mkv('act');
   const setV=(v,f)=>{if(v.dataset.f!=f){v.dataset.f=f;v.src=A+f}if(v.paused)v.play().catch(()=>{})};
   const gsFile=()=>{if(dreamOn||story)return '';const a=ACTS.find(a=>a.ph==base.ph&&a.bg==base.bg&&a.pose!='ride'&&a.pose!='sleep'&&base.label==a.icon+' '+a.label);
@@ -1496,6 +1516,8 @@ boot(false);tickHud();life();
     ac.classList.toggle('hasanim',on); if(!on){ac.classList.remove('haswalk','hasgs');return}
     setV(vI,fi); const w=has(fw); ac.classList.toggle('haswalk',w); if(w)setV(vW,fw);
     const g=gsFile(); ac.classList.toggle('hasgs',!!g); if(g)setV(vA,g);else vA.pause();
+    const cut=!!g&&vA.classList.contains('cut'); ac.classList.toggle('gscut',cut);
+    anim.style.transform=cut?`translateX(${(195-actorX())*(ac.classList.contains('left')?-1:1)}px)`:'';
     toneSync();
   }
   /* hoà màu nhân vật theo bối cảnh: lấy độ sáng + sắc màu vùng nền quanh chỗ đứng rồi chỉnh video cho khớp */
