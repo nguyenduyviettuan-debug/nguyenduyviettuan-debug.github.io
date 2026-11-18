@@ -1341,6 +1341,7 @@ boot(false);tickHud();life();
 /* cảnh cận: phóng to, mép dưới clip trùng mép dưới khung cảnh nên không thấy chỗ bị cắt */
 #actor.gscut #artanim video.act{height:300px!important;bottom:-46px}
 #actor.hasanim.gscut::after{display:none}
+#actor.hasanim.hasgs.lift #artanim,#actor.hasanim.hasgs.jump #artanim{animation:none}
 /* ---------- UI gọn: bớt chữ hướng dẫn ---------- */
 #how .t3 div{font-size:12.5px;padding:6px 4px;white-space:nowrap}
 #how .t3 b{display:inline;font-size:13px}
@@ -1503,7 +1504,7 @@ boot(false);tickHud();life();
     v.addEventListener('loadedmetadata',()=>{v.style.height=(v.videoHeight*250/480)+'px'});
     if(c=='act')v.addEventListener('loadeddata',()=>{let cut=false;try{   // người chạm mép dưới clip = cảnh quay cận, bị cắt chân
         const w=Math.max(8,v.videoWidth>>2),h=Math.max(8,v.videoHeight>>2),cv=document.createElement('canvas');cv.width=w;cv.height=h;
-        const x=cv.getContext('2d');x.drawImage(v,0,0,w,h);const d=x.getImageData(0,h-2,w,1).data;let n=0;for(let i=3;i<d.length;i+=4)if(d[i]>128)n++;cut=n>w*.06}catch(e){}
+        const x=cv.getContext('2d');x.drawImage(v,0,0,w,h);const d=x.getImageData(0,h-2,w,1).data;let n=0;for(let i=3;i<d.length;i+=4)if(d[i]>128)n++;cut=n>w*.06&&v.videoWidth/v.videoHeight>.7}catch(e){}   // người đứng (khung cao hẹp) hụt tí đế giày thì vẫn coi là toàn thân
         v.classList.toggle('cut',cut);animSync()});
     anim.appendChild(v);return v};
   const vI=mkv('idle'),vW=mkv('walk'),vA=mkv('act');
@@ -1534,9 +1535,9 @@ boot(false);tickHud();life();
       r/=n*255;g/=n*255;b/=n*255;const L=Math.max(.04,.299*r+.587*g+.114*b),br=Math.min(1.06,Math.max(.58,.62+.76*L)),k=c=>(1+.32*(c/L-1))*br;
       set(k(r).toFixed(3),k(g).toFixed(3),k(b).toFixed(3))}catch(e){set(1,1,1)}};im.src=u}
   /* bước đi: chân bước nhanh bao nhiêu thì người trượt ngang bấy nhiêu (px/giây đo từ clip), khỏi trượt chân */
-  const WALKV={bom:140};
+  const WALKV={'bom-0':140,'bom-1':121,'bom-2':126,'bom-3':125,'bom-4':125};   // theo <nhân vật>-<hình>, đo bằng gs2.py (speed_css_px_per_s)
   const _walkTo=walkTo; walkTo=function(x,ms,pp){const ac=$('#actor');
-    if(ac.classList.contains('hasanim')&&ac.classList.contains('haswalk')){ms=Math.max(350,Math.abs(x-actorX())/(WALKV[PK.id]||130)*1000);try{vW.currentTime=0}catch(e){}}
+    if(ac.classList.contains('hasanim')&&ac.classList.contains('haswalk')){ms=Math.max(350,Math.abs(x-actorX())/(WALKV[PK.id+'-'+(dreamOn?4:lookOf(S.eq,S.stage))]||130)*1000);try{vW.currentTime=0}catch(e){}}
     return _walkTo(x,ms,pp)};
   window.ART.animSync=animSync;window.ART.gsFile=gsFile;
 
