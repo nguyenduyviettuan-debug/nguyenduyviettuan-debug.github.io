@@ -1214,7 +1214,8 @@ boot(false);tickHud();life();
   const has=f=>HAS.has(f), scene=$('#scene');
   /* hình theo đồ đang mặc: trung bình bậc tóc/áo/giày/phụ kiện (mèo: bộ lông + vòng cổ), không thấp hơn mốc đời quá 1 bậc */
   const TIER=[0,1,2,3,4,4];   // bậc món đồ → hình: nhận áo (mèo: bộ lông) bậc nào là mặc lên người ngay bậc đó
-  const lookOf=(eq,st,id=PK.id)=>{const e=id=='muop'?(eq.toc+eq.ao)/2:(eq.toc+eq.ao+eq.giay+eq.pk)/4, main=TIER[id=='muop'?Math.max(eq.toc,eq.ao):Math.max(eq.toc,eq.ao,eq.giay,eq.pk)]||0;   // món mặc được bậc cao nhất → cả bộ đồ bậc đó
+  const lookOf=(eq,st,id=PK.id)=>{if(id=='bom')return Math.max(0,Math.min(4,TIER[eq.ao]||0));   // Bờm: thân theo đúng món áo; tóc, giày ghép riêng (xem GHÉP TỪNG MÓN)
+    const e=id=='muop'?(eq.toc+eq.ao)/2:(eq.toc+eq.ao+eq.giay+eq.pk)/4, main=TIER[id=='muop'?Math.max(eq.toc,eq.ao):Math.max(eq.toc,eq.ao,eq.giay,eq.pk)]||0;   // món mặc được bậc cao nhất → cả bộ đồ bậc đó
     return Math.max(0,Math.min(4,Math.max(main,Math.round(e*.8+.001),LOOK[Math.max(0,Math.min(9,st|0))]-1)))};
   const mk=(tag,id,after)=>{const e=document.createElement(tag);e.id=id;e.className='abs';after.insertAdjacentElement('afterend',e);return e};
   const bgEl=mk('div','artbg',$('#ground'));
@@ -1370,6 +1371,11 @@ boot(false);tickHud();life();
 #petv::after{content:'';position:absolute;left:8%;right:8%;bottom:-5px;height:14px;background:radial-gradient(closest-side,#000b,#0000);z-index:-1}
 #actor.left #petv{left:auto;right:146px}#actor.left #petv video{transform:scaleX(-1)}
 #actor.ride #petv,#actor.sleep #petv,#actor.gscut #petv,#scene.artride #petv,#scene.artact #petv,#scene.artsleep #petv,#scene.artdream #petv{display:none!important}
+/* ghép từng món: canvas thay cho video đang hiện (video vẫn chạy bên dưới làm nguồn) */
+#artcv{position:absolute;left:50%;bottom:-6px;height:305.06px;transform:translateX(-50%);display:none;filter:url(#animtone);pointer-events:none}
+#actor.mix #artcv{display:block}
+#actor.mix #artanim video{opacity:0}
+#actor #artanim video.src,#actor.hasanim.thx #artanim video.src{display:block!important;position:absolute;left:0;bottom:0;width:2px!important;height:2px!important;opacity:0;pointer-events:none}
 /* pet bằng ảnh */
 #pet img{height:78px;display:block;filter:drop-shadow(0 6px 5px #0008)}
 #actor.cat #pet{left:-70px}#actor.cat #pet img{height:86px}
@@ -1537,6 +1543,7 @@ boot(false);tickHud();life();
      Nếu rương đang mở dở thì cảm ơn chờ mở xong. Quà nhỏ dồn dập không cảm ơn lặp lại liên tục (giãn 15 giây / 8 giây).
      Cảm ơn: anim-<hình>-thx1..4.webm (1 xu, 10 xu, 100 xu, 1000 xu), phát một lần. Đổi clip luôn mờ dần 0,16s, không giật hình. */
   let thxLv=0,thxQ=0,thxT=0,thxQt=0,thxLast=0,thxLastLv=0;
+  const THX_NOBOW=new Set([]);   // các bộ áo đã có clip cảm ơn mức 3-4 bản không cúi gập (ghép được đầu); hiện chưa có bộ nào
   const fadeSwap=fn=>{anim.classList.add('fade');setTimeout(()=>{fn();requestAnimationFrame(()=>anim.classList.remove('fade'))},170)};
   const freezeActor=()=>{const a=$('#actor'),r=a.getBoundingClientRect(),sr=scene.getBoundingClientRect(),z=sr.width/540||1;
     a.style.transition='none';a.style.left=((r.left-sr.left)/z)+'px';a.classList.remove('walk','jump','lift')};
@@ -1546,6 +1553,7 @@ boot(false);tickHud();life();
     &&ac.classList.contains('hasanim')&&!ac.classList.contains('ride')&&!ac.classList.contains('sleep')
     &&!scene.classList.contains('artride')&&!scene.classList.contains('artsleep')&&!scene.classList.contains('artact')};
   function thxPlay(lv){const ac=$('#actor');
+    const pt=parts(); if(pt&&pt.h!=pt.a&&lv>=3&&!THX_NOBOW.has(pt.a))lv=2;   // tóc khác bộ áo: clip mức 3-4 cũ có cúi gập người nên chưa ghép được đầu -> tạm dùng động tác mức 2
     let f='';for(let l=lv;l>=1&&!f;l--){const c=`${PK.id}/anim-${lookOf(S.eq,S.stage)}-thx${l}.webm`;if(has(c))f=c}
     if(!f)return;
     if(ac.classList.contains('gscut')&&lv<=2){emote('🙏',1800);return}     // đang ngồi ăn/uống (cảnh cận): quà nhỏ chỉ chắp tay bằng biểu tượng, không đứng bật dậy
@@ -1571,11 +1579,12 @@ boot(false);tickHud();life();
     const ac=$('#actor'),k=dreamOn?4:lookOf(S.eq,S.stage),fi=`${PK.id}/anim-${k}-idle.webm`,fw=`${PK.id}/anim-${k}-walk.webm`;
     const on=canAlpha&&has(fi);
     ac.classList.toggle('hasanim',on); if(!on){ac.classList.remove('haswalk','hasgs');return}
-    setV(vI,fi); const w=has(fw); ac.classList.toggle('haswalk',w); if(w)setV(vW,fw);
+    const pt=parts(), fws=pt&&STYPE[pt.g]!=STYPE[pt.a]?`${PK.id}/anim-${k}-walk-s${STYPE[pt.g]}.webm`:'';
+    setV(vI,fi); const w=has(fw); ac.classList.toggle('haswalk',w); if(w)setV(vW,fws&&has(fws)?fws:fw);
     const g=gsFile(); ac.classList.toggle('hasgs',!!g); if(g)setV(vA,g);else vA.pause();
     const cut=!!g&&vA.classList.contains('cut'); ac.classList.toggle('gscut',cut);
     anim.style.transform=cut?`translateX(${(195-actorX())*(ac.classList.contains('left')?-1:1)}px)`:'';
-    toneSync();
+    toneSync();mixSync();
   }
   /* hoà màu nhân vật theo bối cảnh: lấy độ sáng + sắc màu vùng nền quanh chỗ đứng rồi chỉnh video cho khớp */
   document.body.insertAdjacentHTML('beforeend','<svg width="0" height="0" style="position:absolute"><filter id="animtone" color-interpolation-filters="sRGB"><feColorMatrix id="animtoneM" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"/></filter></svg>');
@@ -1592,10 +1601,58 @@ boot(false);tickHud();life();
       set(k(r).toFixed(3),k(g).toFixed(3),k(b).toFixed(3))}catch(e){set(1,1,1)}};im.src=u}
   /* bước đi: chân bước nhanh bao nhiêu thì người trượt ngang bấy nhiêu (px/giây đo từ clip), khỏi trượt chân */
   const WALKV={'bom-0':140,'bom-1':121,'bom-2':126,'bom-3':125,'bom-4':118};   // theo <nhân vật>-<hình>, đo bằng gs2.py (speed_css_px_per_s)
+  const WALKF={'0-walk-s1':130,'0-walk-s2':150,'0-walk-s4':127,'1-walk-s0':106,'1-walk-s2':135,'1-walk-s4':133,'2-walk-s0':134,'2-walk-s1':114,'2-walk-s4':125};   // clip đi theo cặp áo-giày (chỉ Bờm)
   const _walkTo=walkTo; walkTo=function(x,ms,pp){const ac=$('#actor'); if(thxLv)return sleep(400);
-    if(ac.classList.contains('hasanim')&&ac.classList.contains('haswalk')){ms=Math.max(350,Math.abs(x-actorX())/(WALKV[PK.id+'-'+(dreamOn?4:lookOf(S.eq,S.stage))]||130)*1000);try{vW.currentTime=0}catch(e){}}
+    if(ac.classList.contains('hasanim')&&ac.classList.contains('haswalk')){ms=Math.max(350,Math.abs(x-actorX())/(WALKF[(vW.dataset.f||'').replace(/^.*anim-|\.webm$/g,'')]||WALKV[PK.id+'-'+(dreamOn?4:lookOf(S.eq,S.stage))]||130)*1000);try{vW.currentTime=0}catch(e){}}
     return _walkTo(x,ms,pp)};
-  window.ART.animSync=animSync;window.ART.gsFile=gsFile;
+  /* ================= GHÉP TỪNG MÓN (Bờm) =================
+     Mỗi món quà đổi đúng một phần trên người: TÓC = phần đầu, ÁO = phần thân, GIÀY = phần bàn chân.
+     Ba phần lấy từ ba clip (của ba bộ đồ khác nhau), vẽ lại lên canvas mỗi khung hình, neo theo file mốc <clip>.trk.json
+     (đỉnh đầu, tâm chỏm đầu, đáy và tâm bàn chân từng khung) nên đầu luôn đi theo thân, không lệch.
+     Đứng / cảm ơn: đầu + thân + bàn chân. Bước đi: đầu + thân; giày nằm sẵn trong clip anim-<áo>-walk-s<kiểu giày>.webm.
+     Hành động có đạo cụ (gs-*.webm) mặc đồ riêng của hoạt động đó, không ghép. */
+  const TIERP=[0,1,2,3,4,4];                                // bậc món đồ (0..5) -> hình (0..4)
+  const STYPE=[0,1,2,2,4];                                   // hình giày -> kiểu giày (dép vàng, sneaker trắng, giày da đen, giày lười trắng)
+  const parts=()=>PK.id!='bom'||!canAlpha?null:dreamOn?{h:4,a:4,g:4}:{h:TIERP[S.eq.toc]||0,a:TIERP[S.eq.ao]||0,g:TIERP[S.eq.giay]||0};
+  const CW=540,CH=820;
+  const cv=document.createElement('canvas');cv.id='artcv';cv.width=CW;cv.height=CH;anim.appendChild(cv);const cx=cv.getContext('2d');
+  const offc=document.createElement('canvas');offc.width=CW;offc.height=CH;const ofx=offc.getContext('2d');
+  const mks=()=>{const v=document.createElement('video');v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';v.className='src';anim.appendChild(v);return v};
+  const hI=mks(),hW=mks(),fI=mks();                          // nguồn đầu (đứng), đầu (đi), bàn chân (đứng)
+  const TRK={};const trk=f=>{if(!f)return null;if(TRK[f]!==undefined)return TRK[f];TRK[f]=null;const j=f.replace('.webm','.trk.json');
+    if(has(j))fetch(A+j).then(r=>r.json()).then(d=>{TRK[f]=d}).catch(()=>{});return null};
+  [vI,vW,vT,hI,hW,fI].forEach(v=>{if(v.requestVideoFrameCallback){const cb=(n,m)=>{v._mt=m.mediaTime;v.requestVideoFrameCallback(cb)};v.requestVideoFrameCallback(cb)}});
+  const fidx=(v,t)=>Math.min(t.n-1,Math.max(0,Math.round(((v._mt!=null?v._mt:v.currentTime)||0)*24))%t.n);
+  let mix=null;
+  function mixSync(){
+    const ac=$('#actor'),p=parts();
+    if(!p||!ac.classList.contains('hasanim')||(p.h==p.a&&p.g==p.a)){mix=null;ac.classList.remove('mix');return}
+    mix=p; setV(hI,`${PK.id}/anim-${p.h}-idle.webm`); if(has(`${PK.id}/anim-${p.h}-walk.webm`))setV(hW,`${PK.id}/anim-${p.h}-walk.webm`); setV(fI,`${PK.id}/anim-${p.g}-idle.webm`);
+    [vI,vW,vT,hI,hW,fI].forEach(v=>trk(v.dataset.f))}
+  const grad=(c,y0,y1,a0,a1)=>{const g=c.createLinearGradient(0,y0,0,y1);g.addColorStop(0,`rgba(0,0,0,${a0})`);g.addColorStop(1,`rgba(0,0,0,${a1})`);return g};
+  function mixDraw(){
+    requestAnimationFrame(mixDraw);
+    const ac=$('#actor'); if(!mix||ac.classList.contains('hasgs')){if(ac.classList.contains('mix'))ac.classList.remove('mix');return}
+    const thx=ac.classList.contains('thx'),walk=!thx&&ac.classList.contains('walk')&&ac.classList.contains('haswalk');
+    const B=thx?vT:walk?vW:vI,Hs=walk?hW:hI,swF=!walk&&mix.g!=mix.a;
+    const swH=mix.h!=mix.a||(walk&&/walk-s/.test(vW.dataset.f||''));   // clip đi theo giày là lượt quay khác: luôn lấy đầu từ clip gốc của kiểu tóc cho mặt/tóc nhất quán
+    const tb=trk(B.dataset.f),th=swH?trk(Hs.dataset.f):1,tf=swF?trk(fI.dataset.f):1;
+    if(!tb||!th||!tf||B.readyState<2||(swH&&Hs.readyState<2)||(swF&&fI.readyState<2)||(!swH&&!swF)){ac.classList.remove('mix');return}
+    const i=fidx(B,tb),dx=Math.round((CW-B.videoWidth)/2),dy=CH-B.videoHeight;
+    cx.globalCompositeOperation='source-over';cx.clearRect(0,0,CW,CH);cx.drawImage(B,dx,dy);
+    if(swH){const ny=dy+tb.top[i]+tb.neck;cx.globalCompositeOperation='destination-out';cx.fillStyle=grad(cx,ny-3,ny+3,1,0);cx.fillRect(0,0,CW,ny+3)}
+    if(swF){const ay=dy+tb.bot[i]-tb.ank;cx.globalCompositeOperation='destination-out';cx.fillStyle=grad(cx,ay-4,ay+4,0,1);cx.fillRect(0,ay-4,CW,CH-ay+4)}
+    if(swF){const k=fidx(fI,tf),fx=dx+tb.fcx[i]-tf.fcx[k],fy=dy+tb.bot[i]-tf.bot[k],fa=fy+tf.bot[k]-tf.ank;
+      ofx.globalCompositeOperation='source-over';ofx.clearRect(0,0,CW,CH);ofx.drawImage(fI,Math.round(fx),Math.round(fy));
+      ofx.globalCompositeOperation='destination-in';ofx.fillStyle=grad(ofx,fa-4,fa+4,0,1);ofx.fillRect(0,0,CW,CH);
+      cx.globalCompositeOperation='source-over';cx.drawImage(offc,0,0)}
+    if(swH){const k=fidx(Hs,th),hx=dx+tb.hcx[i]-th.hcx[k],hy=dy+tb.top[i]-th.top[k],hn=hy+th.top[k]+th.neck;
+      ofx.globalCompositeOperation='source-over';ofx.clearRect(0,0,CW,CH);ofx.drawImage(Hs,Math.round(hx),Math.round(hy));
+      ofx.globalCompositeOperation='destination-in';ofx.fillStyle=grad(ofx,hn-1,hn+6,1,0);ofx.fillRect(0,0,CW,CH);
+      cx.globalCompositeOperation='source-over';cx.drawImage(offc,0,0)}
+    if(!ac.classList.contains('mix'))ac.classList.add('mix')}
+  requestAnimationFrame(mixDraw);
+  window.ART.animSync=animSync;window.ART.gsFile=gsFile;window.ART.parts=parts;
 
   /* ================= NGỦ TRONG PHÒNG + HOẠT CẢNH CÓ HÀNH ĐỘNG ================= */
   const _resetActor=resetActor;
