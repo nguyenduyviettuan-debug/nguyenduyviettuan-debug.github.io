@@ -221,3 +221,16 @@ game/art/<nv>/gs-<buổi>-<cảnh>-<mốc>.webm  hành động có đạo cụ; 
 - Clip ngồi mà Muse quay sát (chân chạm mép dưới) được game tự phóng to và neo vào mép dưới khung cảnh.
 - Safari / iPhone không phát được WebM alpha: game tự quay về ảnh tĩnh.
 - Đã có: Bờm đủ 5 bộ đồ (đứng, đi) và 11 hành động. Na và Mướp chưa làm.
+
+### Bổ sung 18/11/2026: đồ tặng, cảm ơn, pet động, hoạt cảnh lặp xuôi
+
+```
+game/art/<nv>/anim-<hình>-thx1.webm … thx4.webm   cảm ơn theo 4 mức quà (1, 10, 100, 1000 xu), phát một lần sau khi mở rương xong
+game/art/<nv>/pet-<bậc>-idle.webm, pet-<bậc>-walk.webm   thú cưng đứng chơi / di chuyển
+```
+
+- Đồ được tặng là mặc thật: món mặc được (tóc, áo, giày, phụ kiện) có bậc cao nhất quyết định cả bộ đồ của nhân vật. Không còn icon dán trên người. Video người thật không ghép lẻ từng món được, nên mỗi món quà nâng cả bộ.
+- 4 mức cảm ơn: (1) gật đầu, vẫy tay; (2) chắp tay cúi nhẹ, giơ ngón cái; (3) tay lên ngực, cúi gập 45 độ, làm trái tim; (4) sững sờ, nhảy reo, cúi gập 90 độ, lau nước mắt.
+- `gs2.py` có thêm chế độ: `loop` (lặp xuôi, hoà 10 khung cuối về đầu clip; dùng cho hành động và pet), `once` (phát một lần, tự cắt đoạn đứng yên; biến `MAXS`, `THR` chỉnh điểm cắt), `SOFT=1` (thú cưng lông xám/trắng hắt xanh).
+- Muse hay cắt ngang đùi ở clip ít cử động: thêm câu "cảnh toàn thân cực rộng, máy cách 6 mét, nhân vật chỉ cao 70% khung" thì ra đúng.
+- Danh sách video trong khung chat Muse là danh sách ảo, cuộn ngược (scrollTop âm): phải cuộn quét rồi lọc theo đường dẫn đã tải, nếu không sẽ lấy nhầm clip lượt trước.

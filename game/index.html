@@ -1214,7 +1214,7 @@ boot(false);tickHud();life();
   const has=f=>HAS.has(f), scene=$('#scene');
   /* hình theo đồ đang mặc: trung bình bậc tóc/áo/giày/phụ kiện (mèo: bộ lông + vòng cổ), không thấp hơn mốc đời quá 1 bậc */
   const TIER=[0,1,2,3,4,4];   // bậc món đồ → hình: nhận áo (mèo: bộ lông) bậc nào là mặc lên người ngay bậc đó
-  const lookOf=(eq,st,id=PK.id)=>{const e=id=='muop'?(eq.toc+eq.ao)/2:(eq.toc+eq.ao+eq.giay+eq.pk)/4, main=TIER[id=='muop'?eq.toc:eq.ao]||0;
+  const lookOf=(eq,st,id=PK.id)=>{const e=id=='muop'?(eq.toc+eq.ao)/2:(eq.toc+eq.ao+eq.giay+eq.pk)/4, main=TIER[id=='muop'?Math.max(eq.toc,eq.ao):Math.max(eq.toc,eq.ao,eq.giay,eq.pk)]||0;   // món mặc được bậc cao nhất → cả bộ đồ bậc đó
     return Math.max(0,Math.min(4,Math.max(main,Math.round(e*.8+.001),LOOK[Math.max(0,Math.min(9,st|0))]-1)))};
   const mk=(tag,id,after)=>{const e=document.createElement(tag);e.id=id;e.className='abs';after.insertAdjacentElement('afterend',e);return e};
   const bgEl=mk('div','artbg',$('#ground'));
@@ -1306,7 +1306,7 @@ boot(false);tickHud();life();
 #actor.newlook #char img.artch{animation:a_new 1.3s ease-out}
 @keyframes a_new{0%{filter:brightness(3) drop-shadow(0 0 22px #fde047);transform:translateX(-50%) scale(1.22)}60%{filter:brightness(1.4) drop-shadow(0 0 16px #fde047);transform:translateX(-50%) scale(.98)}100%{filter:none;transform:translateX(-50%)}}
 /* đồ đang mặc */
-#wear{position:absolute;inset:0;z-index:3;pointer-events:none}
+#wear{display:none!important}   /* bỏ icon dán trên người: đồ được tặng giờ là mặc thật (đổi cả bộ) */
 #wear i{position:absolute;font-style:normal;font-size:17px;line-height:1;width:28px;height:28px;margin:-14px 0 0 -14px;display:grid;place-items:center;border-radius:50%;background:#000b;border:2px solid var(--c);box-shadow:0 0 8px var(--c)}
 #wear i.toc{left:50%;top:1%}#wear i.ao{left:84%;top:36%}#wear i.pk{left:14%;top:50%}#wear i.giay{left:80%;top:95%}
 #actor.cat #wear i.toc{left:50%;top:40%}#actor.cat #wear i.ao{left:84%;top:62%}#actor.cat #wear i.pk{left:12%;top:94%}#actor.cat #wear i.giay{left:88%;top:94%}
@@ -1354,6 +1354,20 @@ boot(false);tickHud();life();
 #info:empty{display:none}
 #qbar{height:54px}#qbar span{font-size:17.5px}
 #jbar{height:30px;margin-top:8px}#jbar span{font-size:13.5px}
+/* cảm ơn */
+#actor.hasanim.thx #artanim video{display:none!important}
+#actor.hasanim.thx #artanim video.thx{display:block!important}
+#actor.hasanim.thx #artanim{transform:none!important;animation:none!important}
+#actor.hasanim.thx::after{display:block}
+/* pet động */
+#petv{position:absolute;left:146px;bottom:-5px;display:none;pointer-events:none}
+#actor.haspetv #petv{display:block}#actor.haspetv #pet{display:none}
+#petv video{display:block;filter:url(#animtone)}
+#petv .pw{display:none}
+#actor.walk.haspw #petv .pi{display:none}#actor.walk.haspw #petv .pw{display:block}
+#petv::after{content:'';position:absolute;left:8%;right:8%;bottom:-5px;height:14px;background:radial-gradient(closest-side,#000b,#0000);z-index:-1}
+#actor.left #petv{left:auto;right:146px}#actor.left #petv video{transform:scaleX(-1)}
+#actor.ride #petv,#actor.sleep #petv,#actor.gscut #petv,#scene.artride #petv,#scene.artact #petv,#scene.artsleep #petv,#scene.artdream #petv{display:none!important}
 /* pet bằng ảnh */
 #pet img{height:78px;display:block;filter:drop-shadow(0 6px 5px #0008)}
 #actor.cat #pet{left:-70px}#actor.cat #pet img{height:86px}
@@ -1477,7 +1491,8 @@ boot(false);tickHud();life();
     if(res.upg&&WEAR.includes(res.slot)){
       drawWear(res.slot);itemFly(ITEMS[res.slot].e[res.r]);play('whoosh2',.45);play('ting',.7,.12);
       if(lookOf(S.eq,S.stage)!==was){const a=$('#actor');a.classList.remove('newlook');void a.offsetWidth;a.classList.add('newlook');setTimeout(()=>a.classList.remove('newlook'),1400);
-        play('glitter',.85,.1);play('tada',.7,.2);cap(`✨ <b>${esc(S.ch.name)}</b> lột xác với ${esc(ITEMS[res.slot].t[res.r])}!`,2600)}}
+        play('glitter',.85,.1);play('tada',.7,.2);cap(`✨ <b>${esc(S.ch.name)}</b> lột xác với ${esc(ITEMS[res.slot].t[res.r])}!`,2600)}
+      else cap(`👕 <b>${esc(S.ch.name)}</b> nhận ${esc(ITEMS[res.slot].t[res.r])}`,1800)}
     else if(res.upg&&res.slot=='pet'){play('pop',.8);play('lunglinh',.6,.1)}};
 
   /* ================= PET BẰNG ẢNH + class hasart ================= */
@@ -1488,8 +1503,15 @@ boot(false);tickHud();life();
     petSync();animSync();
     drawWear()};
   /* thú cưng của Bờm đi theo mọi nơi; ổ nằm của Mướp chỉ đặt ở nhà */
+  const petv=document.createElement('div');petv.id='petv';$('#actor').appendChild(petv);
+  const PETH={1:46,2:82,3:100,4:86,5:120}, PETHW={1:30,2:84,3:96,4:74,5:104}, PETUP={4:70};   // cao khi đứng chơi / khi di chuyển (px); vẹt bay cách đất 70px
   function petSync(){
-    if(!PK.petShow)return; const t=dreamOn?5:S.eq.pet,f=`${PK.id}/pet-${t}.png`;
+    if(!PK.petShow)return; const t=dreamOn?5:S.eq.pet,f=`${PK.id}/pet-${t}.png`,ac=$('#actor');
+    const fi=`${PK.id}/pet-${t}-idle.webm`,fw=`${PK.id}/pet-${t}-walk.webm`,on=!!t&&canAlpha&&has(fi);
+    ac.classList.toggle('haspetv',on);
+    if(on){if(petv.dataset.f!=fi){petv.dataset.f=fi;const mkp=(c,src)=>`<video class="${c}" muted loop playsinline autoplay preload="auto" src="${A+src}" style="height:${(c=='pw'?PETHW[t]:PETH[t])||80}px;${c=='pw'&&PETUP[t]?'margin-bottom:'+PETUP[t]+'px':''}"></video>`;
+        petv.innerHTML=mkp('pi',fi)+(has(fw)?mkp('pw',fw):'');ac.classList.toggle('haspw',has(fw))}
+      petv.querySelectorAll('video').forEach(v=>{if(v.paused)v.play().catch(()=>{})});return}
     if(!t||!has(f))return;
     $('#pet').innerHTML=PK.id=='muop'&&base.bg!='home'&&!dreamOn?'':`<img alt="" src="${A+f}">`}
 
@@ -1507,7 +1529,19 @@ boot(false);tickHud();life();
         const x=cv.getContext('2d');x.drawImage(v,0,0,w,h);const d=x.getImageData(0,h-2,w,1).data;let n=0;for(let i=3;i<d.length;i+=4)if(d[i]>128)n++;cut=n>w*.06&&v.videoWidth/v.videoHeight>.7}catch(e){}   // người đứng (khung cao hẹp) hụt tí đế giày thì vẫn coi là toàn thân
         v.classList.toggle('cut',cut);animSync()});
     anim.appendChild(v);return v};
-  const vI=mkv('idle'),vW=mkv('walk'),vA=mkv('act');
+  const vI=mkv('idle'),vW=mkv('walk'),vA=mkv('act'),vT=mkv('thx');vT.loop=false;
+  /* cảm ơn khi được tặng quà: anim-<hình>-thx1..4.webm (1 xu, 10 xu, 100 xu, 1000 xu), phát một lần rồi về dáng đứng */
+  let thxLv=0;const thxEnd=()=>{thxLv=0;$('#actor').classList.remove('thx')};
+  vT.addEventListener('ended',thxEnd);vT.addEventListener('error',thxEnd);vT.addEventListener('playing',()=>{if(thxLv)$('#actor').classList.add('thx')});
+  function thxPlay(lv){const ac=$('#actor');
+    if(!ac.classList.contains('hasanim')||ac.classList.contains('ride')||ac.classList.contains('sleep')||scene.classList.contains('artride')||scene.classList.contains('artsleep')||scene.classList.contains('artact')||dreamOn||story)return;
+    if(thxLv&&lv<=thxLv)return;
+    let f='';for(let l=lv;l>=1&&!f;l--){const c=`${PK.id}/anim-${lookOf(S.eq,S.stage)}-thx${l}.webm`;if(has(c))f=c}
+    if(!f)return; thxLv=lv;vT.dataset.f=f;vT.src=A+f;vT.play().catch(thxEnd)}
+  /* chờ mở rương xong (màn quay đồ che mất nhân vật, và bộ đồ có thể vừa đổi) rồi mới cảm ơn, theo mức quà lớn nhất đang chờ */
+  let thxWait=0;
+  setInterval(()=>{if(thxWait&&!busy&&!$('#gacha').classList.contains('on')){const l=thxWait;thxWait=0;thxPlay(l)}},300);
+  const _thank=thank; thank=function(u,coins){_thank(u,coins);thxWait=Math.max(thxWait,coins>=1000?4:coins>=100?3:coins>=10?2:1)};
   const setV=(v,f)=>{if(v.dataset.f!=f){v.dataset.f=f;v.src=A+f}if(v.paused)v.play().catch(()=>{})};
   const gsFile=()=>{if(dreamOn||story)return '';const a=ACTS.find(a=>a.ph==base.ph&&a.bg==base.bg&&a.pose!='ride'&&a.pose!='sleep'&&base.label==a.icon+' '+a.label);
     const f=a?`${PK.id}/gs-${a.ph}-${a.bg}-${a.min}.webm`:'';return f&&has(f)?f:''};
