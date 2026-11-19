@@ -2079,6 +2079,16 @@ boot(false);tickHud();life();
 #pk .hp{position:relative;height:34px;margin:8px 0 6px;border-radius:17px;background:#450a0a;overflow:hidden;border:2px solid #fca5a5}
 #pk .hp i{position:absolute;right:0;top:0;bottom:0;background:linear-gradient(90deg,#f87171,#dc2626);transition:width .25s}
 #pk .hp span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:900 16px system-ui,sans-serif;text-shadow:0 1px 3px #000}
+
+/* ---------- PK / BOSS: hai bên đứng đối mặt và đánh nhau ---------- */
+#scene.pkfight #actor{left:40px!important;transition:left .7s ease}
+#scene.pkfight #npc{right:30px!important}
+#scene.pkfight #npcsay{display:none}
+.pjt{position:absolute;left:0;top:0;z-index:36;font-size:34px;line-height:1;pointer-events:none;filter:drop-shadow(0 0 6px #fff8)}
+.pjt.big{font-size:64px;filter:drop-shadow(0 0 14px #f0f)}
+.dmg{position:absolute;z-index:37;pointer-events:none;font:900 26px/1 system-ui,sans-serif;color:#fde047;text-shadow:0 2px 0 #000,0 0 8px #f00}
+.dmg.b{color:#fca5a5}
+.boom{position:absolute;z-index:37;pointer-events:none;font-size:70px;line-height:1}
 #pk.on~#talk{top:auto;bottom:16px}
 #pk.on~#talk:after{bottom:auto;top:-16px;border:14px solid transparent;border-bottom-color:#fde047;border-top:0}
 #pk.on~#talk.vil:after{border-bottom-color:#ef4444}
@@ -2236,7 +2246,7 @@ boot(false);tickHud();life();
   const _cap=cap;
   cap=function(t,ms){if(/^👋 Mới vào\?/.test(t))return;return _cap(t,ms)};
   const _say=say;
-  say=function(t){if(talkEl&&talkEl.classList.contains('on'))return;if(/^Cảm ơn/i.test(String(t)))return;return _say(t)};   // lời cảm ơn đã có bong bóng thoại lớn lo
+  say=function(t){if(talkEl&&talkEl.classList.contains('on'))return;if($$('#scene').classList.contains('pkfight'))return;if(/^Cảm ơn/i.test(String(t)))return;return _say(t)};   // lời cảm ơn đã có bong bóng thoại lớn lo
 
 
   /* GỌN 2: đồ thường (không đổi gì trên người) thì không che cả màn hình bằng rương —
@@ -2244,7 +2254,8 @@ boot(false);tickHud();life();
   const mini=document.createElement('div');mini.id='mini';$$('#scene').appendChild(mini);let miniT=0;
   const _reveal=reveal;
   reveal=async function(res,job,fast){
-    if(res&&!res.upg&&res.r<=2){const it=ITEMS[res.slot];
+    // đang PK/đánh boss: mọi rương chỉ hiện thẻ nhỏ, không che trận
+    if(res&&((!res.upg&&res.r<=2)||$$('#scene').classList.contains('pkfight'))){const it=ITEMS[res.slot];
       mini.style.setProperty('--c',RC[res.r]);
       mini.innerHTML=`🎁 <b>${esc(job.user)}</b> → ${it.e[res.r]} ${esc(it.t[res.r])}`;
       mini.classList.add('on');clearTimeout(miniT);miniT=setTimeout(()=>mini.classList.remove('on'),1500);
@@ -2254,6 +2265,36 @@ boot(false);tickHud();life();
   /* ô Ký ức ẩn khi chưa có mảnh nào (đỡ 1 khối "????" vô nghĩa ở góc) */
   setInterval(()=>{const c=$$('#clue');if(c&&S)c.classList.toggle('empty',!S.clues)},1000);
 
+
+
+  /* ---------- ĐÁNH NHAU: đòn bay từ phe này sang phe kia, trúng thì rung + chớp đỏ + số sát thương ---------- */
+  const SC=$$('#scene');
+  const fightOn=()=>SC.classList.contains('pkfight');
+  function fightIn(){const vc=(PK.CRISES||[]).find(c=>c.vil),bg=vc?vc.bg:base.bg,say=vc?vc.say:'';
+    SC.classList.add('pkfight');story=true;lock=true;   /* khoá ngay: cảnh lái xe/chuyển nhà không được chen vào giữa trận (sẽ ẩn mất phản diện và làm rương đứng chờ) */
+    cut(()=>storyIn({bg,at:[bg],npc:'😈',say}));setTimeout(()=>{const t=$$('#tag');if(t)t.innerHTML='⚔️ ĐỐI ĐẦU!'},900)}
+  function fightOut(win){SC.classList.remove('pkfight');try{window.ART.react&&window.ART.react(win?'yay':'sad')}catch(e){}cut(storyOut)}
+  const center=el=>{const r=el.getBoundingClientRect(),q=SC.getBoundingClientRect(),k=q.width/540;return{x:(r.left+r.width/2-q.left)/k,y:(r.top+r.height*.38-q.top)/k}};
+  const lastFx={a:0,b:0},acc={a:0,b:0};
+  function fight(side,v,big){
+    if(!fightOn()||!ev)return; acc[side]+=v; const now=performance.now();
+    if(!big&&now-lastFx[side]<220)return; lastFx[side]=now; const val=Math.round(acc[side]);acc[side]=0;
+    const from=side=='a'?$$('#actor'):$$('#npc'), to=side=='a'?$$('#npc'):$$('#actor'); if(!from||!to)return;
+    const A=center(from),B=center(to);
+    const pj=document.createElement('div');pj.className='pjt'+(big?' big':'');
+    pj.textContent=side=='a'?(big?'🔥':pick(['❤️','💖','👊','⚡'])):(big?'💣':pick(['👊','💢','🥾']));
+    SC.appendChild(pj);
+    const dy=-30-Math.random()*40;
+    const an=pj.animate([{transform:`translate(${A.x-20}px,${A.y}px) scale(.5)`},{transform:`translate(${(A.x+B.x)/2-20}px,${(A.y+B.y)/2+dy}px) scale(1)`},{transform:`translate(${B.x-20}px,${B.y}px) scale(1.25)`}],{duration:big?650:420,easing:'ease-in'});
+    an.onfinish=()=>{pj.remove();
+      to.animate([{translate:'0 0',filter:'none'},{translate:(side=='a'?'14px':'-14px')+' -4px',filter:'brightness(1.8) sepia(1) hue-rotate(-50deg) saturate(6)'},{translate:(side=='a'?'-8px':'8px')+' 0',filter:'none'},{translate:'0 0',filter:'none'}],{duration:big?600:280});
+      const d=document.createElement('div');d.className='dmg'+(side=='b'?' b':'');d.textContent='-'+val;SC.appendChild(d);
+      d.animate([{transform:`translate(${B.x-10+Math.random()*30}px,${B.y-20}px)`,opacity:1},{transform:`translate(${B.x-10+Math.random()*30}px,${B.y-90}px)`,opacity:0}],{duration:900,easing:'ease-out'}).onfinish=()=>d.remove();
+      if(big){const bm=document.createElement('div');bm.className='boom';bm.textContent='💥';SC.appendChild(bm);
+        bm.animate([{transform:`translate(${B.x-35}px,${B.y-35}px) scale(.3)`,opacity:1},{transform:`translate(${B.x-35}px,${B.y-35}px) scale(1.6)`,opacity:0}],{duration:700}).onfinish=()=>bm.remove();
+        from.animate([{translate:'0 0'},{translate:(side=='a'?'60px':'-60px')+' 0'},{translate:'0 0'}],{duration:380,easing:'ease-out'})}
+      try{AUD.play(big?'boom':'punch',big?.7:.18,0,1+Math.random()*.3)}catch(e){}};
+  }
 
   /* ---------- 5) PK: PHE NHÂN VẬT đấu PHE PHẢN DIỆN (học từ game đấu phe trên Douyin/TikTok) ----------
      - gõ 1 theo nhân vật, gõ 2 theo phản diện; thả tim / tặng quà đẩy thanh về phe mình
@@ -2265,14 +2306,14 @@ boot(false);tickHud();life();
   function pkStart(){
     S.evN=(S.evN||0)+1;
     ev={type:'pk',d:{t:'PK',vil:1},left:PKLEN,total:PKLEN,A:30,B:30,team:{},pow:{},last:''};
-    S.nextEv=1e9; hurried=false; pkEl.classList.add('on');
+    S.nextEv=1e9; hurried=false; pkEl.classList.add('on'); fightIn();
     talk('come',{vil:1,pr:8}); talk('crisis',{pr:7});
     try{AUD.play('dundun',.8);AUD.play('notify',.9,.4)}catch(e){}
     fxShow(`⚔️ PK BẮT ĐẦU!`); drawTodo(); pkDraw();
   }
   function pkAdd(u,side,v,av){
     if(!ev||ev.type!='pk')return; const x2=ev.left<=X2AT?2:1; v*=x2;
-    if(side=='a')ev.A+=v;else ev.B+=v;
+    if(side=='a')ev.A+=v;else ev.B+=v; fight(side,v,v>=150);
     if(u){ev.pow[u]=(ev.pow[u]||0)+v;if(!ev.team[u])ev.team[u]=side}
   }
   function pkSide(u){return ev.team[u]||'a'}
@@ -2290,7 +2331,7 @@ boot(false);tickHud();life();
       <div class="ft">${ev.last||(ev.left<=X2AT?'⚡ X2 SỨC MẠNH — cơ hội lật kèo!':'❤️ Thả tim = đẩy phe mình · 🎁 Quà to = ĐẠI CHIÊU')}</div>`;
   }
   // phản diện tự đánh: sức mạnh tăng đều, mạnh dần theo bậc của nhân vật
-  setInterval(()=>{if(ev&&ev.type=='pk'&&started){ev.B+=(1.1+S.stage*.15)*(ev.left<=X2AT?2:1)*(CFG.scale||1);
+  setInterval(()=>{if(ev&&ev.type=='pk'&&started){const ai=(1.1+S.stage*.15)*(ev.left<=X2AT?2:1)*(CFG.scale||1);ev.B+=ai;if(Math.random()<.5)fight('b',ai*2);
       if(!hurried&&ev.left<=X2AT){hurried=true;talk('x2',{pr:7});talk('x2',{vil:1,pr:6});fxShow('⚡ X2 SỨC MẠNH!')}}},1000);
   const _drawTodo=drawTodo;
   drawTodo=function(){
@@ -2300,6 +2341,7 @@ boot(false);tickHud();life();
     return _drawTodo()};
   function pkEnd(){
     const e=ev; ev=null; S.nextEv=S.t+rnd(...CFG.eventEvery); pkEl.classList.remove('on');
+    fightOut(e.A>=e.B);
     const win=e.A>=e.B, side=win?'a':'b', n=S.ch.name, vn=VIL[PK.id].n;
     const L=Object.entries(e.pow).filter(([u])=>e.team[u]==side).sort((a,b)=>b[1]-a[1]), mvp=L[0]&&L[0][0];
     if(win){
@@ -2393,15 +2435,15 @@ boot(false);tickHud();life();
   /* 6) boss cuối ngày */
   let lastDay=0,bossNext=false;
   function bossStart(){bossNext=false;S.evN=(S.evN||0)+1;const hp=Math.round((600+S.stage*120)*(CFG.scale||1));
-    ev={type:'boss',d:{t:'boss',vil:1},hp,max:hp,left:60,total:60,dmg:{}};S.nextEv=1e9;pkEl.classList.add('on','boss');
+    ev={type:'boss',d:{t:'boss',vil:1},hp,max:hp,left:60,total:60,dmg:{}};S.nextEv=1e9;pkEl.classList.add('on','boss');fightIn();
     talk('boss',{vil:1,pr:9});talk('boss',{pr:8});fxShow(`👹 TRÙM CUỐI NGÀY!<br><span style="font-size:24px;color:#fca5a5">${esc(VIL[PK.id].n)}</span>`);
     try{AUD.play('thunder',.8);AUD.play('dundun',.8,.5)}catch(e){}drawTodo();bossDraw()}
-  function bossHit(u,v){if(!ev||ev.type!='boss')return;ev.hp=Math.max(0,ev.hp-v);ev.dmg[u]=(ev.dmg[u]||0)+v;if(ev.hp<=0)endEvent(true);else bossDraw()}
+  function bossHit(u,v){if(!ev||ev.type!='boss')return;ev.hp=Math.max(0,ev.hp-v);ev.dmg[u]=(ev.dmg[u]||0)+v;fight('a',v,v>=150);if(ev.hp<=0)endEvent(true);else bossDraw()}
   function bossDraw(){if(!ev||ev.type!='boss')return;const left=Math.max(0,Math.ceil(ev.left)),pc=ev.hp/ev.max*100,top=Object.entries(ev.dmg).sort((a,b)=>b[1]-a[1]).slice(0,3);
     pkEl.innerHTML=`<div class="hd"><div class="tm tb" style="text-align:left">👹 ${esc(VIL[PK.id].n)}<small>trùm cuối ngày ${dayNo()}</small></div><div class="ck">${left}s</div><div class="tm ta" style="text-align:right">⚔️ Cả phòng<small>${Object.keys(ev.dmg).length} người đánh</small></div></div>
       <div class="hp"><i style="width:${pc}%"></i><span>❤️ ${Math.ceil(ev.hp)} / ${ev.max}</span></div>
       <div class="ft">${top.length?'🗡️ '+top.map(([u,v],i)=>`${['🥇','🥈','🥉'][i]} <b>${esc(u)}</b> ${Math.round(v)}`).join(' · '):'Thả tim để đánh trùm!'}</div>`}
-  function bossEnd(win){const e=ev;ev=null;S.nextEv=S.t+rnd(...CFG.eventEvery);pkEl.classList.remove('on','boss');
+  function bossEnd(win){const e=ev;ev=null;S.nextEv=S.t+rnd(...CFG.eventEvery);pkEl.classList.remove('on','boss');fightOut(!!win);
     const top=Object.entries(e.dmg).sort((a,b)=>b[1]-a[1]).slice(0,3);
     if(win){banner(`🏆 HẠ ĐƯỢC TRÙM!`,`${esc(VIL[PK.id].n)} bỏ chạy! ${top.length?'Top đánh trùm: '+top.map(([u])=>`<b>${esc(u)}</b>`).join(', ')+' mở rương khủng!':''}`,3400,()=>{try{AUD.play('tada3',1)}catch(x){}});
       top.forEach(([u],i)=>{credit(u,50);gadd(u,'p',30-i*8);for(let k=0;k<(i?2:3);k++)Q.push({user:u,min:k?3:4,label:'👹 Rương hạ trùm'})});addProg(.06,'hạ trùm');confetti(120);talk('bosswin',{pr:9});pump()}
@@ -2427,7 +2469,7 @@ boot(false);tickHud();life();
   let cliffDone=false,goldT=performance.now();
   setInterval(()=>{if(!S||!started||S.ended){cliffDone=false;return}
     if(!lastDay)lastDay=dayNo(); else{const d=dayNo();if(d>lastDay){lastDay=d;if(d%2==0)bossNext=true}}
-    if(ev&&ev.type=='boss')bossDraw();
+    if(ev&&ev.type=='boss'){bossDraw();if(Math.random()<.5)fight('b',Math.round(8+S.stage*3),Math.random()<.15)}
     // 7) câu hỏi treo khi còn 2 phút
     if(!cliffDone&&S.t>=CFG.minutes*60-120){cliffDone=true;banner(`⏳ CÒN 2 PHÚT!`,`${esc(S.ch.name)} có kịp ${esc(S.ch.goal||'lên đời')}?`,3200);talk('cliff',{pr:8})}
     // bảng vàng hiện lại mỗi ~2,5 phút khi rảnh
