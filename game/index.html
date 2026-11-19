@@ -1704,7 +1704,9 @@ boot(false);tickHud();life();
   const _thank=thank; thank=function(u,coins){_thank(u,coins);const lv=coins>=1000?4:coins>=100?3:coins>=10?2:1,now=performance.now();
     if(lv<=2&&lv<=thxLastLv&&now-thxLast<(lv==1?15000:8000))return;
     if(lv>thxQ){thxQ=lv;thxQt=now}};
-  const _pump=pump; pump=function(){if((thxQ||thxLv)&&!busy){setTimeout(pump,300);return}return _pump()};   // cảm ơn xong mới mở rương
+  // cảm ơn xong mới mở rương — nhưng chờ tối đa 5 giây: phòng có quà liên tục thì lượt cảm ơn nối đuôi nhau, rương sẽ không bao giờ mở (lỗi 20/11/2026)
+  let pumpW0=0;
+  const _pump=pump; pump=function(){if((thxQ||thxLv)&&!busy){const now=performance.now();if(!pumpW0)pumpW0=now;if(now-pumpW0<5000){setTimeout(pump,300);return}}pumpW0=0;return _pump()};
   /* trong lúc cảm ơn: không bước đi, không bắt đầu việc vặt mới */
   const _idleStep=idleStep; idleStep=async function(){if(thxLv){idleAt=performance.now()+600;return}
     if($('#actor').classList.contains('hasgs')){if(base.emo&&Math.random()<.6)emote(pick(base.emo),2200);idleAt=performance.now()+rnd(3500,6000);return}   // đang làm việc có đạo cụ (gánh hàng, bưng bún…): đứng tại chỗ, không trượt ngang
@@ -2058,6 +2060,25 @@ boot(false);tickHud();life();
 #pkfx{position:absolute;left:0;right:0;top:250px;z-index:45;text-align:center;pointer-events:none;font:900 34px/1.1 system-ui,sans-serif;color:#fff;text-shadow:0 0 12px #f0f,0 3px 0 #000;opacity:0}
 #pkfx.on{animation:pkfx 1.6s ease-out}
 @keyframes pkfx{0%{opacity:0;transform:scale(.4)}15%{opacity:1;transform:scale(1.15)}30%{transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-30px)}}
+
+/* ---------- THÊM: bảng vàng, mốc tim, gõ nhanh, boss ---------- */
+#gold{position:absolute;left:50%;top:84px;z-index:37;width:420px;transform:translate(-50%,-8px);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;
+  background:linear-gradient(#3b2a05f2,#1c1404f2);border:2px solid #fde047;border-radius:18px;padding:10px 14px;color:#fff;box-shadow:0 8px 30px #000a}
+#gold.on{opacity:1;transform:translate(-50%,0)}
+#gold h4{margin:0 0 6px;text-align:center;font:900 20px/1.1 system-ui,sans-serif;color:#fde047;letter-spacing:.5px}
+#gold .r{display:flex;align-items:center;gap:8px;font:700 15px/1.35 system-ui,sans-serif}
+#gold .r i{font-style:normal;width:26px;text-align:center}
+#gold .r span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#gold .r em{font-style:normal;font-size:11px;background:#fde04733;color:#fde68a;border-radius:8px;padding:1px 6px}
+#gold .r b{color:#fde68a;min-width:54px;text-align:right}
+.full .goldl{margin-top:10px;background:#0006;border:1px solid #fde04788;border-radius:14px;padding:8px 12px;font-size:13px;line-height:1.5;text-align:left}
+.full .goldl h5{margin:0 0 3px;color:#fde047;font-size:14px;text-align:center}
+#gbar i{background:linear-gradient(90deg,#db2777,#f472b6)!important}
+#fastk{display:inline-block;margin-top:4px;padding:3px 14px;border-radius:12px;background:#fde047;color:#111;font:900 26px/1.2 system-ui,sans-serif;letter-spacing:1px}
+#pk.boss{border-color:#ef4444;background:linear-gradient(#3a0707f0,#1a0505f0)}
+#pk .hp{position:relative;height:34px;margin:8px 0 6px;border-radius:17px;background:#450a0a;overflow:hidden;border:2px solid #fca5a5}
+#pk .hp i{position:absolute;right:0;top:0;bottom:0;background:linear-gradient(90deg,#f87171,#dc2626);transition:width .25s}
+#pk .hp span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:900 16px system-ui,sans-serif;text-shadow:0 1px 3px #000}
 #pk.on~#talk{top:auto;bottom:16px}
 #pk.on~#talk:after{bottom:auto;top:-16px;border:14px solid transparent;border-bottom-color:#fde047;border-top:0}
 #pk.on~#talk.vil:after{border-bottom-color:#ef4444}
@@ -2073,7 +2094,7 @@ boot(false);tickHud();life();
   /* ---------- 3a) một đời ngắn hơn (đổi bằng ?min= ?days= ?speed= như cũ) ---------- */
   if(!P.get('min'))CFG.minutes=15; if(!P.get('days'))CFG.days=5; if(!P.get('speed'))CFG.speed=1;   // mở rương thường nhanh hơn (thẻ nhỏ) nên phòng đông lên đời nhanh hơn trước — để tốc độ gốc
   CFG.eventEvery=[35,50];
-  EV_ROT.splice(0,EV_ROT.length,'pk','choice','guess','pk','choice','crisis');   // phản diện ghé mỗi ~2 phút
+  EV_ROT.splice(0,EV_ROT.length,'crisis','pk','choice','fast','pk','guess','choice','fast');   // sự kiện đầu tiên của mỗi đời là PK   // phản diện ghé mỗi ~2 phút
 
   /* thêm vài lần phản diện ra tay để đối đầu xuất hiện đều */
   const VIL={bom:{n:'Thiếu gia Khang',e:'😈',f:0},na:{n:'Tiểu thư Trâm Anh',e:'💅',f:1},muop:{n:'Đại ca Sẹo',e:'😾',f:0}};
@@ -2140,7 +2161,7 @@ boot(false);tickHud();life();
       if(e.type=='like')pkAdd(u,pkSide(u),(+e.count||1)*(ev.team[u]?1:.5));
       if(e.type=='gift'){const c=Math.max(1,(+e.coins||1)*(+e.count||1)),sd=pkSide(u),v=Math.round(12*Math.pow(c,.85));pkAdd(u,sd,v);
         ev.last=`${c>=100?'💥':'🎁'} <b>${esc(u)}</b> ${c>=100?'tung ĐẠI CHIÊU':'tiếp sức'} cho phe ${sd=='a'?esc(S.ch.name):esc(VIL[PK.id].n.split(' ').pop())} <b>+${v*(ev.left<=X2AT?2:1)}</b>`;
-        if(c>=100){fxShow(`💥 ĐẠI CHIÊU<br><span style="font-size:24px;color:#fde047">${esc(u)}</span>`);try{flash();quake()}catch(x){}}}
+        if(c>=100){if(sd=='a'){talk('ult',{pr:9,user:u});talk('ult',{vil:1,pr:8})}fxShow(`💥 ĐẠI CHIÊU<br><span style="font-size:24px;color:#fde047">${esc(u)}</span>`);try{flash();quake()}catch(x){}}}
       pkDraw()}
     if(e.type=='gift'){const c=Math.max(1,(+e.coins||1)*(+e.count||1));talk(c>=1000?'g4':c>=100?'g3':c>=10?'g2':'g1',{user:u,pr:c>=1000?9:c>=100?8:c>=10?6:4})}
     else if(e.type=='follow'||e.type=='share')talk(e.type,{user:u,pr:3});
@@ -2270,7 +2291,7 @@ boot(false);tickHud();life();
   }
   // phản diện tự đánh: sức mạnh tăng đều, mạnh dần theo bậc của nhân vật
   setInterval(()=>{if(ev&&ev.type=='pk'&&started){ev.B+=(1.1+S.stage*.15)*(ev.left<=X2AT?2:1)*(CFG.scale||1);
-      if(!hurried&&ev.left<=X2AT){hurried=true;talk('hurry',{pr:7});fxShow('⚡ X2 SỨC MẠNH!')}}},1000);
+      if(!hurried&&ev.left<=X2AT){hurried=true;talk('x2',{pr:7});talk('x2',{vil:1,pr:6});fxShow('⚡ X2 SỨC MẠNH!')}}},1000);
   const _drawTodo=drawTodo;
   drawTodo=function(){
     if(ev&&ev.type=='pk'){const n=esc(S.ch.name),vn=esc(VIL[PK.id].n);
@@ -2294,18 +2315,150 @@ boot(false);tickHud();life();
         setTimeout(()=>{toast(`${VIL[PK.id].e} <b>${esc(vn)}</b> cướp mất ${ITEMS[sl].e[old]} ${esc(ITEMS[sl].t[old])}!`,4);render();save()},1600)}
       window.LASTOUT={type:'crisis',win:false};
     }
+    goldPK(e,side);
     render();save();drawTodo();
   }
+
+
+  /* =================== THÊM 20/11/2026 (học từ game livestream) ===================
+     1) BẢNG VÀNG lưu qua mọi buổi live + danh hiệu      2) nhớ người xem cũ, top fan vào phòng có hiệu ứng
+     3) MỐC TIM cả phòng nhiều tầng                       4) AI GÕ NHANH NHẤT
+     5) PK: phe thắng = đoán đúng → cộng điểm bảng vàng  6) BOSS CUỐI NGÀY
+     7) câu hỏi treo lúc gần hết đời + hé lộ đời sau      8) giọng X2 / đại chiêu (đã gắn trong PK) */
+  const GK='ld_gold';
+  let G={}; try{G=JSON.parse(localStorage.getItem(GK)||'{}')||{}}catch(e){G={}}
+  const gsave=()=>{try{const E=Object.entries(G);if(E.length>400){E.sort((a,b)=>b[1].p-a[1].p);G=Object.fromEntries(E.slice(0,300))}localStorage.setItem(GK,JSON.stringify(G))}catch(e){}};
+  const gu=u=>G[u]=G[u]||{p:0,g:0,l:0,k:0,f:0,last:0};
+  const gadd=(u,f,v)=>{if(!u||u=='Cả phòng')return;const r=gu(u);r[f]=(r[f]||0)+v;if(f!='p')r.p+=f=='g'?v*10:f=='l'?v*.1:f=='k'?v*.05:f=='f'?20:0};
+  setInterval(gsave,5000);
+  function titles(){const T={},top=f=>Object.entries(G).filter(([,r])=>(r[f]||0)>0).sort((a,b)=>b[1][f]-a[1][f])[0];
+    const a=top('p'),k=top('k'),l=top('l'),f=top('f');
+    if(a)T[a[0]]='👑 Ân nhân số 1'; if(k&&!T[k[0]])T[k[0]]='😈 Tay sai của '+VIL[PK.id].n.split(' ').pop(); if(l&&!T[l[0]])T[l[0]]='❤️ Vua thả tim'; if(f&&!T[f[0]])T[f[0]]='⚡ Thần tốc';
+    return T}
+  function goldTop(n){const T=titles();return Object.entries(G).sort((a,b)=>b[1].p-a[1].p).slice(0,n).map(([u,r],i)=>({u,p:Math.round(r.p),t:T[u]||'',i}))}
+  const goldEl=document.createElement('div');goldEl.id='gold';$$('#scene').appendChild(goldEl);
+  function goldShow(ms=7000){const L=goldTop(5);if(L.length<2)return;
+    goldEl.innerHTML=`<h4>🏆 BẢNG VÀNG MỌI THỜI</h4>`+L.map(x=>`<div class="r"><i>${['🥇','🥈','🥉','4','5'][x.i]}</i><span>${esc(x.u)}</span>${x.t?`<em>${x.t}</em>`:''}<b>${x.p}</b></div>`).join('');
+    goldEl.classList.add('on');setTimeout(()=>goldEl.classList.remove('on'),ms)}
+  const goldHtml=()=>{const L=goldTop(5);return L.length?`<div class="goldl"><h5>🏆 Bảng vàng mọi thời</h5>${L.map(x=>`${['🥇','🥈','🥉','4.','5.'][x.i]} <b>${esc(x.u)}</b> ${x.t?'· '+x.t:''} — ${x.p} điểm`).join('<br>')}</div>`:''};
+  const _intro=intro; intro=function(a){const r=_intro(a);const el=$$('#intro'),go=el.querySelector('#go');if(go)go.insertAdjacentHTML('beforebegin',goldHtml());return r};
+  // màn mở đầu đã vẽ trước khi lớp này đổi CFG (15 phút / 5 ngày) → vẽ lại cho đúng số và có bảng vàng
+  if(S&&!started&&$$('#intro').classList.contains('on'))intro(false);
+  const _finish=finish; finish=async function(id){const r=_finish(id);
+    setTimeout(()=>{const el=$$('#ending'),bt=el&&el.querySelector('#again');if(bt&&!el.querySelector('.goldl')){bt.insertAdjacentHTML('beforebegin',goldHtml()+`<div class="goldl" style="text-align:center">🔮 <b>Đời sau:</b> một người mới, một món nợ mới… và ${esc(VIL[PK.id].n)} vẫn đang chờ. Ai sẽ đỡ đầu?</div>`)}},(bannerQ.length||bannerBusy)?5200:1500);
+    return r};
+
+  /* 2) nhớ người xem cũ */
+  const seenNow={}; const T0=Date.now();
+  function hello(u){
+    if(seenNow[u])return; seenNow[u]=1; const r=G[u];
+    if(r&&r.p>=30&&Date.now()-r.last>10*60e3){const T=titles();
+      if(T[u]){fxShow(`${T[u].split(' ')[0]} <span style="color:#fde047">${esc(u)}</span><br><span style="font-size:22px">${esc(T[u].slice(T[u].indexOf(' ')+1))} đã vào phòng!</span>`);talk('vip',{user:u,pr:8})}
+      else talk('back',{user:u,pr:5})}
+    gu(u).last=Date.now();
+  }
+
+  /* 3) mốc tim cả phòng nhiều tầng */
+  const GOALS=[[1000,'💃 Nhảy ăn mừng'],[3000,'🎁 Rương cả phòng'],[6000,'💎 Rương khủng'],[10000,'🌟 Bộ đồ đặc biệt'],[20000,'👑 Lên thẳng 1 đời']];
+  const gnext=()=>{const k=Math.round(CFG.scale||1);const i=GOALS.findIndex(g=>(S.likes||0)<g[0]*k);return i<0?null:{i,need:GOALS[i][0]*k,lbl:GOALS[i][1]}};
+  function likeGoal(n){S.likes=(S.likes||0)+n;const g=S.goalI||0;const nx=gnext();const reached=nx?nx.i:GOALS.length;
+    if(reached>g){S.goalI=reached;const [need,lbl]=GOALS[reached-1];
+      fxShow(`❤️ ${need.toLocaleString('vi-VN')} TIM!<br><span style="font-size:22px">${lbl}</span>`);talk('goal',{pr:8});confetti(60);
+      if(reached==1)emote('💃',3000);
+      if(reached==2)for(let i=0;i<3;i++)Q.push({user:'Cả phòng',min:i?1:3,free:true});
+      if(reached==3)for(let i=0;i<5;i++)Q.push({user:'Cả phòng',min:i?2:4,free:true});
+      if(reached==4)Q.push({user:'Cả phòng',min:5,free:true});
+      if(reached==5)addProg(1,'mốc tim');
+      pump();}}
+  const _drawTodo2=drawTodo;
+  drawTodo=function(){const r=(ev&&(ev.type=='fast'||ev.type=='boss'))?null:_drawTodo2();   // bảng cũ không biết 2 loại mới
+    if(!ev&&S){const nx=gnext(),b=$$('#todob'),inf=b&&b.querySelector('#info');
+      const html=nx?`<div class="bar" id="gbar"><i style="width:${Math.min(100,(S.likes||0)/nx.need*100)}%"></i><span>❤️ Mốc tim cả phòng → <b style="color:#fde68a">${nx.lbl}</b><em>${(S.likes||0).toLocaleString('vi-VN')}/${nx.need.toLocaleString('vi-VN')}</em></span></div>`:'';
+      if(inf)inf.outerHTML=html;else if(b&&!b.querySelector('#gbar'))b.insertAdjacentHTML('beforeend',html)}
+    if(ev&&ev.type=='fast'){$$('#todoh').innerHTML='⚡ AI GÕ NHANH NHẤT?';$$('#todob').innerHTML=`<div class="evc" style="text-align:center"><h3>Gõ đúng chữ này đầu tiên:</h3><div id="fastk">${esc(ev.w)}</div><div class="cd"><i></i></div></div>`}
+    if(ev&&ev.type=='boss'){$$('#todoh').innerHTML=`👹 TRÙM CUỐI NGÀY: ${esc(VIL[PK.id].n).toUpperCase()}`;$$('#todob').innerHTML=`<div class="evc"><h3>❤️ Thả tim = đánh · 💬 gõ "đánh" = đấm · 🎁 quà = đòn chí mạng</h3><p>Hạ trùm trong 60 giây: top 3 người đánh mạnh nhất mở rương khủng!</p><div class="cd"><i></i></div></div>`}
+    return r};
+
+  /* 4) ai gõ nhanh nhất */
+  const WORDS=['CỨU BỜM','LÊN ĐỜI','KHANG THUA','TỶ PHÚ','GIÀU TO','ĐI LÀM','CỐ LÊN','PHỞ NGON','TRẢ NỢ','QUÁ ĐỈNH'];
+  const norm=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]/g,'');
+  function fastStart(){S.evN=(S.evN||0)+1;let w=pick(WORDS);if(PK.id!='bom')w=w.replace('BỜM',S.ch.name.toUpperCase()).replace('KHANG',VIL[PK.id].n.split(' ').pop().toUpperCase());
+    ev={type:'fast',d:{t:'fast'},w,left:20,total:20};S.nextEv=1e9;talk('fast',{pr:8});fxShow(`⚡ AI GÕ NHANH NHẤT?<br><span style="font-size:30px;color:#fde047">${esc(w)}</span>`);try{AUD.play('notify',1)}catch(e){}drawTodo()}
+  function fastEnd(win){const e=ev;ev=null;S.nextEv=S.t+rnd(...CFG.eventEvery);
+    if(win){gadd(win,'f',1);credit(win,20);Q.push({user:win,min:3,label:'⚡ Rương thần tốc'});
+      banner(`⚡ ${esc(win)} NHANH NHẤT!`,`Gõ “${esc(e.w)}” đầu tiên → mở <b>rương thần tốc</b>!`,2600,()=>{try{AUD.play('tada2',1)}catch(x){}});talk('fastwin',{user:win,pr:8});pump()}
+    else banner('⌛ Hết giờ!','Không ai gõ kịp… lần sau nhanh tay nhé!',2000);
+    render();save();drawTodo()}
+
+  /* 6) boss cuối ngày */
+  let lastDay=0,bossNext=false;
+  function bossStart(){bossNext=false;S.evN=(S.evN||0)+1;const hp=Math.round((600+S.stage*120)*(CFG.scale||1));
+    ev={type:'boss',d:{t:'boss',vil:1},hp,max:hp,left:60,total:60,dmg:{}};S.nextEv=1e9;pkEl.classList.add('on','boss');
+    talk('boss',{vil:1,pr:9});talk('boss',{pr:8});fxShow(`👹 TRÙM CUỐI NGÀY!<br><span style="font-size:24px;color:#fca5a5">${esc(VIL[PK.id].n)}</span>`);
+    try{AUD.play('thunder',.8);AUD.play('dundun',.8,.5)}catch(e){}drawTodo();bossDraw()}
+  function bossHit(u,v){if(!ev||ev.type!='boss')return;ev.hp=Math.max(0,ev.hp-v);ev.dmg[u]=(ev.dmg[u]||0)+v;if(ev.hp<=0)endEvent(true);else bossDraw()}
+  function bossDraw(){if(!ev||ev.type!='boss')return;const left=Math.max(0,Math.ceil(ev.left)),pc=ev.hp/ev.max*100,top=Object.entries(ev.dmg).sort((a,b)=>b[1]-a[1]).slice(0,3);
+    pkEl.innerHTML=`<div class="hd"><div class="tm tb" style="text-align:left">👹 ${esc(VIL[PK.id].n)}<small>trùm cuối ngày ${dayNo()}</small></div><div class="ck">${left}s</div><div class="tm ta" style="text-align:right">⚔️ Cả phòng<small>${Object.keys(ev.dmg).length} người đánh</small></div></div>
+      <div class="hp"><i style="width:${pc}%"></i><span>❤️ ${Math.ceil(ev.hp)} / ${ev.max}</span></div>
+      <div class="ft">${top.length?'🗡️ '+top.map(([u,v],i)=>`${['🥇','🥈','🥉'][i]} <b>${esc(u)}</b> ${Math.round(v)}`).join(' · '):'Thả tim để đánh trùm!'}</div>`}
+  function bossEnd(win){const e=ev;ev=null;S.nextEv=S.t+rnd(...CFG.eventEvery);pkEl.classList.remove('on','boss');
+    const top=Object.entries(e.dmg).sort((a,b)=>b[1]-a[1]).slice(0,3);
+    if(win){banner(`🏆 HẠ ĐƯỢC TRÙM!`,`${esc(VIL[PK.id].n)} bỏ chạy! ${top.length?'Top đánh trùm: '+top.map(([u])=>`<b>${esc(u)}</b>`).join(', ')+' mở rương khủng!':''}`,3400,()=>{try{AUD.play('tada3',1)}catch(x){}});
+      top.forEach(([u],i)=>{credit(u,50);gadd(u,'p',30-i*8);for(let k=0;k<(i?2:3);k++)Q.push({user:u,min:k?3:4,label:'👹 Rương hạ trùm'})});addProg(.06,'hạ trùm');confetti(120);talk('bosswin',{pr:9});pump()}
+    else{banner(`💀 TRÙM QUÁ MẠNH…`,`${esc(VIL[PK.id].n)} cướp mất 2 món đồ!`,3000,()=>{try{AUD.play('wrong',1)}catch(x){}});talk('bosslose',{pr:8});
+      for(let k=0;k<2;k++){const own=SLOTS.filter(s=>S.eq[s]>0&&s!='nha');if(!own.length)break;const sl=pick(own);S.eq[sl]--;if(sl=='xe')shownXe=S.eq[sl]}}
+    render();save();drawTodo()}
+
+  /* 5) PK: phe thắng (đoán đúng) được cộng điểm bảng vàng */
+  function goldPK(e,side){const W=Object.keys(e.team).filter(u=>e.team[u]==side);W.forEach(u=>gadd(u,'p',5));
+    Object.entries(e.pow).forEach(([u,v])=>{if(e.team[u]=='b')gadd(u,'k',v)});
+    if(W.length)setTimeout(()=>toast(`🎯 ${W.length} người chọn đúng phe → +5 điểm bảng vàng`,3),3400)}
+
+  /* nối vào vòng sự kiện */
+  const _se3=startEvent;
+  startEvent=function(){if(ev||S.ended)return;
+    {const d=dayNo();if(d>lastDay){const was=lastDay;lastDay=d;if(was&&d%2==0)bossNext=true}}   // sang ngày chẵn → trùm cuối ngày tới
+    if(bossNext&&VIL[PK.id])return bossStart();
+    if(EV_ROT[((S.evN||0)+1)%EV_ROT.length]=='fast')return fastStart();
+    return _se3()};
+  if(window.LiveGame)window.LiveGame.startEvent=()=>startEvent();
+  const _ee3=endEvent;
+  endEvent=function(win,hero){const e=ev;if(e&&e.type=='fast')return fastEnd(hero||null);if(e&&e.type=='boss')return bossEnd(!!win||e.hp<=0);return _ee3(win,hero)};
+  let cliffDone=false,goldT=performance.now();
+  setInterval(()=>{if(!S||!started||S.ended){cliffDone=false;return}
+    if(!lastDay)lastDay=dayNo(); else{const d=dayNo();if(d>lastDay){lastDay=d;if(d%2==0)bossNext=true}}
+    if(ev&&ev.type=='boss')bossDraw();
+    // 7) câu hỏi treo khi còn 2 phút
+    if(!cliffDone&&S.t>=CFG.minutes*60-120){cliffDone=true;banner(`⏳ CÒN 2 PHÚT!`,`${esc(S.ch.name)} có kịp ${esc(S.ch.goal||'lên đời')}?`,3200);talk('cliff',{pr:8})}
+    // bảng vàng hiện lại mỗi ~2,5 phút khi rảnh
+    if(!ev&&!busy&&!speaking&&performance.now()-goldT>150000){goldT=performance.now();goldShow()}
+  },1000);
+
+  /* bắt sự kiện người xem cho các món mới */
+  const _oe3=onEvent;
+  onEvent=function(e){const r=_oe3(e);
+    if(!S||S.ended||!started||!e||!e.type)return r;
+    const u=String(e.user||'ẩn danh').slice(0,24),t=String(e.text||'').trim(),n=Math.max(1,+e.count||1);
+    hello(u);
+    if(e.type=='like'){gadd(u,'l',n);likeGoal(n);bossHit(u,n)}
+    if(e.type=='gift'){const c=Math.max(1,(+e.coins||1)*n);gadd(u,'g',c);bossHit(u,Math.round(6*Math.pow(c,.85)));if(ev&&ev.type=='boss'&&c>=100){fxShow(`💥 CHÍ MẠNG<br><span style="font-size:24px;color:#fde047">${esc(u)}</span>`);talk('ult',{vil:1,pr:9})}}
+    if(e.type=='comment'){gadd(u,'p',1);
+      if(ev&&ev.type=='fast'&&norm(t)==norm(ev.w))endEvent(true,u);
+      else if(ev&&ev.type=='boss'&&/đánh|danh|đấm|dam|hit/i.test(t))bossHit(u,4)}
+    return r};
+  if(window.LiveGame)window.LiveGame.event=onEvent;
 
   /* ---------- 3b) dòng kêu gọi to ---------- */
   const how=$$('#how'); how.classList.add('cuon'); const cta=document.createElement('div');cta.id='cta';how.appendChild(cta);
   const IDLE=[['💬 GÕ TÊN BẠN','{n} sẽ chào bạn tận tên'],['❤️ THẢ TIM','{n} đi làm kiếm tiền · cứu {n} khi gặp nạn'],['🎁 TẶNG 🌹 HOA HỒNG','mở rương · {n} mặc đồ bạn tặng'],['➕ FOLLOW','+1 lượt quay rương cho {n}']];
   let ctaKey='',idleI=0,idleT=0;
-  function setCta(k,a,b,cls){if(k===ctaKey){cta.querySelector('.b').innerHTML=b;return}ctaKey=k;cta.className=cls||'';cta.innerHTML=`<div class="a${a.replace(/<[^>]+>/g,'').length>22?' sm':''}">${a}</div><div class="b">${b}</div>`;void cta.offsetWidth;cta.classList.add('pop')}
+  function setCta(k,a,b,cls){if(k===ctaKey){cta.querySelector('.b').innerHTML=b;return}ctaKey=k;cta.className=cls||'';cta.innerHTML=`<div class="a${a.replace(/<[^>]+>/g,'').length>16?' sm':''}">${a}</div><div class="b">${b}</div>`;void cta.offsetWidth;cta.classList.add('pop')}
   setInterval(()=>{
     if(!S)return; duelDraw(); if(ev&&ev.type=='pk')pkDraw();
     const n=esc(S.ch.name), left=ev?Math.max(0,Math.ceil(ev.left)):0;
-    if(ev&&ev.type=='pk')setCta('pk','⚔️ GÕ 1: PHE '+n.toUpperCase()+' · GÕ 2: PHE '+esc(VIL[PK.id].n.split(' ').pop()).toUpperCase(),`❤️ thả tim đẩy phe mình · còn <b>${left}</b>s${ev.left<=X2AT?' · <b>X2!</b>':''}`,'red');
+    if(ev&&ev.type=='fast')setCta('fast'+ev.w,'⚡ GÕ: '+esc(ev.w),`người gõ đúng đầu tiên mở rương · còn <b>${left}</b>s`,'vote');
+    else if(ev&&ev.type=='boss')setCta('boss','👹 THẢ TIM ĐÁNH TRÙM!',`gõ "đánh" = đấm · quà = chí mạng · còn <b>${left}</b>s`,'red');
+    else if(ev&&ev.type=='pk')setCta('pk','⚔️ GÕ 1: PHE '+n.toUpperCase()+' · GÕ 2: PHE '+esc(VIL[PK.id].n.split(' ').pop()).toUpperCase(),`❤️ thả tim đẩy phe mình · còn <b>${left}</b>s${ev.left<=X2AT?' · <b>X2!</b>':''}`,'red');
     else if(ev&&ev.type=='crisis')setCta('crisis','❤️ THẢ TIM CỨU '+n.toUpperCase()+'!',`còn <b>${left}</b> giây · ai cứu nhiều nhất được vinh danh`,'red');
     else if(ev&&ev.opts){const opts=ev.opts.map((o,k)=>`<b>${k+1}</b> ${esc(tx(o))} (${ev.v[k]})`).join(' · ');setCta('vote'+ev.d._i,`💬 GÕ ${ev.opts.map((o,k)=>k+1).join(' · ')} ĐỂ CHỌN`,`${opts} · còn <b>${left}</b>s`,'vote')}
     else{const now=performance.now();if(now-idleT>10000||ctaKey.startsWith('vote')||ctaKey=='crisis'){idleT=now;idleI=(idleI+1)%IDLE.length;const [a,b]=IDLE[idleI];setCta('idle'+idleI,a,tx(b))}}
