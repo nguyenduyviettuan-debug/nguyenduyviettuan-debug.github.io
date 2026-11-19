@@ -254,8 +254,8 @@ html,body{height:100%;background:#05070f;overflow:hidden;font-family:system-ui,-
     <div class="t4">
       <div style="--c:var(--r2)"><u>🎁</u><b>1 xu</b>1 lượt</div>
       <div style="--c:var(--r3)"><u>🥈</u><b>10 xu</b>5 lượt</div>
-      <div style="--c:var(--r4)"><u>🥇</u><b>100 xu</b>10 lượt</div>
-      <div style="--c:var(--r5)"><u>💎</u><b>1000 xu</b>Lên 2 đời</div>
+      <div style="--c:var(--r4)"><u>🥇</u><b>100 xu</b>11 lượt</div>
+      <div style="--c:var(--r5)"><u>💎</u><b>1000 xu</b>17 lượt xịn</div>
     </div>
   </div>
   <div id="flash" class="abs"></div>
@@ -1101,10 +1101,15 @@ async function pump(){
   busy=false;maybeEnd();
 }
 function chest(user,coins){
-  let c=coins,jobs=[];
-  const pack=(n,min,label)=>{const k=Math.random()*n|0;for(let i=0;i<n;i++)jobs.push({user,min:i==k?min:1,label})};
-  while(c>=1000){pack(10,5,'💎 Rương Kim Cương');c-=1000} while(c>=100){pack(10,4,'🥇 Rương Vàng');c-=100} while(c>=10){pack(5,3,'🥈 Rương Bạc');c-=10} while(c>=1){jobs.push({user,min:1});c--}
-  Q.push(...jobs.slice(0,200));pump();
+  // 19/11/2026: số lượt quay tăng theo log của số xu (trước đây 999 xu được ~144 lượt mà 1.000 xu chỉ 10 lượt — quà TikTok thật hay có giá lẻ)
+  // quà càng to thì rương càng xịn và càng nhiều lượt "chắc chắn đồ hiếm"; một món quà không thể kết thúc cả đời
+  const c=Math.max(1,coins|0), jobs=[];
+  const [base,min,label]=c>=1000?[1000,5,'💎 Rương Kim Cương']:c>=100?[100,4,'🥇 Rương Vàng']:c>=10?[10,3,'🥈 Rương Bạc']:[1,1,''];
+  const n=c<10?c:Math.min(24,Math.round(5+6*Math.log10(c/10)));     // 10→5, 30→8, 100→11, 299→14, 999→17, 29.999→26 (trần 24)
+  const good=Math.min(3,Math.floor(c/base));                         // 1–3 lượt chắc chắn đạt bậc của rương
+  const slots=new Set();while(slots.size<Math.min(good,n))slots.add(Math.random()*n|0);
+  for(let i=0;i<n;i++)jobs.push({user,min:slots.has(i)?min:1,label:label||undefined});
+  Q.push(...jobs);pump();
 }
 
 /* =====================================================================
@@ -1974,6 +1979,77 @@ boot(false);tickHud();life();
       +`<i style="opacity:.8">Nhớ hôm cả phòng chọn “${esc(c.label)}”…</i><br>${esc(tx(pick(good?GOOD:BAD)))}`,5200,good?()=>sfx.reveal(4):sfx.bad);
     if(good){addProg(.07,'báo đáp');if(Math.random()<.25)giveClue();emote('🥹',2500)}else{addProg(-.06);emote('😣',2500)}
     window.ART.react&&window.ART.react(good?'yay':'sad');render();save()},1000);
+})();
+</script>
+<!-- =====================================================================
+     LIVE LAYER 19/11/2026: nối TikTok LIVE thật qua TikFinity (ws://localhost:21213).
+     Mở game với ?live=1 → tự nối TikFinity, ẩn bảng giả lập. ?tt=<địa chỉ ws> để nối chỗ khác.
+     Nhận cả dạng TikTok-Live-Connector {event,data} lẫn dạng nội bộ {type,user,...}.
+     ===================================================================== -->
+<style>
+#livest{position:fixed;left:8px;top:8px;z-index:99;font:600 12px/1.2 system-ui,sans-serif;padding:5px 9px;border-radius:12px;background:#000a;color:#fff;transition:opacity .6s;pointer-events:none}
+#livest.ok{background:#16a34acc}#livest.bad{background:#dc2626cc}#livest.hide{opacity:0}
+#livekeys{position:fixed;left:8px;top:36px;z-index:99;font:12px/1.5 system-ui,sans-serif;padding:8px 11px;border-radius:10px;background:#000c;color:#fff;display:none}
+#livekeys.on{display:block}#livekeys b{display:inline-block;min-width:16px;text-align:center;background:#fff3;border-radius:4px;margin-right:6px}
+</style>
+<div id="livest" class="hide"></div>
+<div id="livekeys"></div>
+<script>
+(()=>{
+  const live=P.get('live')=='1', url=P.get('tt')||(live&&!P.get('ws')?'ws://localhost:21213/':null);
+  const st=document.getElementById('livest'), keys=document.getElementById('livekeys');
+  let hideT=0;
+  const status=(txt,cls,stay)=>{st.textContent=txt;st.className=cls;clearTimeout(hideT);if(!stay)hideT=setTimeout(()=>st.classList.add('hide'),5000)};
+  const name=d=>String((d&&(d.nickname||d.uniqueId))||'ẩn danh').trim().slice(0,24)||'ẩn danh';
+  const seenSocial={};   // một người follow/share chỉ được tính 1 lần mỗi đời (chặn follow-bỏ-follow để ăn lượt quay)
+  const once=(u,t)=>{const k=(S&&S.ch?S.ch.no:0)+'|'+t+'|'+u;if(seenSocial[k])return false;seenSocial[k]=1;return true};
+  const stat={gift:0,coins:0,chat:0,like:0};
+  window.LIVESTAT=stat;
+  /* đổi sự kiện TikTok → sự kiện nội bộ của game */
+  function fromTikTok(m){
+    const t=String(m.event||'').toLowerCase(), d=m.data||{}, u=name(d), out=[];
+    if(t=='chat'||t=='comment'){const c=String(d.comment||d.text||'').trim();if(c){stat.chat++;out.push({type:'comment',user:u,text:c})}}
+    else if(t=='gift'){
+      if(+d.giftType===1&&!d.repeatEnd)return out;           // quà combo đang bấm dở: đợi lúc kết thúc chuỗi mới tính một lần
+      const per=Math.max(1,+d.diamondCount||+(d.extendedGiftInfo&&d.extendedGiftInfo.diamond_count)||1), n=Math.max(1,+d.repeatCount||1);
+      stat.gift++;stat.coins+=per*n;
+      out.push({type:'gift',user:u,coins:per*n,count:1,gift:d.giftName||''});   // cả chuỗi combo = 1 rương theo tổng xu
+    }
+    else if(t=='like'){const n=Math.max(1,+d.likeCount||1);stat.like+=n;out.push({type:'like',user:u,count:n})}
+    else if(t=='follow'||t=='share'){if(once(u,t))out.push({type:t,user:u})}
+    else if(t=='social'){const k=/share/i.test(d.displayType||d.label||'')?'share':/follow/i.test(d.displayType||d.label||'')?'follow':'';if(k&&once(u,k))out.push({type:k,user:u})}
+    return out;
+  }
+  const _onEvent=onEvent;
+  onEvent=function(e){
+    if(!e)return;
+    if(e.event&&!e.type){const list=fromTikTok(e);
+      if(live&&list.length&&!started&&document.getElementById('intro').classList.contains('on')){const g=document.getElementById('go');if(g)g.click()}  // có người tương tác thật thì tự bắt đầu
+      list.forEach(x=>_onEvent(x));return}
+    if((e.type=='follow'||e.type=='share')&&e.user&&!once(String(e.user),e.type+'#'))return;
+    return _onEvent(e)};
+  if(window.LiveGame)window.LiveGame.event=onEvent;
+  /* nối WebSocket, tự nối lại khi rớt */
+  if(url){let tries=0;
+    const conn=()=>{let w;try{w=new WebSocket(url)}catch(e){return setTimeout(conn,3000)}
+      w.onopen=()=>{tries=0;status('🟢 Đã nối TikTok LIVE','ok')};
+      w.onmessage=m=>{try{const x=JSON.parse(m.data);(Array.isArray(x)?x:[x]).forEach(onEvent)}catch(e){}};
+      w.onclose=()=>{tries++;status(tries>2?'🔴 Chưa nối được TikFinity — mở TikFinity và kết nối phiên live':'🟡 Đang nối TikTok LIVE…',tries>2?'bad':'',true);setTimeout(conn,3000)}};
+    status('🟡 Đang nối TikTok LIVE…','',true);conn()}
+  /* phím tắt cho người live (bảng giả lập bị ẩn khi ?live=1) */
+  const K=[['Space','Bắt đầu'],['M','Bật/tắt tiếng'],['E','Gọi sự kiện ngay'],['P','Bảng giả lập'],['N','Nhân vật mới'],['H','Ẩn/hiện bảng phím']];
+  keys.innerHTML=K.map(([k,v])=>`<div><b>${k}</b>${v}</div>`).join('');
+  addEventListener('keydown',e=>{
+    if(e.target&&/input|textarea/i.test(e.target.tagName))return;
+    const k=e.key.toLowerCase();
+    if(k==' '){const g=document.getElementById('go');if(g&&!started){e.preventDefault();g.click()}}
+    else if(k=='m')simAct('mute');
+    else if(k=='e')simAct('evt');
+    else if(k=='p'){const s=document.getElementById('sim');s.style.display=s.style.display=='none'?'':'none'}
+    else if(k=='n')simAct('reset');
+    else if(k=='h')keys.classList.toggle('on');
+  });
+  if(live){keys.classList.add('on');setTimeout(()=>keys.classList.remove('on'),8000)}
 })();
 </script>
 </body>
