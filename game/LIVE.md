@@ -37,6 +37,13 @@ Bấm chuột phải vào nguồn trong OBS → Interact, rồi dùng các phím
 - Mỗi người follow hoặc share chỉ được tính **một lần** mỗi đời, để tránh follow rồi bỏ follow để kiếm lượt quay.
 - Bình luận `1`, `2`, `3` dùng để bỏ phiếu ngã rẽ. Gõ đúng từ khoá thì cứu biến cố.
 
+## Nhân vật nói chuyện với người xem (từ 20/11/2026)
+- Bong bóng thoại to có **tên người xem**: cảm ơn người tặng quà và người follow, trả lời bình luận (chào, khen, cổ vũ, hỏi, chê…). Lúc phòng im lặng thì nhân vật tự rủ người xem tương tác.
+- Giọng nói là kho câu thu sẵn trong `snd/voice/<nhân vật>/`, nên khi live không cần chạy thêm chương trình nào. Tên người xem chỉ hiện trên màn hình, giọng không đọc tên.
+- Muốn sửa hay thêm câu thì sửa `voice/lines.json`, rồi chạy `art/voice_gen.py` (cần `edge-tts`) để thu lại.
+- **Đối đầu phản diện**: khoảng 2 phút một lần có biến cố, phần lớn là phản diện (Khang / Trâm Anh / Sẹo) ra tay. Bảng kéo co có đếm ngược và tên người đang cứu. Thắng thì vinh danh người cứu nhiều nhất; thua thì phản diện cướp mất một món đồ.
+- Một đời mặc định **15 phút / 5 ngày**, có thể đổi bằng `?min=`, `?days=`, `?speed=`.
+
 ## Lưu ý
 - TikTok không có cổng chính thức công khai để đọc quà. TikFinity đọc theo cách không chính thức nên đôi khi chậm hoặc rớt; game tự nối lại sau 3 giây.
 - Muốn nối nguồn khác (máy chủ riêng) thì dùng `?tt=ws://địa-chỉ:cổng`. Dạng tin nhắn giống TikTok-Live-Connector: `{"event":"gift","data":{...}}`.

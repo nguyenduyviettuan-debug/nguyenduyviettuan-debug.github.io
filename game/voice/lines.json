@@ -1,0 +1,414 @@
+{
+ "_ghi_chu": "Kho câu thoại thu sẵn. Mỗi nhóm: danh sách câu. Game hiện tên người xem trong bong bóng, giọng đọc câu chung. Tạo lại mp3 bằng art/voice_gen.py",
+ "bom": {
+  "g1": [
+   "Ơ, có quà nè! Cảm ơn nha!",
+   "Bông hồng này tui giữ kỹ luôn. Cảm ơn nhé!",
+   "Quà nhỏ mà ấm lòng ghê. Cảm ơn bạn!",
+   "Úi, được tặng quà rồi! Cảm ơn nhiều nha!",
+   "Cảm ơn nha, có thêm động lực đi làm rồi!"
+  ],
+  "g2": [
+   "Trời ơi, quà xịn quá! Cảm ơn bạn nhiều nha!",
+   "Có cái này là tui lên đời liền! Cảm ơn nhé!",
+   "Bạn chịu chơi ghê! Tui cảm ơn nhiều lắm!",
+   "Mở rương liền nè! Cảm ơn bạn nha!"
+  ],
+  "g3": [
+   "Ôi trời ơi! Quà to quá! Tui không biết nói gì luôn!",
+   "Bạn là ân nhân của đời tui đó! Cảm ơn nhiều lắm!",
+   "Rương vàng luôn! Cả phòng ơi nhìn nè!",
+   "Tui hứa sẽ thành tỷ phú để không phụ lòng bạn!"
+  ],
+  "g4": [
+   "Không thể tin được! Rương kim cương! Cảm ơn ân nhân!",
+   "Cả phòng ơi! Có đại gia vừa tặng quà khủng! Đứng dậy vỗ tay đi!",
+   "Tui xin cúi đầu cảm ơn! Đời tui đổi từ hôm nay!"
+  ],
+  "follow": [
+   "Cảm ơn đã follow nha! Thêm một lượt quay rồi!",
+   "Có người follow nè! Cảm ơn bạn nhé!",
+   "Follow rồi là người nhà rồi đó nha!",
+   "Cảm ơn nha, nhớ ở lại chơi với tui!"
+  ],
+  "share": [
+   "Cảm ơn đã chia sẻ nha! Thêm người là thêm vui!",
+   "Chia sẻ phòng rồi hả? Bạn tốt quá!"
+  ],
+  "hi": [
+   "Chào bạn nha! Vào đây chơi với tui nè!",
+   "Ơ, chào bạn! Thả tim cho tui đi làm với!",
+   "Chào nha! Ngồi xuống đây, xem tui lên đời nè!",
+   "Chào bạn mới! Gõ một hai ba để chọn số phận cho tui nha!"
+  ],
+  "praise": [
+   "Khen thật không đó? Ngại quá đi!",
+   "Bạn khen vậy là tui đỏ mặt luôn đó!",
+   "Hì hì, đẹp trai thì không nói, nhưng nghèo thì có!",
+   "Cảm ơn nha, nghe khen là có sức đi làm liền!"
+  ],
+  "cheer": [
+   "Có bạn cổ vũ là tui có động lực liền!",
+   "Cố lên! Tui sẽ cố hết sức!",
+   "Được cả phòng tiếp sức, tui không bỏ cuộc đâu!",
+   "Cảm ơn nha! Thả thêm tim là tui chạy nhanh hơn nữa!"
+  ],
+  "laugh": [
+   "Cười gì đó? Cười tui nghèo hả?",
+   "Haha, vui ghê ta!",
+   "Cười một cái là đời đẹp liền!"
+  ],
+  "ask": [
+   "Hỏi khó quá, để tui nghĩ đã!",
+   "Câu này hay nè! Ai biết trả lời giúp tui đi!",
+   "Bí mật đó, cứ xem tiếp là biết!"
+  ],
+  "food": [
+   "Nói tới ăn là tui đói bụng liền!",
+   "Ai cho tui ổ bánh mì không? Tặng một bông hồng là được!"
+  ],
+  "sad": [
+   "Đừng nói vậy mà, tui buồn đó!",
+   "Ơ, sao lại vậy? Tui sẽ cố gắng hơn mà!",
+   "Nghèo nhưng tui không bỏ cuộc đâu!"
+  ],
+  "ok": [
+   "Tui nghe nè!",
+   "Ơ, bạn nói đúng đó!",
+   "Ừ ha, cũng có lý!",
+   "Tui đọc hết bình luận nha!",
+   "Thật hả? Kể tui nghe thêm đi!",
+   "Nghe xong là muốn đi làm liền!"
+  ],
+  "idle": [
+   "Ai đang xem thì thả tim cho tui đi làm kiếm tiền với!",
+   "Gõ tên bạn vô đi, tui chào từng người luôn!",
+   "Tặng một bông hồng là tui được mở rương đồ mới đó!",
+   "Follow tui đi, mỗi follow là một lượt quay!",
+   "Cả phòng ơi, im lặng quá vậy? Gõ gì đó đi!",
+   "Thả tim đi mọi người, sắp có biến rồi đó!",
+   "Ai giúp tui lên đời, tui ghi tên lên bảng vàng!",
+   "Mới vào thì gõ chào đi, tui đang chờ nè!"
+  ],
+  "choice": [
+   "Mọi người chọn giúp tui đi! Gõ một, hai hoặc ba!",
+   "Khó quá, tui không biết chọn sao! Gõ số giúp tui với!",
+   "Số phận của tui nằm trong tay cả phòng đó! Gõ số đi!",
+   "Chọn nhanh lên, sắp hết giờ rồi!"
+  ],
+  "voted": [
+   "Cả phòng đã chọn rồi! Tui nghe theo mọi người!",
+   "Được, tui làm theo nha!",
+   "Hy vọng chọn đúng nha!"
+  ],
+  "crisis": [
+   "Cứu tui với! Thả tim thật nhanh lên!",
+   "Nguy rồi! Cả phòng thả tim cứu tui đi!",
+   "Nguy to rồi! Ai cứu tui với!",
+   "Thả tim liên tục đi, không là tui mất hết!"
+  ],
+  "hurry": [
+   "Sắp hết giờ rồi! Thả tim nữa đi!",
+   "Còn chút xíu nữa thôi! Cố lên cả phòng!"
+  ],
+  "win": [
+   "Hú hồn! Cảm ơn cả phòng đã cứu tui!",
+   "Thắng rồi! Cả phòng đỉnh quá!",
+   "Qua nạn rồi! Mọi người là nhất!"
+  ],
+  "lose": [
+   "Huhu, tui mất đồ rồi…",
+   "Không kịp rồi… lần sau cứu tui nha.",
+   "Đau quá… đời mà."
+  ]
+ },
+ "na": {
+  "g1": [
+   "Ơ, có quà cho em hả? Cảm ơn nha!",
+   "Bông hồng này em cài lên tóc liền! Cảm ơn nhé!",
+   "Quà nhỏ mà em vui ghê. Cảm ơn nha!",
+   "Được tặng quà rồi, em cảm ơn nhiều nha!",
+   "Cảm ơn nha, em có thêm động lực rồi!"
+  ],
+  "g2": [
+   "Trời ơi quà xịn quá! Em cảm ơn nhiều nha!",
+   "Có cái này là em lên đời liền! Thương ghê!",
+   "Anh chị chịu chơi quá! Em cảm ơn nhiều lắm!",
+   "Mở rương liền nè! Em cảm ơn nha!"
+  ],
+  "g3": [
+   "Ôi trời ơi! Quà to quá! Em không biết nói gì luôn!",
+   "Đây là ân nhân của đời em đó! Cảm ơn nhiều lắm!",
+   "Rương vàng luôn! Cả phòng ơi nhìn nè!",
+   "Em hứa sẽ thành nữ hoàng để không phụ lòng!"
+  ],
+  "g4": [
+   "Không thể tin được! Rương kim cương! Em cảm ơn ân nhân!",
+   "Cả phòng ơi! Có đại gia vừa tặng quà khủng! Vỗ tay đi!",
+   "Em xin cúi đầu cảm ơn! Đời em đổi từ hôm nay!"
+  ],
+  "follow": [
+   "Cảm ơn đã follow em nha! Thêm một lượt quay rồi!",
+   "Có người follow em nè! Thương ghê!",
+   "Follow rồi là người nhà rồi đó nha!",
+   "Cảm ơn nha, nhớ ở lại chơi với em!"
+  ],
+  "share": [
+   "Cảm ơn đã chia sẻ nha! Thêm người là thêm vui!",
+   "Chia sẻ phòng em hả? Tốt bụng quá!"
+  ],
+  "hi": [
+   "Chào nha! Vào đây chơi với em nè!",
+   "Ơ, chào! Thả tim cho em đi bán hàng với!",
+   "Chào nha! Ngồi xuống xem em lên đời nè!",
+   "Chào bạn mới! Gõ một hai ba để chọn số phận cho em nha!"
+  ],
+  "praise": [
+   "Khen thật không đó? Em ngại quá đi!",
+   "Khen vậy là em đỏ mặt luôn đó!",
+   "Hì hì, xinh thì có, mà nghèo cũng có!",
+   "Cảm ơn nha, nghe khen là em có sức liền!"
+  ],
+  "cheer": [
+   "Có cả phòng cổ vũ là em có động lực liền!",
+   "Cố lên! Em sẽ cố hết sức!",
+   "Được tiếp sức, em không bỏ cuộc đâu!",
+   "Cảm ơn nha! Thả thêm tim là em làm nhanh hơn nữa!"
+  ],
+  "laugh": [
+   "Cười gì đó? Cười em hả?",
+   "Haha, vui ghê ta!",
+   "Cười lên một cái là đời đẹp liền!"
+  ],
+  "ask": [
+   "Hỏi khó quá, để em nghĩ đã!",
+   "Câu này hay nè! Ai biết trả lời giúp em đi!",
+   "Bí mật đó, cứ xem tiếp là biết!"
+  ],
+  "food": [
+   "Nói tới ăn là em đói bụng liền!",
+   "Ai mời em ly trà sữa không? Một bông hồng là được rồi!"
+  ],
+  "sad": [
+   "Đừng nói vậy mà, em buồn đó!",
+   "Ơ, sao lại vậy? Em sẽ cố gắng hơn mà!",
+   "Nghèo nhưng em không bỏ cuộc đâu!"
+  ],
+  "ok": [
+   "Em nghe nè!",
+   "Ơ, nói đúng đó!",
+   "Ừ ha, cũng có lý!",
+   "Em đọc hết bình luận nha!",
+   "Thật hả? Kể em nghe thêm đi!",
+   "Nghe xong là em muốn đi làm liền!"
+  ],
+  "idle": [
+   "Ai đang xem thì thả tim cho em đi bán hàng với!",
+   "Gõ tên vô đi, em chào từng người luôn!",
+   "Tặng một bông hồng là em được mở rương đồ mới đó!",
+   "Follow em đi, mỗi follow là một lượt quay!",
+   "Cả phòng ơi, im lặng quá vậy? Gõ gì đó đi!",
+   "Thả tim đi mọi người, sắp có biến rồi đó!",
+   "Ai giúp em lên đời, em ghi tên lên bảng vàng!",
+   "Mới vào thì gõ chào đi, em đang chờ nè!"
+  ],
+  "choice": [
+   "Mọi người chọn giúp em đi! Gõ một, hai hoặc ba!",
+   "Khó quá, em không biết chọn sao! Gõ số giúp em với!",
+   "Số phận của em nằm trong tay cả phòng đó! Gõ số đi!",
+   "Chọn nhanh lên, sắp hết giờ rồi!"
+  ],
+  "voted": [
+   "Cả phòng đã chọn rồi! Em nghe theo mọi người!",
+   "Được, em làm theo nha!",
+   "Hy vọng chọn đúng nha!"
+  ],
+  "crisis": [
+   "Cứu em với! Thả tim thật nhanh lên!",
+   "Nguy rồi! Cả phòng thả tim cứu em đi!",
+   "Nguy to rồi! Ai cứu em với!",
+   "Thả tim liên tục đi, không là em mất hết!"
+  ],
+  "hurry": [
+   "Sắp hết giờ rồi! Thả tim nữa đi!",
+   "Còn chút xíu nữa thôi! Cố lên cả phòng!"
+  ],
+  "win": [
+   "Hú hồn! Cảm ơn cả phòng đã cứu em!",
+   "Thắng rồi! Cả phòng đỉnh quá!",
+   "Qua nạn rồi! Mọi người là nhất!"
+  ],
+  "lose": [
+   "Huhu, em mất đồ rồi…",
+   "Không kịp rồi… lần sau cứu em nha.",
+   "Buồn quá… đời mà."
+  ]
+ },
+ "muop": {
+  "g1": [
+   "Meo! Có quà cho tui hả? Cảm ơn nha!",
+   "Meo meo! Bông hồng thơm quá! Cảm ơn nhé!",
+   "Quà nhỏ mà tui vui ghê, meo!",
+   "Meo! Được tặng quà rồi! Cảm ơn nhiều nha!",
+   "Cảm ơn nha, tui cọ đầu vô tay bạn nè, meo!"
+  ],
+  "g2": [
+   "Meo meo! Quà xịn quá! Cảm ơn nhiều nha!",
+   "Có cái này là tui thành mèo sang liền, meo!",
+   "Bạn chịu chơi ghê! Tui rừ rừ cảm ơn nè!",
+   "Mở rương liền nè! Meo!"
+  ],
+  "g3": [
+   "Meo! Quà to quá! Tui lăn ra sàn luôn!",
+   "Bạn là ân nhân của mèo đó! Cảm ơn nhiều lắm, meo!",
+   "Rương vàng luôn! Cả phòng ơi nhìn nè, meo meo!",
+   "Tui hứa sẽ thành mèo hoàng gia, meo!"
+  ],
+  "g4": [
+   "Meooo! Rương kim cương! Cảm ơn ân nhân!",
+   "Cả phòng ơi! Có đại gia tặng quà khủng cho mèo! Vỗ tay đi!",
+   "Tui xin cúi đầu cảm ơn, meo! Đời mèo đổi từ hôm nay!"
+  ],
+  "follow": [
+   "Meo! Cảm ơn đã follow nha! Thêm một lượt quay rồi!",
+   "Có người follow mèo nè! Meo meo!",
+   "Follow rồi là người nhà của mèo rồi đó!",
+   "Cảm ơn nha, nhớ ở lại chơi với tui, meo!"
+  ],
+  "share": [
+   "Meo! Cảm ơn đã chia sẻ nha!",
+   "Chia sẻ phòng mèo hả? Tốt bụng quá, meo!"
+  ],
+  "hi": [
+   "Meo! Chào nha! Vào chơi với mèo nè!",
+   "Chào bạn! Thả tim cho mèo đi kiếm cá với, meo!",
+   "Meo meo, chào! Ngồi xuống xem mèo lên đời nè!",
+   "Chào bạn mới! Gõ một hai ba để chọn số phận cho mèo nha!"
+  ],
+  "praise": [
+   "Meo! Khen thật hả? Tui ngại quá!",
+   "Khen vậy là tui rừ rừ luôn đó, meo!",
+   "Dễ thương thì có, mà nghèo cũng có, meo!",
+   "Cảm ơn nha, nghe khen là mèo vui liền!"
+  ],
+  "cheer": [
+   "Có cả phòng cổ vũ là mèo có động lực liền, meo!",
+   "Cố lên! Mèo sẽ cố hết sức!",
+   "Được tiếp sức, mèo không bỏ cuộc đâu, meo!",
+   "Thả thêm tim là mèo chạy nhanh hơn nữa!"
+  ],
+  "laugh": [
+   "Meo? Cười gì đó? Cười mèo hả?",
+   "Haha, vui ghê, meo!",
+   "Cười lên đi, mèo cũng cười nè!"
+  ],
+  "ask": [
+   "Meo? Hỏi khó quá, để mèo nghĩ đã!",
+   "Câu này hay nè! Ai trả lời giúp mèo đi!",
+   "Bí mật đó, meo! Cứ xem tiếp là biết!"
+  ],
+  "food": [
+   "Nói tới cá là mèo đói bụng liền, meo!",
+   "Ai cho mèo con cá không? Một bông hồng là được rồi!"
+  ],
+  "sad": [
+   "Meo… đừng nói vậy mà, mèo buồn đó!",
+   "Ơ, sao lại vậy? Mèo sẽ cố gắng hơn mà!",
+   "Mèo hoang nhưng không bỏ cuộc đâu, meo!"
+  ],
+  "ok": [
+   "Meo! Mèo nghe nè!",
+   "Ơ, nói đúng đó, meo!",
+   "Ừ ha, cũng có lý!",
+   "Mèo đọc hết bình luận nha!",
+   "Thật hả? Kể mèo nghe thêm đi!",
+   "Meo meo!"
+  ],
+  "idle": [
+   "Ai đang xem thì thả tim cho mèo đi kiếm cá với!",
+   "Gõ tên vô đi, mèo chào từng người luôn!",
+   "Tặng một bông hồng là mèo được mở rương đồ mới đó!",
+   "Follow mèo đi, mỗi follow là một lượt quay!",
+   "Cả phòng ơi, im lặng quá vậy? Gõ gì đó đi, meo!",
+   "Thả tim đi mọi người, sắp có biến rồi đó!",
+   "Ai giúp mèo lên đời, mèo ghi tên lên bảng vàng!",
+   "Mới vào thì gõ chào đi, mèo đang chờ nè!"
+  ],
+  "choice": [
+   "Meo! Chọn giúp mèo đi! Gõ một, hai hoặc ba!",
+   "Khó quá, mèo không biết chọn sao! Gõ số giúp mèo với!",
+   "Số phận của mèo nằm trong tay cả phòng đó! Gõ số đi!",
+   "Chọn nhanh lên, sắp hết giờ rồi, meo!"
+  ],
+  "voted": [
+   "Cả phòng đã chọn rồi! Mèo nghe theo nha!",
+   "Được, mèo làm theo, meo!",
+   "Hy vọng chọn đúng nha!"
+  ],
+  "crisis": [
+   "Meo! Cứu mèo với! Thả tim thật nhanh lên!",
+   "Nguy rồi! Cả phòng thả tim cứu mèo đi!",
+   "Meo! Nguy to rồi! Ai cứu mèo với!",
+   "Thả tim liên tục đi, không là mèo mất hết!"
+  ],
+  "hurry": [
+   "Sắp hết giờ rồi! Thả tim nữa đi, meo!",
+   "Còn chút xíu nữa thôi! Cố lên cả phòng!"
+  ],
+  "win": [
+   "Meo! Hú hồn! Cảm ơn cả phòng đã cứu mèo!",
+   "Thắng rồi! Cả phòng đỉnh quá, meo meo!",
+   "Qua nạn rồi! Mọi người là nhất, meo!"
+  ],
+  "lose": [
+   "Meo… mèo mất đồ rồi…",
+   "Không kịp rồi… lần sau cứu mèo nha.",
+   "Huhu, meo… đời mèo mà."
+  ]
+ },
+ "vbom": {
+  "come": [
+   "Loại như mày mà cũng đòi lên đời à?",
+   "Tránh đường! Thiếu gia Khang tới đây!",
+   "Để xem đám bạn của mày cứu được không!"
+  ],
+  "win": [
+   "Ha ha! Biết thân biết phận đi!",
+   "Thấy chưa? Không ai cứu nổi mày đâu!"
+  ],
+  "lose": [
+   "Hừ! Lần này tao tha, lần sau thì đừng hòng!",
+   "Đám người này… được lắm!"
+  ]
+ },
+ "vna": {
+  "come": [
+   "Đồ nhà quê mà cũng đòi làm nữ hoàng à?",
+   "Tiểu thư Trâm Anh tới rồi đây! Tránh ra!",
+   "Để xem có ai cứu nổi cô không!"
+  ],
+  "win": [
+   "Ha ha! Biết thân phận chưa?",
+   "Thấy chưa? Chẳng ai thèm cứu cô đâu!"
+  ],
+  "lose": [
+   "Hừ! Lần này coi như cô may mắn!",
+   "Được lắm… cứ chờ đấy!"
+  ]
+ },
+ "vmuop": {
+  "come": [
+   "Khu này của tao! Nộp cá đây!",
+   "Đại ca Sẹo tới rồi! Mèo con tránh ra!",
+   "Để xem đám người kia cứu được mày không!"
+  ],
+  "win": [
+   "Ha ha! Cá này của tao!",
+   "Thấy chưa? Không ai cứu nổi mày đâu!"
+  ],
+  "lose": [
+   "Hừ! Lần này tao nhường!",
+   "Đám người này… được lắm, nhớ mặt tao!"
+  ]
+ }
+}
