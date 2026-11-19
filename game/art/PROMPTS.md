@@ -252,3 +252,9 @@ game/art/<nv>/pet-<bậc>-idle.webm, pet-<bậc>-walk.webm   thú cưng đứng 
 - Na có 14 hoạt cảnh hành động `gs-*.webm` (ăn vặt, bán rong, phụ quán, gọi điện, livestream, xưởng may, điều hành, trà sữa, xem phim, hẹn hò, dự tiệc, du thuyền, yoga, spa). Clip máy đoán sai cảnh cận / toàn thân thì chỉ định trong `GSCUT`. Đang làm việc có đạo cụ thì nhân vật đứng tại chỗ.
 - 16 nhân vật phụ ảnh thật mới trong `game/art/npc/` (quản lý chợ, kẻ móc túi, nữ trưởng phòng, quý cô chảnh, hai cô bạn, con buôn hàng nhái, PT gym, đại gia golf, cậu bé bán vòng ốc, em bé, fan quay clip, nhiếp ảnh gia, chó poodle, mèo trắng, cụ già khiếm thị, người đoàn kiểm tra), bảng emoji → ảnh `NPC`, cỡ con vật / trẻ em `NPCH`. Tách nền ảnh tĩnh bằng `art/keyimg.py` (xoá cả khe kín giữa tay và thân). Vật chưa có ảnh hiện trong huy hiệu tròn.
 - Sửa: có biến lúc đang ngủ thì nền đổi hẳn, không còn ảnh ngủ sau lưng nhân vật.
+
+## 14. Hệ quả của lựa chọn (19/11/2026)
+
+- Ảnh kết quả `game/art/<nv>/out-<số ngã rẽ>-<a|b|c>[f].jpg` (số ngã rẽ = vị trí trong mảng `CHOICES` của nhân vật, đã gồm ngã rẽ phản diện; `f` = chơi liều rồi thua). Hiện trong bảng chốt lựa chọn và trong bảng "Nhân quả". Tạo bằng Muse, mỗi lượt 4 ảnh, ngang 4:3, đính kèm ảnh mặt nhân vật ở lượt đầu của đoạn chat.
+- Clip phản ứng `anim-<hình>-yay|sad|shock.webm` (vui sướng / buồn bã / sững sờ), tách nền `gs3.py once`. Muse rất hay tự zoom cận ở cảnh buồn: dặn "quay như camera an ninh cố định, người chỉ cao 60% khung" thì Na đạt, Bờm vẫn hay hỏng; clip nào bị cắt chân thì bỏ, game tự dùng hiệu ứng dự phòng (xụ xuống / giật mình).
+- Mã ở khối "HỆ QUẢ" cuối `index.html`: thanh Nhân phẩm trên HUD, số nhân phẩm bay lên, nhân vật phụ nhảy/lắc theo kết quả, nhân quả quay lại sau 1–2 ngày với lựa chọn nhân phẩm ±2 trở lên (`S.cbq`), một số lựa chọn đổi đồ thật (`eq:{xe:1}`…).
