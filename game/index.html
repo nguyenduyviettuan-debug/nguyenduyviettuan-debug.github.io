@@ -2027,12 +2027,41 @@ boot(false);tickHud();life();
 #cta{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-radius:16px;background:#ffffff0d;border:2px solid #ffffff22}
 #cta .a{font:900 34px/1.1 system-ui,sans-serif;color:#fff;letter-spacing:.3px}
 #cta .b{font:700 17px/1.3 system-ui,sans-serif;color:#fde68a;margin-top:7px}
+#cta .a.sm{font-size:24px;animation:none!important;white-space:nowrap}
 #cta.pop .a{animation:c_pop .45s ease-out}
 @keyframes c_pop{0%{transform:scale(.7);opacity:.2}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 #cta.red{background:#7f1d1d55;border-color:#ef4444}#cta.red .a{color:#fecaca;animation:d_pulse .6s infinite alternate}
 #cta.vote{background:#1e3a8a44;border-color:#60a5fa}
 #mini{position:absolute;left:50%;bottom:62px;z-index:30;transform:translate(-50%,10px);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;background:#0b1020e6;border:2px solid var(--c,#94a3b8);border-radius:14px;padding:6px 14px;font:700 16px/1.25 system-ui,sans-serif;color:#fff;white-space:nowrap;max-width:500px;overflow:hidden;text-overflow:ellipsis}
 #mini.on{opacity:1;transform:translate(-50%,0)}
+/* ---------- PK: phe nhân vật đấu phe phản diện ---------- */
+#pk{position:absolute;left:8px;right:8px;top:80px;z-index:38;display:none;background:linear-gradient(#0b1020ee,#140a1aee);border:2px solid #fde047;border-radius:18px;padding:8px 10px 9px;color:#fff;box-shadow:0 8px 30px #000a}
+#pk.on{display:block;animation:d_in .35s ease-out}
+#pk .hd{display:flex;align-items:center;justify-content:space-between;gap:6px}
+#pk .tm{flex:1;min-width:0;font:900 19px/1.05 system-ui,sans-serif;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pk .tm small{display:block;font:700 12px/1.2 system-ui,sans-serif;opacity:.85;text-transform:none}
+#pk .ta{color:#7dd3fc}#pk .tb{color:#fca5a5;text-align:right}
+#pk .ck{font:900 30px/1 system-ui,sans-serif;color:#fde047;min-width:70px;text-align:center;text-shadow:0 2px 8px #000}
+#pk .ck.x2{color:#f472b6;animation:d_pulse .45s infinite alternate}
+#pk .bar{position:relative;height:30px;margin:7px 0 6px;border-radius:15px;background:linear-gradient(90deg,#dc2626,#f87171);overflow:hidden;border:2px solid #fff4}
+#pk .bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#1d4ed8,#38bdf8);transition:width .3s}
+#pk .bar b{position:absolute;top:-3px;bottom:-3px;width:6px;margin-left:-3px;background:#fff;border-radius:3px;box-shadow:0 0 10px #fff;transition:left .3s}
+#pk .bar span{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 12px;font:900 15px system-ui,sans-serif;text-shadow:0 1px 3px #000}
+#pk .ppl{display:flex;justify-content:space-between;gap:8px;min-height:44px}
+#pk .side{display:flex;gap:4px;flex-wrap:nowrap;overflow:hidden;max-width:49%}
+#pk .side.b{justify-content:flex-end}
+#pk .av{width:40px;flex:none;text-align:center;font:700 9px/1.1 system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pk .av u{display:flex;width:34px;height:34px;margin:0 auto 1px;border-radius:50%;align-items:center;justify-content:center;text-decoration:none;font:900 15px system-ui,sans-serif;background:#1d4ed8 center/cover;border:2px solid #7dd3fc}
+#pk .side.b .av u{background-color:#b91c1c;border-color:#fca5a5}
+#pk .av.top u{border-color:#fde047;box-shadow:0 0 8px #fde047}
+#pk .ft{text-align:center;font:800 15px/1.25 system-ui,sans-serif;color:#fde68a;min-height:19px;margin-top:3px}
+#pkfx{position:absolute;left:0;right:0;top:250px;z-index:45;text-align:center;pointer-events:none;font:900 34px/1.1 system-ui,sans-serif;color:#fff;text-shadow:0 0 12px #f0f,0 3px 0 #000;opacity:0}
+#pkfx.on{animation:pkfx 1.6s ease-out}
+@keyframes pkfx{0%{opacity:0;transform:scale(.4)}15%{opacity:1;transform:scale(1.15)}30%{transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-30px)}}
+#pk.on~#talk{top:auto;bottom:16px}
+#pk.on~#talk:after{bottom:auto;top:-16px;border:14px solid transparent;border-bottom-color:#fde047;border-top:0}
+#pk.on~#talk.vil:after{border-bottom-color:#ef4444}
+
 #mini b{color:#fde047}
 #clue.empty{display:none}
 #ladder{display:none!important}   /* bảng bậc đồ: dòng chữ dưới cảnh đã báo món mới, bỏ để đỡ chồng chữ */
@@ -2044,7 +2073,7 @@ boot(false);tickHud();life();
   /* ---------- 3a) một đời ngắn hơn (đổi bằng ?min= ?days= ?speed= như cũ) ---------- */
   if(!P.get('min'))CFG.minutes=15; if(!P.get('days'))CFG.days=5; if(!P.get('speed'))CFG.speed=1;   // mở rương thường nhanh hơn (thẻ nhỏ) nên phòng đông lên đời nhanh hơn trước — để tốc độ gốc
   CFG.eventEvery=[35,50];
-  EV_ROT.splice(0,EV_ROT.length,'choice','crisis','guess','choice','crisis','choice');   // phản diện ghé mỗi ~2 phút
+  EV_ROT.splice(0,EV_ROT.length,'pk','choice','guess','pk','choice','crisis');   // phản diện ghé mỗi ~2 phút
 
   /* thêm vài lần phản diện ra tay để đối đầu xuất hiện đều */
   const VIL={bom:{n:'Thiếu gia Khang',e:'😈',f:0},na:{n:'Tiểu thư Trâm Anh',e:'💅',f:1},muop:{n:'Đại ca Sẹo',e:'😾',f:0}};
@@ -2104,6 +2133,15 @@ boot(false);tickHud();life();
     const r=_onEvent(e);
     if(!S||S.ended||!started||!e||!e.type)return r;
     const u=String(e.user||'ẩn danh').slice(0,24), now=performance.now(), t=String(e.text||'').trim();
+    if(e.av&&/^https?:/.test(e.av))AV[u]=e.av;
+    if(ev&&ev.type=='pk'){const tl=t.toLowerCase();
+      if(e.type=='comment'&&!ev.team[u]){const vn=VIL[PK.id].n.split(' ').pop().toLowerCase(),cn=S.ch.name.toLowerCase();
+        if(t=='1'||tl==cn){ev.team[u]='a';pkAdd(u,'a',3)}else if(t=='2'||tl.includes(vn)){ev.team[u]='b';pkAdd(u,'b',3)}}
+      if(e.type=='like')pkAdd(u,pkSide(u),(+e.count||1)*(ev.team[u]?1:.5));
+      if(e.type=='gift'){const c=Math.max(1,(+e.coins||1)*(+e.count||1)),sd=pkSide(u),v=Math.round(12*Math.pow(c,.85));pkAdd(u,sd,v);
+        ev.last=`${c>=100?'💥':'🎁'} <b>${esc(u)}</b> ${c>=100?'tung ĐẠI CHIÊU':'tiếp sức'} cho phe ${sd=='a'?esc(S.ch.name):esc(VIL[PK.id].n.split(' ').pop())} <b>+${v*(ev.left<=X2AT?2:1)}</b>`;
+        if(c>=100){fxShow(`💥 ĐẠI CHIÊU<br><span style="font-size:24px;color:#fde047">${esc(u)}</span>`);try{flash();quake()}catch(x){}}}
+      pkDraw()}
     if(e.type=='gift'){const c=Math.max(1,(+e.coins||1)*(+e.count||1));talk(c>=1000?'g4':c>=100?'g3':c>=10?'g2':'g1',{user:u,pr:c>=1000?9:c>=100?8:c>=10?6:4})}
     else if(e.type=='follow'||e.type=='share')talk(e.type,{user:u,pr:3});
     else if(e.type=='comment'&&!/^[123]$/.test(t)&&!(ev&&ev.d&&ev.d.kw&&t.toLowerCase().includes(ev.d.kw))){
@@ -2118,6 +2156,8 @@ boot(false);tickHud();life();
   duel.innerHTML=`<div class="top"><img class="vimg" alt=""><div class="vemo">⚠️</div><div class="ti"><h3></h3><p></p></div><div class="clock"></div></div>
     <div class="tug"><i></i><span></span></div><div class="cta"></div><div class="sv"></div>`;
   $$('#scene').appendChild(duel);
+  const pkEl=document.createElement('div');pkEl.id='pk';$$('#scene').appendChild(pkEl);
+  const pkFx=document.createElement('div');pkFx.id='pkfx';$$('#scene').appendChild(pkFx);
   talkEl=document.createElement('div');talkEl.id='talk';$$('#scene').appendChild(talkEl);
   const vimg=duel.querySelector('.vimg'); vimg.onerror=()=>duel.classList.add('gen');
   let hurried=false;
@@ -2137,6 +2177,7 @@ boot(false);tickHud();life();
   }
   const _startEvent=startEvent;
   startEvent=function(){const had=ev;
+    if(!had&&!S.ended&&EV_ROT[((S.evN||0)+1)%EV_ROT.length]=='pk'&&VIL[PK.id]){pkStart();return}
     // phản diện xuất hiện ở bất cứ đâu nhân vật đang đứng → biến cố thường là phản diện ra tay
     if(!had)(PK.CRISES||[]).forEach(c=>{if(c.vil&&c.at&&!c.at.includes(base.bg))c.at.push(base.bg)});
     // khoảng 6/10 lần biến cố là phản diện ra tay (kẻ thù quen mặt → người xem có lý do cứu)
@@ -2150,6 +2191,7 @@ boot(false);tickHud();life();
   const _endEvent=endEvent;
   endEvent=function(win,hero){
     const e=ev;
+    if(e&&e.type=='pk')return pkEnd();
     if(e&&e.type=='crisis'&&win&&!hero){const top=Object.entries(e.sv||{}).sort((a,b)=>b[1]-a[1])[0];if(top)hero=top[0]}
     if(e&&e.type=='crisis'&&win&&hero)credit(hero,30);
     const r=_endEvent(win,hero);
@@ -2191,15 +2233,80 @@ boot(false);tickHud();life();
   /* ô Ký ức ẩn khi chưa có mảnh nào (đỡ 1 khối "????" vô nghĩa ở góc) */
   setInterval(()=>{const c=$$('#clue');if(c&&S)c.classList.toggle('empty',!S.clues)},1000);
 
+
+  /* ---------- 5) PK: PHE NHÂN VẬT đấu PHE PHẢN DIỆN (học từ game đấu phe trên Douyin/TikTok) ----------
+     - gõ 1 theo nhân vật, gõ 2 theo phản diện; thả tim / tặng quà đẩy thanh về phe mình
+     - phản diện tự có sức mạnh tăng dần → phòng im là thua
+     - 20 giây cuối: X2 SỨC MẠNH (cửa lật kèo); quà ≥100 xu = ĐẠI CHIÊU mang tên người tặng
+     - avatar người chơi đứng hai bên (ảnh TikTok qua TikFinity, không có thì chữ cái đầu) */
+  const AV={}; const PKLEN=75, X2AT=20;
+  const fxShow=h=>{pkFx.innerHTML=h;pkFx.classList.remove('on');void pkFx.offsetWidth;pkFx.classList.add('on')};
+  function pkStart(){
+    S.evN=(S.evN||0)+1;
+    ev={type:'pk',d:{t:'PK',vil:1},left:PKLEN,total:PKLEN,A:30,B:30,team:{},pow:{},last:''};
+    S.nextEv=1e9; hurried=false; pkEl.classList.add('on');
+    talk('come',{vil:1,pr:8}); talk('crisis',{pr:7});
+    try{AUD.play('dundun',.8);AUD.play('notify',.9,.4)}catch(e){}
+    fxShow(`⚔️ PK BẮT ĐẦU!`); drawTodo(); pkDraw();
+  }
+  function pkAdd(u,side,v,av){
+    if(!ev||ev.type!='pk')return; const x2=ev.left<=X2AT?2:1; v*=x2;
+    if(side=='a')ev.A+=v;else ev.B+=v;
+    if(u){ev.pow[u]=(ev.pow[u]||0)+v;if(!ev.team[u])ev.team[u]=side}
+  }
+  function pkSide(u){return ev.team[u]||'a'}
+  function pkDraw(){
+    if(!ev||ev.type!='pk'){pkEl.classList.remove('on');return}
+    const n=S.ch.name, vn=VIL[PK.id].n.split(' ').pop(), left=Math.max(0,Math.ceil(ev.left)), tot=ev.A+ev.B, pa=ev.A/tot*100;
+    const ppl=side=>Object.entries(ev.pow).filter(([u])=>ev.team[u]==side).sort((a,b)=>b[1]-a[1]);
+    const PA=ppl('a'),PB=ppl('b');
+    const avs=(L,k)=>L.slice(0,5).map(([u],i)=>{const url=AV[u];return `<div class="av${i==0?' top':''}"><u style="${url?`background-image:url('${url.replace(/['"]/g,'')}')`:''}">${url?'':esc(u.trim()[0]||'?').toUpperCase()}</u>${i==0?'👑':''}${esc(u)}</div>`}).join('');
+    pkEl.innerHTML=`<div class="hd"><div class="tm ta">💙 Phe ${esc(n)}<small>gõ <b>1</b> · ${PA.length} người</small></div>
+      <div class="ck${ev.left<=X2AT?' x2':''}">${ev.left<=X2AT?'X2 ':''}${left}s</div>
+      <div class="tm tb">Phe ${esc(vn)} ❤️<small>gõ <b>2</b> · ${PB.length} người</small></div></div>
+      <div class="bar"><i style="width:${pa}%"></i><b style="left:${pa}%"></b><span><em>${Math.round(ev.A)}</em><em>${Math.round(ev.B)}</em></span></div>
+      <div class="ppl"><div class="side a">${avs(PA)}</div><div class="side b">${avs(PB)}</div></div>
+      <div class="ft">${ev.last||(ev.left<=X2AT?'⚡ X2 SỨC MẠNH — cơ hội lật kèo!':'❤️ Thả tim = đẩy phe mình · 🎁 Quà to = ĐẠI CHIÊU')}</div>`;
+  }
+  // phản diện tự đánh: sức mạnh tăng đều, mạnh dần theo bậc của nhân vật
+  setInterval(()=>{if(ev&&ev.type=='pk'&&started){ev.B+=(1.1+S.stage*.15)*(ev.left<=X2AT?2:1)*(CFG.scale||1);
+      if(!hurried&&ev.left<=X2AT){hurried=true;talk('hurry',{pr:7});fxShow('⚡ X2 SỨC MẠNH!')}}},1000);
+  const _drawTodo=drawTodo;
+  drawTodo=function(){
+    if(ev&&ev.type=='pk'){const n=esc(S.ch.name),vn=esc(VIL[PK.id].n);
+      $$('#todoh').innerHTML=`⚔️ PK: PHE ${n.toUpperCase()} vs ${vn.toUpperCase()}`;
+      $$('#todob').innerHTML=`<div class="evc"><h3>Gõ <b>1</b> theo ${n} · gõ <b>2</b> theo ${vn}</h3><p>❤️ thả tim đẩy phe mình · 🎁 quà ≥100 xu = ĐẠI CHIÊU · 20 giây cuối X2</p><div class="cd"><i></i></div></div>`;return}
+    return _drawTodo()};
+  function pkEnd(){
+    const e=ev; ev=null; S.nextEv=S.t+rnd(...CFG.eventEvery); pkEl.classList.remove('on');
+    const win=e.A>=e.B, side=win?'a':'b', n=S.ch.name, vn=VIL[PK.id].n;
+    const L=Object.entries(e.pow).filter(([u])=>e.team[u]==side).sort((a,b)=>b[1]-a[1]), mvp=L[0]&&L[0][0];
+    if(win){
+      banner(`🏆 PHE ${esc(n).toUpperCase()} THẮNG!`,(mvp?`MVP: <b style="color:#fde047">${esc(mvp)}</b> · `:'')+`Top 3 phe ${esc(n)} được mở <b>rương chiến thắng</b>!`,3200,()=>{try{AUD.play('tada3',1)}catch(e){}});
+      L.slice(0,3).forEach(([u])=>{credit(u,40);Q.push({user:u,min:3,label:'🏆 Rương chiến thắng'})});
+      addProg(.04,'thắng PK'); emote('🏆'); talk('win',{pr:7,user:mvp}); talk('lose',{vil:1,pr:6}); confetti(80); pump();
+      window.LASTOUT={type:'crisis',win:true};
+    }else{
+      banner(`😈 PHE ${esc(vn).toUpperCase()} THẮNG…`,mvp?`Tay sai số 1 của ${esc(vn)}: <b style="color:#fca5a5">${esc(mvp)}</b>`:`Không ai đứng ra bảo vệ ${esc(n)}…`,3200,()=>{try{AUD.play('wrong',1)}catch(e){}});
+      L.slice(0,3).forEach(([u])=>credit(u,25));
+      talk('win',{vil:1,pr:7}); talk('lose',{pr:6}); emote('😭');
+      const own=SLOTS.filter(s=>S.eq[s]>0&&s!='nha'); if(own.length){const sl=pick(own),old=S.eq[sl];S.eq[sl]=old-1;if(sl=='xe')shownXe=S.eq[sl];
+        setTimeout(()=>{toast(`${VIL[PK.id].e} <b>${esc(vn)}</b> cướp mất ${ITEMS[sl].e[old]} ${esc(ITEMS[sl].t[old])}!`,4);render();save()},1600)}
+      window.LASTOUT={type:'crisis',win:false};
+    }
+    render();save();drawTodo();
+  }
+
   /* ---------- 3b) dòng kêu gọi to ---------- */
   const how=$$('#how'); how.classList.add('cuon'); const cta=document.createElement('div');cta.id='cta';how.appendChild(cta);
   const IDLE=[['💬 GÕ TÊN BẠN','{n} sẽ chào bạn tận tên'],['❤️ THẢ TIM','{n} đi làm kiếm tiền · cứu {n} khi gặp nạn'],['🎁 TẶNG 🌹 HOA HỒNG','mở rương · {n} mặc đồ bạn tặng'],['➕ FOLLOW','+1 lượt quay rương cho {n}']];
   let ctaKey='',idleI=0,idleT=0;
-  function setCta(k,a,b,cls){if(k===ctaKey){cta.querySelector('.b').innerHTML=b;return}ctaKey=k;cta.className=cls||'';cta.innerHTML=`<div class="a">${a}</div><div class="b">${b}</div>`;void cta.offsetWidth;cta.classList.add('pop')}
+  function setCta(k,a,b,cls){if(k===ctaKey){cta.querySelector('.b').innerHTML=b;return}ctaKey=k;cta.className=cls||'';cta.innerHTML=`<div class="a${a.replace(/<[^>]+>/g,'').length>22?' sm':''}">${a}</div><div class="b">${b}</div>`;void cta.offsetWidth;cta.classList.add('pop')}
   setInterval(()=>{
-    if(!S)return; duelDraw();
+    if(!S)return; duelDraw(); if(ev&&ev.type=='pk')pkDraw();
     const n=esc(S.ch.name), left=ev?Math.max(0,Math.ceil(ev.left)):0;
-    if(ev&&ev.type=='crisis')setCta('crisis','❤️ THẢ TIM CỨU '+n.toUpperCase()+'!',`còn <b>${left}</b> giây · ai cứu nhiều nhất được vinh danh`,'red');
+    if(ev&&ev.type=='pk')setCta('pk','⚔️ GÕ 1: PHE '+n.toUpperCase()+' · GÕ 2: PHE '+esc(VIL[PK.id].n.split(' ').pop()).toUpperCase(),`❤️ thả tim đẩy phe mình · còn <b>${left}</b>s${ev.left<=X2AT?' · <b>X2!</b>':''}`,'red');
+    else if(ev&&ev.type=='crisis')setCta('crisis','❤️ THẢ TIM CỨU '+n.toUpperCase()+'!',`còn <b>${left}</b> giây · ai cứu nhiều nhất được vinh danh`,'red');
     else if(ev&&ev.opts){const opts=ev.opts.map((o,k)=>`<b>${k+1}</b> ${esc(tx(o))} (${ev.v[k]})`).join(' · ');setCta('vote'+ev.d._i,`💬 GÕ ${ev.opts.map((o,k)=>k+1).join(' · ')} ĐỂ CHỌN`,`${opts} · còn <b>${left}</b>s`,'vote')}
     else{const now=performance.now();if(now-idleT>10000||ctaKey.startsWith('vote')||ctaKey=='crisis'){idleT=now;idleI=(idleI+1)%IDLE.length;const [a,b]=IDLE[idleI];setCta('idle'+idleI,a,tx(b))}}
     // im lặng lâu thì nhân vật tự rủ người xem
@@ -2233,7 +2340,7 @@ boot(false);tickHud();life();
   window.LIVESTAT=stat;
   /* đổi sự kiện TikTok → sự kiện nội bộ của game */
   function fromTikTok(m){
-    const t=String(m.event||'').toLowerCase(), d=m.data||{}, u=name(d), out=[];
+    const t=String(m.event||'').toLowerCase(), d=m.data||{}, u=name(d), out=[], av=d.profilePictureUrl||(d.userDetails&&d.userDetails.profilePictureUrls&&d.userDetails.profilePictureUrls[0])||'';
     if(t=='chat'||t=='comment'){const c=String(d.comment||d.text||'').trim();if(c){stat.chat++;out.push({type:'comment',user:u,text:c})}}
     else if(t=='gift'){
       if(+d.giftType===1&&!d.repeatEnd)return out;           // quà combo đang bấm dở: đợi lúc kết thúc chuỗi mới tính một lần
@@ -2244,6 +2351,7 @@ boot(false);tickHud();life();
     else if(t=='like'){const n=Math.max(1,+d.likeCount||1);stat.like+=n;out.push({type:'like',user:u,count:n})}
     else if(t=='follow'||t=='share'){if(once(u,t))out.push({type:t,user:u})}
     else if(t=='social'){const k=/share/i.test(d.displayType||d.label||'')?'share':/follow/i.test(d.displayType||d.label||'')?'follow':'';if(k&&once(u,k))out.push({type:k,user:u})}
+    out.forEach(o=>{if(av)o.av=av});
     return out;
   }
   const _onEvent=onEvent;
