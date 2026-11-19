@@ -258,3 +258,10 @@ game/art/<nv>/pet-<bậc>-idle.webm, pet-<bậc>-walk.webm   thú cưng đứng 
 - Ảnh kết quả `game/art/<nv>/out-<số ngã rẽ>-<a|b|c>[f].jpg` (số ngã rẽ = vị trí trong mảng `CHOICES` của nhân vật, đã gồm ngã rẽ phản diện; `f` = chơi liều rồi thua). Hiện trong bảng chốt lựa chọn và trong bảng "Nhân quả". Tạo bằng Muse, mỗi lượt 4 ảnh, ngang 4:3, đính kèm ảnh mặt nhân vật ở lượt đầu của đoạn chat.
 - Clip phản ứng `anim-<hình>-yay|sad|shock.webm` (vui sướng / buồn bã / sững sờ), tách nền `gs3.py once`. Muse rất hay tự zoom cận ở cảnh buồn: dặn "quay như camera an ninh cố định, người chỉ cao 60% khung" thì Na đạt, Bờm vẫn hay hỏng; clip nào bị cắt chân thì bỏ, game tự dùng hiệu ứng dự phòng (xụ xuống / giật mình).
 - Mã ở khối "HỆ QUẢ" cuối `index.html`: thanh Nhân phẩm trên HUD, số nhân phẩm bay lên, nhân vật phụ nhảy/lắc theo kết quả, nhân quả quay lại sau 1–2 ngày với lựa chọn nhân phẩm ±2 trở lên (`S.cbq`), một số lựa chọn đổi đồ thật (`eq:{xe:1}`…).
+
+## 15. Âm thanh v2 và rà lỗi Na (19/11/2026)
+- Nhạc nền viết lại bằng `art/music2.py` (ngoài repo, `D:\Tuan\Test Game\art\`): lofi/ambient có đoạn A-A-B-A, giai điệu, vang, mỗi bài 40-115 giây, độ lớn trung bình khoảng -23 dB (bản cũ -13 dB). Độ dài vòng lặp ghi vào `MUSIC` trong POLISH LAYER.
+- Nhạc tự hạ (ducking) khi có tiếng quan trọng: bảng `KEY` (tên tiếng → [mức nhạc còn lại, số giây giữ]). Mở sự kiện chỉ còn một tiếng rõ (`notify` / `dundun` / `thunder`), chốt kết quả `snap` → `right`/`wrong`/`dundun`; tiếng thả tim và bình luận nhỏ và thưa hơn.
+- `gs3.py` có thêm chế độ `seam`: nối vòng ở cặp khung giống nhau nhất, chỉ hoà 3 khung; dùng thay `loop` (hoà 10 khung đầu-cuối gây bóng ma khi người đổi tư thế).
+- `GSLOOK` trong game: hoạt cảnh chỉ hiện khi bộ đồ trong clip trùng bộ Na đang mặc, tránh nhảy đồ.
+- Na bộ 1 đi bộ: làm lại vì bản cũ khuỵu gối; lệnh Muse phải dặn "lưng thẳng, chân duỗi thẳng khi chạm đất, không khuỵu gối, không nhún".
