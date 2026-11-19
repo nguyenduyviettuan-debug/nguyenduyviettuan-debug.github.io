@@ -1502,21 +1502,29 @@ boot(false);tickHud();life();
 
   /* ================= ÂM THANH ================= */
   const SND='snd/';
-  const MUSIC={day:36.923,day2:34.286,night:29.091,tense:29.091,sad:30,choice:41.739,dream:24.615,love:22.857,rich:32.542};
+  const MUSIC={day: 89.302, day2: 81.702, rich: 76.8, night: 90.0, dream: 82.286, sad: 116.364, tense: 68.571, choice: 38.4, love: 53.333};
+  const MB=.7; /* âm lượng nhạc nền gốc; tự hạ khi có tiếng quan trọng */
+  const KEY={notify:[.3,1.4],suspense:[.22,2.2],dundun:[.25,1.8],thunder:[.3,1.6],right:[.3,1.4],wrong:[.3,1.4],tada:[.3,1.6],tada2:[.28,2],tada3:[.22,2.4],boom:[.2,2],epic:[.22,2.2],dramatic:[.28,1.8],lunglinh:[.35,1.6],glitter:[.4,1.4],cash2:[.35,1.4],snap:[.4,.8]};
+  let only=null;
   const SFXN=['pop','ting','ting2','tada','tada2','tada3','glitter','lunglinh','cash1','cash2','cash3','suspense','dundun','dramatic','epic','heart','punch','thunder','boom','right','wrong','popup','notify','whoosh1','whoosh2','flashback','snap','zap'];
   const buf={}, loading={};
   let master=null,musicGain,sfxGain,curSrc=null,curGain=null,curName='',heart=null;
   function ctx(){
     if(!AC)return null;
     if(!master){master=AC.createGain();const comp=AC.createDynamicsCompressor();master.connect(comp);comp.connect(AC.destination);
-      musicGain=AC.createGain();musicGain.gain.value=.55;musicGain.connect(master);sfxGain=AC.createGain();sfxGain.gain.value=1.15;sfxGain.connect(master);
+      musicGain=AC.createGain();musicGain.gain.value=MB;musicGain.connect(master);sfxGain=AC.createGain();sfxGain.gain.value=1.2;sfxGain.connect(master);
       SFXN.forEach(load);load('day');load('night')}
     return AC}
   function load(n){
     if(buf[n])return Promise.resolve(buf[n]);
     return loading[n]=loading[n]||fetch(SND+n+'.mp3').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>AC.decodeAudioData(b)).then(b=>buf[n]=b).catch(()=>null)}
+  function duck(depth,hold,at=0){
+    const g=musicGain.gain,t=AC.currentTime+at,cur=g.value;
+    g.cancelScheduledValues(AC.currentTime);g.setValueAtTime(cur,AC.currentTime);
+    g.linearRampToValueAtTime(Math.min(cur,MB*depth),t+.08);g.setValueAtTime(MB*depth,t+hold);g.linearRampToValueAtTime(MB,t+hold+.9)}
   function play(n,vol=1,at=0,rate=1){
-    if(muted||!ctx())return;
+    if(muted||!ctx())return; if(only&&!only.includes(n))return;
+    if(KEY[n]&&vol>=.6)duck(KEY[n][0],KEY[n][1],at);
     const go=b=>{if(!b)return;const s=AC.createBufferSource(),g=AC.createGain();s.buffer=b;s.playbackRate.value=rate;g.gain.value=vol;s.connect(g);g.connect(sfxGain);s.start(AC.currentTime+at)};
     buf[n]?go(buf[n]):load(n).then(go)}
   function setMusic(n){
@@ -1541,7 +1549,7 @@ boot(false);tickHud();life();
   setInterval(()=>{
     if(!AC)return; ctx(); master.gain.value=muted?0:1; setMusic(muted?'':mood());
     const crisis=!!(ev&&ev.type=='crisis')&&!muted;
-    if(crisis&&!heart&&buf.heart){heart=AC.createBufferSource();const g=AC.createGain();g.gain.value=.55;heart.buffer=buf.heart;heart.loop=true;heart.connect(g);g.connect(sfxGain);heart.start()}
+    if(crisis&&!heart&&buf.heart){heart=AC.createBufferSource();const g=AC.createGain();g.gain.value=.28;heart.buffer=buf.heart;heart.loop=true;heart.connect(g);g.connect(sfxGain);heart.start()}
     else if(!crisis&&heart){try{heart.stop()}catch(e){}heart=null}
   },400);
 
@@ -1569,21 +1577,21 @@ boot(false);tickHud();life();
   const _onEvent=onEvent;
   onEvent=function(e){
     if(S&&!S.ended&&started){const now=performance.now(),t=String(e.text||'').trim();
-      if(e.type=='follow'||e.type=='share')play('notify',.8);
+      if(e.type=='follow'||e.type=='share')play('ting2',.45);
       else if(e.type=='comment'&&ev&&ev.opts&&/^[123]$/.test(t)){if(now-lastTap>120){lastTap=now;play('popup',.6,0,[1,1.18,1.36][t-1])}}
-      else if(e.type=='like'&&ev&&ev.type=='crisis'){if(now-lastTap>160){lastTap=now;play('punch',.35,0,1.3)}}
-      else if(e.type=='like'||e.type=='comment'){if(now-lastTap>350){lastTap=now;play('pop',.3)}}}
+      else if(e.type=='like'&&ev&&ev.type=='crisis'){if(now-lastTap>160){lastTap=now;play('punch',.25,0,1.3)}}
+      else if(e.type=='like'||e.type=='comment'){if(now-lastTap>700){lastTap=now;play('pop',.16)}}}
     return _onEvent(e)};
   if(window.LiveGame)window.LiveGame.event=onEvent;
   /* biến cố / ngã rẽ: tiếng khi mở và khi chốt */
   const _startEvent=startEvent;
-  startEvent=function(){const had=ev;_startEvent();if(!had&&ev){if(ev.type!='crisis'){play('notify',.9);play('flashback',.5,.2)}else if(SAD.test(ev.d.t||''))play('thunder',.6,.3)}};
+  startEvent=function(){const had=ev;only=['suspense'];try{_startEvent()}finally{only=null}
+    if(!had&&ev){if(ev.type=='crisis'){if(SAD.test(ev.d.t||''))play('thunder',.75,.5);else play('dundun',.8,.6)}else{play('notify',1);play('whoosh1',.35,.05)}}};
   if(window.LiveGame)window.LiveGame.startEvent=()=>startEvent();
   const _endEvent=endEvent;
   endEvent=function(win,hero){
     const e=ev,before=S.prog+S.stage; _endEvent(win,hero);
-    if(e&&e.type!='crisis'){const k=$('#emote').textContent;play('snap',.9);play(k=='😢'?'wrong':k=='😈'?'dundun':'right',.9,.25);if(k=='😊')play('ting2',.6,.6)}
-    else if(e&&win){play('right',.8);play('tada',.7,.2)}};
+    if(e&&e.type!='crisis'){const k=$('#emote').textContent;play('snap',.9);play(k=='😢'?'wrong':k=='😈'?'dundun':'right',1,.3);if(k=='😊')play('tada',.8,.75)}};
   const _wipe=wipe; wipe=function(fn){play('whoosh1',.3);return _wipe(fn)};
 
   /* ================= GỢI Ý KẾT GAME: 3 đêm một lần ================= */
@@ -1700,7 +1708,11 @@ boot(false);tickHud();life();
       else{anim.classList.add('fade');const done=()=>anim.classList.remove('fade');v.addEventListener('loadeddata',done,{once:true});setTimeout(done,1200);setTimeout(()=>{v.src=A+f;v.play().catch(()=>{})},170)}}   // đổi bộ đồ: mờ dần rồi hiện bộ mới
     if(v.paused)v.play().catch(()=>{})};
   const gsFile=()=>{if(dreamOn||story)return '';const a=ACTS.find(a=>a.ph==base.ph&&a.bg==base.bg&&a.pose!='ride'&&a.pose!='sleep'&&base.label==a.icon+' '+a.label);
-    const f=a?`${PK.id}/gs-${a.ph}-${a.bg}-${a.min}.webm`:'';return f&&has(f)?f:''};
+    const f=a?`${PK.id}/gs-${a.ph}-${a.bg}-${a.min}.webm`:'';if(!f||!has(f))return '';
+    const lk=GSLOOK[f];if(lk!=null&&lk!==lookOf(S.eq,S.stage))return '';   // clip mặc bộ khác bộ đang mặc → không dùng, tránh nhảy đồ
+    return f};
+  const GSLOOK={'na/gs-1-market-0.webm':0,'na/gs-2-street-0.webm':0,'na/gs-1-street-1.webm':1,'na/gs-2-cafe-1.webm':1,'na/gs-2-cinema-2.webm':1,
+    'na/gs-1-live-3.webm':2,'na/gs-1-office-2.webm':2,'na/gs-2-date-4.webm':2,'na/gs-2-party-6.webm':3,'na/gs-2-yacht-8.webm':4};
   function animSync(){
     const ac=$('#actor'),k=dreamOn?4:lookOf(S.eq,S.stage),fi=`${PK.id}/anim-${k}-idle.webm`,fw=`${PK.id}/anim-${k}-walk.webm`;
     const on=canAlpha&&has(fi);
@@ -1771,7 +1783,7 @@ boot(false);tickHud();life();
   const rimSync=()=>{const L=lightNow();$('#actor').classList.toggle('backlit',!!L.fw);scene.classList.toggle('raining',/bg\/rain\.jpg/.test(bgEl.style.backgroundImage||''))};
   const _toneSync=toneSync; toneSync=function(){_toneSync();rimSync()};
   /* bước đi: chân bước nhanh bao nhiêu thì người trượt ngang bấy nhiêu (px/giây đo từ clip), khỏi trượt chân */
-  const WALKV={'bom-0':140,'bom-1':121,'bom-2':126,'bom-3':125,'bom-4':118,'na-0':99,'na-1':75,'na-2':104,'na-3':72,'na-4':68};   // theo <nhân vật>-<hình>, đo bằng gs2.py (speed_css_px_per_s)
+  const WALKV={'bom-0':140,'bom-1':121,'bom-2':126,'bom-3':125,'bom-4':118,'na-0':99,'na-1':121,'na-2':104,'na-3':72,'na-4':68};   // theo <nhân vật>-<hình>, đo bằng gs2.py (speed_css_px_per_s)
   const WALKF={'0-walk-s1':130,'0-walk-s2':150,'0-walk-s4':127,'1-walk-s0':106,'1-walk-s2':135,'1-walk-s4':133,'2-walk-s0':134,'2-walk-s1':114,'2-walk-s4':125};   // clip đi theo cặp áo-giày (chỉ Bờm)
   const _walkTo=walkTo; walkTo=function(x,ms,pp){const ac=$('#actor'); if(thxLv)return sleep(400);
     if(ac.classList.contains('hasanim')&&ac.classList.contains('haswalk')){ms=Math.max(350,Math.abs(x-actorX())/(WALKF[(vW.dataset.f||'').replace(/^.*anim-|\.webm$/g,'')]||WALKV[PK.id+'-'+(dreamOn?4:lookOf(S.eq,S.stage))]||130)*1000);try{vW.currentTime=0}catch(e){}}
