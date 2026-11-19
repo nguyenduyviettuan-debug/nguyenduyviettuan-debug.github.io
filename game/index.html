@@ -1989,8 +1989,8 @@ boot(false);tickHud();life();
      3) Màn hình gọn: một dòng kêu gọi to thay bảng giá quà, một đời ngắn hơn (15 phút)
      ===================================================================== -->
 <style>
-#talk{position:absolute;left:50%;top:150px;z-index:40;transform:translate(-50%,-8px) scale(.92);opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;
-  width:470px;background:#fffdf7;color:#1f2937;border-radius:20px;padding:12px 18px 13px;box-shadow:0 10px 30px #0008;border:3px solid #fde047}
+#talk{position:absolute;left:50%;top:92px;z-index:40;transform:translate(-50%,-8px) scale(.92);opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;
+  width:410px;background:#fffdf7;color:#1f2937;border-radius:20px;padding:12px 18px 13px;box-shadow:0 10px 30px #0008;border:3px solid #fde047}
 #talk.on{opacity:1;transform:translate(-50%,0) scale(1)}
 #duel.on~#talk{top:auto;bottom:16px}
 #duel.on~#talk:after{bottom:auto;top:-16px;border:14px solid transparent;border-bottom-color:#fde047;border-top:0}
@@ -1998,7 +1998,7 @@ boot(false);tickHud();life();
 #talk:after{content:'';position:absolute;left:50%;bottom:-16px;margin-left:-14px;border:14px solid transparent;border-top-color:#fde047;border-bottom:0}
 #talk .who{font:800 15px/1.1 system-ui,sans-serif;color:#b45309;margin-bottom:4px;letter-spacing:.3px}
 #talk .q{font:600 14px/1.3 system-ui,sans-serif;color:#6b7280;margin-bottom:5px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#talk .t{font:800 23px/1.28 system-ui,sans-serif}
+#talk .t{font:800 20px/1.26 system-ui,sans-serif}
 #talk .t b{color:#db2777}
 #talk.vil{background:#1f0a0a;color:#fecaca;border-color:#ef4444}
 #talk.vil:after{border-top-color:#ef4444}
@@ -2031,12 +2031,18 @@ boot(false);tickHud();life();
 @keyframes c_pop{0%{transform:scale(.7);opacity:.2}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 #cta.red{background:#7f1d1d55;border-color:#ef4444}#cta.red .a{color:#fecaca;animation:d_pulse .6s infinite alternate}
 #cta.vote{background:#1e3a8a44;border-color:#60a5fa}
+#mini{position:absolute;left:50%;bottom:62px;z-index:30;transform:translate(-50%,10px);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;background:#0b1020e6;border:2px solid var(--c,#94a3b8);border-radius:14px;padding:6px 14px;font:700 16px/1.25 system-ui,sans-serif;color:#fff;white-space:nowrap;max-width:500px;overflow:hidden;text-overflow:ellipsis}
+#mini.on{opacity:1;transform:translate(-50%,0)}
+#mini b{color:#fde047}
+#clue.empty{display:none}
+#ladder{display:none!important}   /* bảng bậc đồ: dòng chữ dưới cảnh đã báo món mới, bỏ để đỡ chồng chữ */
+#goal{font-size:13.5px!important;font-weight:800;color:#fde68a;opacity:1!important}
 </style>
 <script>
 (()=>{
   const $$=s=>document.querySelector(s), live=P.get('live')=='1';
   /* ---------- 3a) một đời ngắn hơn (đổi bằng ?min= ?days= ?speed= như cũ) ---------- */
-  if(!P.get('min'))CFG.minutes=15; if(!P.get('days'))CFG.days=5; if(!P.get('speed'))CFG.speed=1.5;
+  if(!P.get('min'))CFG.minutes=15; if(!P.get('days'))CFG.days=5; if(!P.get('speed'))CFG.speed=1;   // mở rương thường nhanh hơn (thẻ nhỏ) nên phòng đông lên đời nhanh hơn trước — để tốc độ gốc
   CFG.eventEvery=[35,50];
   EV_ROT.splice(0,EV_ROT.length,'choice','crisis','guess','choice','crisis','choice');   // phản diện ghé mỗi ~2 phút
 
@@ -2068,6 +2074,7 @@ boot(false);tickHud();life();
   function next(){
     q=q.filter(x=>performance.now()-x.ts<9000);           // câu đợi quá lâu thì bỏ (chuyện đã qua)
     if(!q.length){speaking=false;return}
+    if(bannerBusy||$$('#gacha').classList.contains('big')){speaking=true;setTimeout(()=>{speaking=false;next()},700);return}   // nhường thông báo lớn / rương hiếm
     q.sort((a,b)=>b.pr-a.pr); const x=q.shift(), ln=pickLine(x.who,x.cat); if(!ln){return next()}
     speaking=true; lastSpoke=performance.now();
     const name=x.vil?VIL[PK.id].n:S.ch.name;
@@ -2101,7 +2108,7 @@ boot(false);tickHud();life();
     else if(e.type=='follow'||e.type=='share')talk(e.type,{user:u,pr:3});
     else if(e.type=='comment'&&!/^[123]$/.test(t)&&!(ev&&ev.d&&ev.d.kw&&t.toLowerCase().includes(ev.d.kw))){
       // mỗi ~6 giây trả lời một bình luận; người mới bình luận lần đầu được ưu tiên
-      const fresh=!greeted[u]; if(now-lastCmtReply>(fresh?4000:6500)&&(!speaking||q.length==0)){lastCmtReply=now;greeted[u]=1;const c=CAT(t);talk(fresh&&c=='ok'?'hi':c,{user:u,quote:t,pr:fresh?3:2})}}
+      const fresh=!greeted[u]; if(now-lastCmtReply>(fresh?7000:11000)&&(!speaking||q.length==0)){lastCmtReply=now;greeted[u]=1;const c=CAT(t);talk(fresh&&c=='ok'?'hi':c,{user:u,quote:t,pr:fresh?3:2})}}
     if(ev&&ev.type=='crisis'){ev.sv=ev.sv||{};const add=e.type=='like'?+e.count||1:e.type=='gift'?999:e.type=='comment'&&ev.d.kw&&t.toLowerCase().includes(ev.d.kw)?5:0;if(add)ev.sv[u]=(ev.sv[u]||0)+add}
     return r};
   if(window.LiveGame)window.LiveGame.event=onEvent;
@@ -2155,6 +2162,35 @@ boot(false);tickHud();life();
     else if(e&&(e.type=='choice'||e.type=='guess'))setTimeout(()=>talk('voted',{pr:2}),3600);
     return r};
 
+
+  /* ---------- 4) GỌN 20/11/2026: bớt chữ nhảy liên tục ----------
+     - bỏ thông báo vặt (mức 1–2: ghé thăm, follow, đồ thường vừa quay, phiếu nhỏ) → bong bóng thoại đã cảm ơn rồi
+     - tối đa 2 thông báo cùng lúc
+     - bỏ dòng nhắc "Mới vào?" (dòng kêu gọi to đã làm việc này)
+     - bong bóng nhỏ cũ (say) không hiện khi bong bóng thoại lớn đang mở */
+  const _toast=toast;
+  toast=function(html,r=1){if(r<=2)return;_toast(html,r);const T=$$('#toasts');while(T.children.length>2)T.lastChild.remove()};
+  const _cap=cap;
+  cap=function(t,ms){if(/^👋 Mới vào\?/.test(t))return;return _cap(t,ms)};
+  const _say=say;
+  say=function(t){if(talkEl&&talkEl.classList.contains('on'))return;if(/^Cảm ơn/i.test(String(t)))return;return _say(t)};   // lời cảm ơn đã có bong bóng thoại lớn lo
+
+
+  /* GỌN 2: đồ thường (không đổi gì trên người) thì không che cả màn hình bằng rương —
+     chỉ hiện một thẻ nhỏ phía dưới; đồ MỚI hoặc đồ hiếm vẫn mở rương đầy đủ */
+  const mini=document.createElement('div');mini.id='mini';$$('#scene').appendChild(mini);let miniT=0;
+  const _reveal=reveal;
+  reveal=async function(res,job,fast){
+    if(res&&!res.upg&&res.r<=2){const it=ITEMS[res.slot];
+      mini.style.setProperty('--c',RC[res.r]);
+      mini.innerHTML=`🎁 <b>${esc(job.user)}</b> → ${it.e[res.r]} ${esc(it.t[res.r])}`;
+      mini.classList.add('on');clearTimeout(miniT);miniT=setTimeout(()=>mini.classList.remove('on'),1500);
+      try{AUD.play('ting',.5)}catch(e){}
+      await sleep(fast?250:600);return}
+    return _reveal(res,job,fast)};
+  /* ô Ký ức ẩn khi chưa có mảnh nào (đỡ 1 khối "????" vô nghĩa ở góc) */
+  setInterval(()=>{const c=$$('#clue');if(c&&S)c.classList.toggle('empty',!S.clues)},1000);
+
   /* ---------- 3b) dòng kêu gọi to ---------- */
   const how=$$('#how'); how.classList.add('cuon'); const cta=document.createElement('div');cta.id='cta';how.appendChild(cta);
   const IDLE=[['💬 GÕ TÊN BẠN','{n} sẽ chào bạn tận tên'],['❤️ THẢ TIM','{n} đi làm kiếm tiền · cứu {n} khi gặp nạn'],['🎁 TẶNG 🌹 HOA HỒNG','mở rương · {n} mặc đồ bạn tặng'],['➕ FOLLOW','+1 lượt quay rương cho {n}']];
@@ -2165,9 +2201,9 @@ boot(false);tickHud();life();
     const n=esc(S.ch.name), left=ev?Math.max(0,Math.ceil(ev.left)):0;
     if(ev&&ev.type=='crisis')setCta('crisis','❤️ THẢ TIM CỨU '+n.toUpperCase()+'!',`còn <b>${left}</b> giây · ai cứu nhiều nhất được vinh danh`,'red');
     else if(ev&&ev.opts){const opts=ev.opts.map((o,k)=>`<b>${k+1}</b> ${esc(tx(o))} (${ev.v[k]})`).join(' · ');setCta('vote'+ev.d._i,`💬 GÕ ${ev.opts.map((o,k)=>k+1).join(' · ')} ĐỂ CHỌN`,`${opts} · còn <b>${left}</b>s`,'vote')}
-    else{const now=performance.now();if(now-idleT>6000||ctaKey.startsWith('vote')||ctaKey=='crisis'){idleT=now;idleI=(idleI+1)%IDLE.length;const [a,b]=IDLE[idleI];setCta('idle'+idleI,a,tx(b))}}
+    else{const now=performance.now();if(now-idleT>10000||ctaKey.startsWith('vote')||ctaKey=='crisis'){idleT=now;idleI=(idleI+1)%IDLE.length;const [a,b]=IDLE[idleI];setCta('idle'+idleI,a,tx(b))}}
     // im lặng lâu thì nhân vật tự rủ người xem
-    if(started&&!S.ended&&!ev&&!speaking&&performance.now()-lastSpoke>22000&&!busy){lastSpoke=performance.now();talk('idle',{pr:1})}
+    if(started&&!S.ended&&!ev&&!speaking&&performance.now()-lastSpoke>40000&&!busy){lastSpoke=performance.now();talk('idle',{pr:1})}
   },250);
 })();
 </script>
