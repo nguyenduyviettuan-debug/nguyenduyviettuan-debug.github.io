@@ -120,6 +120,57 @@
    "Huhu, tui mất đồ rồi…",
    "Không kịp rồi… lần sau cứu tui nha.",
    "Đau quá… đời mà."
+  ],
+  "back": [
+   "A! Người quen lại tới rồi! Hôm trước cứu tui đó, nhớ không?",
+   "Ơ, ân nhân của tui quay lại kìa! Mừng quá!",
+   "Lại gặp nhau rồi! Hôm nay giúp tui lên đời tiếp nha!"
+  ],
+  "vip": [
+   "Cả phòng ơi! Ân nhân số một vừa vào phòng! Vỗ tay đi!",
+   "Trời ơi, người trên bảng vàng tới rồi! Tui run quá!"
+  ],
+  "goal": [
+   "Cả phòng đạt mốc tim rồi! Đỉnh quá đi!",
+   "Mốc tim mới! Tui nhảy một bài ăn mừng nè!",
+   "Tim nhiều quá trời! Mở rương thưởng cho cả phòng luôn!"
+  ],
+  "fast": [
+   "Ai gõ nhanh nhất thắng nè! Gõ ngay đi!",
+   "Nhanh tay lên! Người gõ đúng đầu tiên có quà!"
+  ],
+  "fastwin": [
+   "Nhanh quá trời! Rương này là của bạn!",
+   "Tay nhanh hơn não luôn! Chúc mừng nha!"
+  ],
+  "boss": [
+   "Khang dẫn cả đàn em tới rồi! Cả phòng hạ hắn đi!",
+   "Trùm cuối ngày tới rồi! Thả tim đánh hắn liên tục đi!",
+   "Đây là trận lớn nhất hôm nay! Mọi người giúp tui với!"
+  ],
+  "bosswin": [
+   "Hạ được trùm rồi! Cả phòng là anh hùng!",
+   "Khang chạy mất dép rồi! Thắng lớn rồi!"
+  ],
+  "bosslose": [
+   "Trùm mạnh quá… tui mất đồ rồi…",
+   "Thua rồi… ngày mai tui sẽ báo thù!"
+  ],
+  "x2": [
+   "Lật kèo! Sức mạnh nhân đôi rồi! Thả tim mạnh lên!",
+   "Hai mươi giây cuối! Nhân đôi hết! Dồn hết sức đi!"
+  ],
+  "ult": [
+   "Đại chiêu! Đỉnh quá! Khang choáng luôn rồi!",
+   "Đòn quyết định! Cảm ơn nha!"
+  ],
+  "cliff": [
+   "Còn chút xíu thời gian nữa thôi! Tui có kịp lên đời không đây?",
+   "Sắp hết đời này rồi! Mọi người giúp tui về đích đi!"
+  ],
+  "bet": [
+   "Phe tui thắng thì cả phe được cộng điểm bảng vàng đó!",
+   "Đứng về phe nào thì chọn nhanh đi! Phe thắng có thưởng!"
   ]
  },
  "na": {
@@ -379,6 +430,17 @@
   "lose": [
    "Hừ! Lần này tao tha, lần sau thì đừng hòng!",
    "Đám người này… được lắm!"
+  ],
+  "ult": [
+   "Á! Đau quá! Đứa nào chơi tao vậy?",
+   "Hừ! Một đòn thì làm gì được tao!"
+  ],
+  "boss": [
+   "Hôm nay tao dẫn cả đàn em tới! Xem ai cứu được mày!",
+   "Trùm tới rồi đây! Quỳ xuống đi!"
+  ],
+  "x2": [
+   "Nhân đôi thì sao? Tao vẫn thắng!"
   ]
  },
  "vna": {
