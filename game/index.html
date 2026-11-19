@@ -406,7 +406,7 @@ let CHOICES=[
  {bg:'golf',at:['golf'],npc:'🏌️',say:'Cược một gậy, 1 tỷ nhé?',q:'Đối tác rủ {n} cá một gậy golf.',a:['Cược',{k:-1,c:.14,risk:.5,t:'Một gậy ăn ngay!',tf:'Bóng bay thẳng xuống hồ…'}],b:['Chơi vui thôi',{k:1,c:.02,t:'Thua gậy nhưng được việc.'}]},
  {bg:'beach',at:['beach'],npc:'🧒',say:'Mua giúp con cái vòng ốc đi ạ…',q:'Một đứa bé bán vòng ốc dạo trên bãi biển.',a:['Mua hết',{k:2,c:-.02,luck:.15,t:'Con bé chạy đi khoe mẹ.'}],b:['Lắc đầu',{k:-1,c:0,t:'{n} quay ra nhìn biển.'}]},
  {bg:'street',at:['street','market','road'],npc:'🧑‍🦯',say:'Cậu dắt giúp tôi qua đường với…',q:'Cụ già mù chờ qua đường giữa giờ cao điểm, mà {n} sắp trễ làm.',a:['Dắt cụ qua',{k:2,c:-.02,clue:.2,t:'Cụ nắm tay {n}: "Bàn tay này giống một người tôi quen…"'}],b:['Chạy cho kịp',{k:-1,c:.03,t:'Kịp giờ, nhưng cứ ngoái lại.'}]},
- {bg:'cafe',at:['cafe','street','pub','home'],npc:'🧔',say:'Có 50 triệu thì mày làm gì?',q:'{n} trúng thưởng 50 triệu. Tiêu thế nào đây?',a:['Gửi về cho mẹ',{k:2,c:.02,t:'Mẹ gọi điện, khóc mà không nói nên lời.'}],b:['Mua xe mới',{k:0,c:.06,t:'Xe mới, đi làm nhanh hẳn.'}],c:['Đầu tư coin',{k:0,c:.18,risk:.55,t:'Coin tăng gấp 5!',tf:'Coin về 0 trong một đêm…'}],ok:()=>S.stage<6},
+ {bg:'cafe',at:['cafe','street','pub','home'],npc:'🧔',say:'Có 50 triệu thì mày làm gì?',q:'{n} trúng thưởng 50 triệu. Tiêu thế nào đây?',a:['Gửi về cho mẹ',{k:2,c:.02,t:'Mẹ gọi điện, khóc mà không nói nên lời.'}],b:['Mua xe mới',{k:0,c:.06,eq:{xe:1},t:'Xe mới, đi làm nhanh hẳn.'}],c:['Đầu tư coin',{k:0,c:.18,risk:.55,t:'Coin tăng gấp 5!',tf:'Coin về 0 trong một đêm…'}],ok:()=>S.stage<6},
  {bg:'office',at:['office','boss'],npc:'👨‍💼',say:'Vào Sài Gòn mở chi nhánh không?',q:'Sếp mời {n} vào Nam mở chi nhánh, lương gấp đôi nhưng phải xa người yêu.',a:['Đi',{k:0,c:.12,t:'Chi nhánh mới chạy như mơ.'}],b:['Ở lại',{k:1,c:.02,t:'Bạn gái ôm chầm lấy {n}.'}],c:['Rủ nàng đi cùng',{k:1,c:.07,risk:.3,t:'Hai đứa cùng nhau gây dựng.',tf:'Nàng không quen chỗ mới, giận cả tháng…'}],ok:()=>S.stage>=3&&S.stage<7},
  {bg:'road',at:['road'],npc:'🧋',sm:1,q:'Khách đặt 20 cốc trà sữa rồi bom hàng.',a:['Phát cho lũ trẻ',{k:2,c:-.02,t:'Lũ trẻ reo hò, có người quay clip lên mạng.'}],b:['Tự uống hết',{k:0,c:-.01,t:'Mất ngủ ba đêm liền.'}],c:['Bán lại nửa giá',{k:0,c:.02,t:'Gỡ được một nửa.'}],ok:()=>S.stage>=1&&S.stage<=3},
  {bg:'market',at:['market','street','home'],npc:'👵',say:'Con vác giúp bà bao gạo…',q:'Bà cụ nhờ {n} vác bao gạo lên tầng 5, không có tiền trả.',a:['Vác',{k:2,c:-.01,luck:.15,t:'Bà dúi cho {n} một tờ vé số.'}],b:['Xin lỗi bà',{k:-1,c:0,t:'{n} quay đi.'}],ok:()=>base.pose!='sleep'},
@@ -632,7 +632,7 @@ PACKS.na={id:'na',kind:'CÔ GÁI BÁN HÀNG RONG',top:'Nữ hoàng thời trang'
   {bg:'fair',at:['fair'],npc:'🎯',sm:1,q:'Trò ném vòng treo giải một chiếc xe máy.',a:['Chơi tất tay',{k:0,c:.12,risk:.6,t:'Trúng thật!',tf:'Vòng bị dán keo… mất sạch.'}],b:['Chỉ đứng xem',{k:0,c:.01,t:'Xem người khác thua cũng vui.'}]},
   {bg:'date',at:['date','beach','cinema'],npc:'🧑',say:'Về gặp ba mẹ anh nhé?',q:'Người yêu rủ ra mắt đúng hôm có show lớn.',a:['Về ra mắt',{k:2,c:-.02,t:'Mẹ chàng nắm tay {n} mãi không buông.'}],b:['Đi diễn',{k:-1,c:.1,t:'Show thành công, tin nhắn chưa ai trả lời.'}],ok:()=>S.stage>=4},
   {bg:'live',at:['live','shop'],npc:'📱',sm:1,q:'Phiên live đầu tiên của {n} chỉ có 3 người xem. Làm gì đây?',a:['Vẫn live hết mình',{k:1,c:.06,t:'Ba người ấy thành khách ruột.'}],b:['Mua view ảo',{k:-2,c:.1,risk:.4,t:'Lên xu hướng!',tf:'Bị lộ, khách bỏ đi hết.'}],c:['Rủ hội chị em vào',{k:1,c:.04,t:'Phiên live vui như hội.'}],ok:()=>S.stage<=4},
-  {bg:'mall',at:['mall','shop','party'],npc:'👜',sm:1,q:'Chiếc túi hiệu trong tủ kính giá bằng 3 tháng lương của {n}.',a:['Quẹt thẻ',{k:0,c:-.05,t:'Đẹp thật, nhưng tháng này ăn mì.'}],b:['Chụp ảnh rồi về',{k:0,c:.02,t:'Có thêm động lực kiếm tiền.'}],c:['Tự may một chiếc',{k:1,c:.08,t:'Chiếc túi tự may lên xu hướng!'}]},
+  {bg:'mall',at:['mall','shop','party'],npc:'👜',sm:1,q:'Chiếc túi hiệu trong tủ kính giá bằng 3 tháng lương của {n}.',a:['Quẹt thẻ',{k:0,c:-.05,eq:{pk:1},t:'Đẹp thật, nhưng tháng này ăn mì.'}],b:['Chụp ảnh rồi về',{k:0,c:.02,t:'Có thêm động lực kiếm tiền.'}],c:['Tự may một chiếc',{k:1,c:.08,eq:{pk:1},t:'Chiếc túi tự may lên xu hướng!'}]},
   {bg:'street',at:['street','market'],npc:'👵',say:'Con bán hộ bà gánh rau với…',q:'Bà bán rau bị ốm, nhờ {n} bán hộ, trong khi gánh của mình còn ế.',a:['Bán hộ',{k:2,c:-.01,clue:.2,t:'Bà kể: "Hồi xưa mẹ con may áo cho cả xóm…"'}],b:['Lo gánh mình',{k:-1,c:.03,t:'Bán được thêm vài mớ.'}]},
   {bg:'date',at:['date','cafe','cinema'],npc:'🧑',say:'Anh có hai vé đi Đà Lạt cuối tuần…',q:'Người theo đuổi rủ {n} đi Đà Lạt đúng tuần ra mắt bộ sưu tập.',a:['Đi',{k:1,c:-.03,t:'Đà Lạt mộng mơ, về muộn hai ngày.'}],b:['Ở lại làm',{k:0,c:.08,t:'Bộ sưu tập ra mắt đúng hẹn.'}],c:['Rủ anh phụ việc',{k:2,c:.05,t:'Anh ấy khâu cúc vụng mà dễ thương.'}],ok:()=>S.stage>=4},
   {bg:'studio',at:['runway','studio','party'],npc:'📸',say:'Chụp bạo hơn cho ảnh "cháy" nhé?',q:'Nhiếp ảnh gia khuyên {n} chụp ảnh hở bạo để nổi nhanh.',a:['Từ chối',{k:2,c:.02,t:'Bộ ảnh kín đáo mà sang.'}],b:['Chiều theo',{k:-2,c:.12,t:'Ảnh nổ tung mạng, kèm đủ lời ra tiếng vào.'}]},
@@ -726,7 +726,7 @@ PACKS.muop={id:'muop',kind:'CHÚ MÈO HOANG',top:'Mèo hoàng gia',petShow:1,dra
   {bg:'sofa',at:['sofa','live','party'],npc:'🤳',say:'Cho chụp một tấm nha!',q:'Fan dí điện thoại vào mặt lúc {n} đang ngủ.',a:['Chiều fan',{k:1,c:.05,t:'Ảnh ngáp lên xu hướng.'}],b:['Cào nhẹ một cái',{k:-1,c:.1,risk:.5,t:'Clip "mèo cào" thành trend!',tf:'Bị bóc phốt "mèo chảnh"…'}]},
   {bg:'alley',at:['home','roof'],npc:'🕴️',say:'Có ai thấy con mèo này không…',q:'Nửa đêm, một người lạ cầm tấm ảnh mèo con đi tìm khắp xóm.',a:['Lại gần',{k:0,c:.01,clue:1,t:'Người ấy sững lại khi thấy chiếc vòng cổ…'}],b:['Trốn kỹ',{k:0,c:.02,t:'Tiếng bước chân xa dần.'}],ok:()=>base.ph==3},
   {bg:'runway',at:['runway','party'],npc:'🐩',say:'Tránh ra, thảm này của ta!',q:'Một cô chó xù nổi tiếng chen hàng {n} trên thảm đỏ.',a:['Nhường',{k:2,c:.02,t:'Cả hội trường khen {n} lịch sự.'}],b:['Xù lông',{k:-1,c:.12,risk:.5,t:'Ảnh xù lông lên trang nhất!',tf:'Bị mời ra khỏi thảm đỏ…'}]},
-  {bg:'sofa',at:['sofa','home'],npc:'🐟',sm:1,q:'Trên bàn có đĩa cá rán cô chủ để dành đãi khách.',a:['Ăn vụng',{k:-1,c:.06,risk:.5,t:'Ngon tuyệt cú mèo!',tf:'Bị bắt quả tang, cấm vào bếp.'}],b:['Ngồi canh giúp',{k:2,c:.02,t:'Cô chủ thưởng nguyên con cá.'}],c:['Gạt đĩa rơi',{k:-1,c:.1,risk:.4,t:'Clip "mèo phá" lên xu hướng!',tf:'Bị mắng một trận ra trò.'}],ok:()=>S.stage>=3&&awake()},
+  {bg:'sofa',at:['sofa','home'],npc:'🐟',sm:1,q:'Trên bàn có đĩa cá rán cô chủ để dành đãi khách.',a:['Ăn vụng',{k:-1,c:.06,risk:.5,t:'Ngon tuyệt cú mèo!',tf:'Bị bắt quả tang, cấm vào bếp.'}],b:['Ngồi canh giúp',{k:2,c:.02,eq:{pk:1},t:'Cô chủ thưởng nguyên con cá.'}],c:['Gạt đĩa rơi',{k:-1,c:.1,risk:.4,t:'Clip "mèo phá" lên xu hướng!',tf:'Bị mắng một trận ra trò.'}],ok:()=>S.stage>=3&&awake()},
   {bg:'roof',at:['roof','alley'],npc:'🐈',say:'Đi phiêu lưu với em không?',q:'Cô mèo trắng nhà bên rủ {n} bỏ nhà đi phiêu lưu.',a:['Đi luôn',{k:0,c:.08,risk:.4,t:'Một chuyến phiêu lưu nhớ đời!',tf:'Lạc đường ba ngày mới mò về.'}],b:['Ở nhà với cô chủ',{k:2,c:.02,t:'Cô chủ ôm {n} ngủ cả đêm.'}],ok:()=>S.stage>=2&&awake()},
   {bg:'studio',at:['studio','live','runway'],npc:'👑',sm:1,q:'Hãng thời trang bắt {n} đội vương miện nặng 2 kg để chụp ảnh.',a:['Đội',{k:0,c:.12,t:'Bức ảnh để đời!'}],b:['Hất văng',{k:-1,c:.06,risk:.3,t:'Ảnh "mèo nổi loạn" còn hot hơn!',tf:'Hãng huỷ hợp đồng.'}],c:['Đòi đổi thành nơ',{k:1,c:.05,t:'Nơ hồng xinh xỉu.'}],ok:()=>S.stage>=5},
   {bg:'market',at:['market','alley'],npc:'🐕',say:'Gâu… chia anh nửa miếng xương…',q:'Một chú chó già bị thương xin {n} chia phần ăn.',a:['Chia phần',{k:2,c:-.01,clue:.2,t:'Chú chó dẫn {n} tới góc phố có mùi sơn dầu quen thuộc…'}],b:['Trèo lên mái nhà',{k:-1,c:.02,t:'{n} ngồi trên cao nhìn xuống.'}],ok:awake},
@@ -1144,13 +1144,17 @@ function endEvent(win,hero){
   }else{
     const mx=Math.max(...e.v), top=e.v.map((x,k)=>x==mx?k:-1).filter(k=>k>=0), i=pick(top), o=e.res[i], r=o[1], none=!e.v.some(x=>x);
     S.dec=S.dec||{}; for(const u in e.voters)if(e.voters[u]-1==i)S.dec[u]=(S.dec[u]||0)+1;
-    let txt=r.t, c=r.c;
-    if(r.risk&&Math.random()<r.risk){txt=r.tf;c=-Math.abs(c)}
+    let txt=r.t, c=r.c, fail=false;
+    if(r.risk&&Math.random()<r.risk){txt=r.tf;c=-Math.abs(c);fail=true}
     if(r.luck&&Math.random()<r.luck){txt+=' Và… TRÚNG ĐỘC ĐẮC!';c=.3}
     S.karma+=r.k; emote(c<0?'😢':r.k<0?'😈':'😊');
     banner(`${none?'🤷 Không ai chọn — '+esc(S.ch.name)+' tự quyết':'🗳️ Cả phòng chọn'}: ${esc(o[0])}`,esc(tx(txt))+`<br><i style="opacity:.75">${r.k>0?'Nhân phẩm tăng… điều này sẽ ảnh hưởng tới kết cục.':r.k<0?'Có gì đó vừa đổi khác trong ánh mắt '+esc(S.ch.name)+'…':''}</i>`,3400);
     if(c)addProg(c); if(r.clue&&Math.random()<r.clue)giveClue();
+    if(r.eq)for(const sl in r.eq){const v=Math.min(5,Math.max(0,S.eq[sl]+r.eq[sl]));if(v!=S.eq[sl]){S.eq[sl]=v;if(sl=='xe')shownXe=v;toast(`${ITEMS[sl].e[v]} ${esc(ITEMS[sl].t[v])} <b style="color:#4ade80">MỚI</b> nhờ lựa chọn của cả phòng`,4)}}
+    window.LASTOUT={type:'choice',ci:e.d._i,j:i,fail,k:r.k,c,label:o[0],q:e.d.q,txt,day:dayNo()};
   }
+  if(e.type=='crisis')window.LASTOUT={type:'crisis',win};
+  if(e.type=='guess')window.LASTOUT={type:'guess'};
   cut(storyOut); render();save();
 }
 
@@ -1659,6 +1663,16 @@ boot(false);tickHud();life();
     a.style.transition='none';a.style.left=((r.left-sr.left)/z)+'px';a.classList.remove('walk','jump','lift')};
   const thxEnd=()=>{if(!thxLv)return;thxLv=0;clearTimeout(thxT);idleAt=performance.now()+900;fadeSwap(()=>{$('#actor').classList.remove('thx');vT.pause()})};
   vT.addEventListener('ended',thxEnd);vT.addEventListener('error',thxEnd);
+  /* PHẢN ỨNG sau khi cả phòng chốt lựa chọn / cứu nạn: anim-<hình>-yay|sad|shock.webm (vui sướng, buồn bã, sững sờ), phát một lần ngay tại chỗ.
+     Trong lúc phản ứng thì cảnh "có biến" chờ diễn xong mới khép lại. */
+  let reacting=0;
+  function reactPlay(kind){const ac=$('#actor'),f=`${PK.id}/anim-${lookOf(S.eq,S.stage)}-${kind}.webm`;
+    if(!canAlpha||!has(f)||!ac.classList.contains('hasanim')||ac.classList.contains('gscut')){ac.classList.remove('jump','rsad','rshock');void ac.offsetWidth;ac.classList.add(kind=='yay'?'jump':kind=='sad'?'rsad':'rshock');setTimeout(()=>ac.classList.remove('rsad','rshock'),1800);return false}
+    reacting=performance.now()+8500;thxLv=9;thxLast=performance.now();clearTimeout(thxT);freezeActor();
+    fadeSwap(()=>{vT.dataset.f=f;vT.src=A+f;ac.classList.add('thx');vT.play().catch(thxEnd)});thxT=setTimeout(thxEnd,8500);return true}
+  vT.addEventListener('ended',()=>{reacting=0});
+  window.ART.react=reactPlay; window.ART.reactBusy=()=>reacting>performance.now()&&thxLv==9;
+  const _storyOutR=storyOut; storyOut=async function(){const t0=performance.now();while(window.ART.reactBusy()&&performance.now()-t0<9000)await sleep(200);reacting=0;return _storyOutR()};
   const stageFree=()=>{const ac=$('#actor');return started&&!busy&&!bannerBusy&&!lock&&!story&&!dreamOn&&!S.ended&&!$('#gacha').classList.contains('on')
     &&ac.classList.contains('hasanim')&&!ac.classList.contains('ride')&&!ac.classList.contains('sleep')
     &&!scene.classList.contains('artride')&&!scene.classList.contains('artsleep')&&!scene.classList.contains('artact')};
@@ -1671,7 +1685,7 @@ boot(false);tickHud();life();
     fadeSwap(()=>{vT.dataset.f=f;vT.src=A+f;ac.classList.add('thx');vT.play().catch(thxEnd)});
     thxT=setTimeout(thxEnd,13000)}
   setInterval(()=>{
-    if(thxLv&&(story||lock||dreamOn||S.ended)){thxLv=0;clearTimeout(thxT);$('#actor').classList.remove('thx');vT.pause();return}   // có chuyện chen ngang: nhường cảnh
+    if(thxLv&&!(thxLv==9&&reacting>performance.now())&&(story||lock||dreamOn||S.ended)){thxLv=0;clearTimeout(thxT);$('#actor').classList.remove('thx');vT.pause();return}   // có chuyện chen ngang: nhường cảnh
     if(thxQ&&!thxLv){if(stageFree()){const l=thxQ;thxQ=0;thxPlay(l)}else if(!busy&&!bannerBusy&&performance.now()-thxQt>2500)thxQ=0}},250);   // đang đi xe/ngủ/có biến: bỏ lượt cảm ơn bằng dáng người, không giữ rương chờ
   const _thank=thank; thank=function(u,coins){_thank(u,coins);const lv=coins>=1000?4:coins>=100?3:coins>=10?2:1,now=performance.now();
     if(lv<=2&&lv<=thxLastLv&&now-thxLast<(lv==1?15000:8000))return;
@@ -1885,5 +1899,70 @@ boot(false);tickHud();life();
 @keyframes badge{50%{transform:translateY(-6px) scale(1.04)}}
 #npc.on:not(.artn) #npcsay{right:116px;top:24px}
 </style>
+<!-- =====================================================================
+     HỆ QUẢ 19/11/2026: lựa chọn của cả phòng phải THẤY được
+     - ảnh kết quả art/<nv>/out-<số ngã rẽ>-<a|b|c>[f].jpg hiện trong bảng chốt (f = chơi liều rồi thua)
+     - nhân vật diễn phản ứng (vui / buồn / sững sờ), nhân vật phụ phản ứng theo, nhân phẩm bay lên thành số to
+     - thanh Nhân phẩm thường trực trên đầu màn hình
+     - nhân quả: lựa chọn tốt/xấu rõ rệt (nhân phẩm ±2 trở lên) sẽ quay lại sau 1-2 ngày trong game
+     ===================================================================== -->
+<style>
+#goal{max-width:330px}
+#karma{position:absolute;right:14px;top:81px;display:flex;align-items:center;gap:5px;font-size:11px;font-weight:800;background:#0007;border-radius:99px;padding:2px 8px 2px 6px;z-index:6}
+#karma i{display:block;width:62px;height:7px;border-radius:9px;background:linear-gradient(90deg,#ef4444,#f59e0b 45%,#4ade80);position:relative;overflow:visible}
+#karma i b{position:absolute;top:-3px;width:5px;height:13px;margin-left:-2px;border-radius:3px;background:#fff;box-shadow:0 0 6px #fff;transition:left .8s}
+#karma em{font-style:normal;color:#fde68a}
+#karma.bump{animation:kb .9s}
+@keyframes kb{30%{transform:scale(1.25);box-shadow:0 0 18px var(--kc,#4ade80)}}
+#banner .outpic{display:block;width:300px;height:225px;object-fit:cover;border-radius:12px;margin:4px auto 8px;border:2px solid #fde68a;box-shadow:0 8px 30px #000a}
+#banner.outwide .in{max-width:520px}
+.bigfloat{position:absolute;left:0;right:0;text-align:center;top:330px;z-index:21;font-size:34px;font-weight:900;pointer-events:none;text-shadow:0 3px 0 #000a,0 0 18px currentColor;animation:bigf 2.4s ease-out forwards}
+.bigfloat.good{color:#4ade80}.bigfloat.bad{color:#f87171}.bigfloat.gold{color:#fde047}
+@keyframes bigf{0%{transform:translateY(30px) scale(.6);opacity:0}15%{transform:none;opacity:1}75%{opacity:1}100%{transform:translateY(-70px);opacity:0}}
+#actor.rsad #char,#actor.rsad #artanim{animation:rdroop 1.7s ease-in-out}#actor.rshock #char,#actor.rshock #artanim{animation:nshake .4s 4}
+@keyframes rdroop{30%,70%{transform:translateY(10px) scaleY(.95) rotate(-3deg)}}
+#npc.rgood #npcimg{animation:nhop .5s 3}#npc.rbad #npcimg{animation:nshake .45s 3}
+@keyframes nhop{50%{transform:translateY(-16px)}}
+@keyframes nshake{25%{transform:translateX(-8px) rotate(-3deg)}75%{transform:translateX(8px) rotate(3deg)}}
+</style>
+<script>
+"use strict";
+(function(){
+  const {has,A}=window.ART;
+  /* thanh nhân phẩm */
+  const kp=document.createElement('div');kp.id='karma';$('#hud').appendChild(kp);let lastK=null;
+  function kSync(){if(!S)return;const k=S.karma|0,p=Math.max(0,Math.min(1,(k+8)/16));
+    kp.innerHTML=`<span>${k>=4?'😇':k>=0?'🙂':k>=-3?'😐':'😈'} Nhân phẩm</span><i><b style="left:${(p*100).toFixed(0)}%"></b></i><em>${k>=4?'Tử tế':k>=0?'Lương thiện':k>=-3?'Lung lay':'Lạc lối'}</em>`;
+    if(lastK!==null&&k!==lastK){kp.style.setProperty('--kc',k>lastK?'#4ade80':'#f87171');kp.classList.remove('bump');void kp.offsetWidth;kp.classList.add('bump')}lastK=k}
+  const _render=render; render=function(){_render();kSync()};
+  const bigFloat=(t,c)=>{const d=document.createElement('div');d.className='bigfloat '+c;d.textContent=t;$('#stage').append(d);setTimeout(()=>d.remove(),2500)};
+  /* gắn ảnh vào bảng chốt vừa đưa vào hàng đợi (hoặc đang hiện) */
+  const withPic=(re,f)=>{if(!has(f))return;const img=`<img class="outpic" src="${A+f}" alt="">`,last=bannerQ[bannerQ.length-1];
+    if(last&&re.test(last.h)){last.p=img+last.p;last.ms=Math.max(last.ms,5200)}else if(re.test($('#banner h2').textContent)){$('#banner p').innerHTML=img+$('#banner p').innerHTML}};
+  const npcReact=c=>{const n=$('#npc');if(!n.classList.contains('on'))return;n.classList.remove('rgood','rbad');void n.offsetWidth;n.classList.add(c);setTimeout(()=>n.classList.remove(c),1600)};
+  const _endEvent=endEvent; endEvent=function(win,hero){window.LASTOUT=null;_endEvent(win,hero);const o=window.LASTOUT;window.LASTOUT=null;if(!o)return;
+    const react=k=>window.ART.react&&window.ART.react(k);
+    if(o.type=='choice'){
+      const f=`${PK.id}/out-${o.ci}-${'abc'[o.j]}${o.fail?'f':''}.jpg`;withPic(/Cả phòng chọn|tự quyết/,f);
+      if(o.k)setTimeout(()=>bigFloat(`${o.k>0?'+':''}${o.k} nhân phẩm ${o.k>0?'😇':'😈'}`,o.k>0?'good':'bad'),600);
+      react(o.fail?'shock':(o.c<0||o.k<0)?'sad':'yay');
+      npcReact(o.k>0&&!o.fail?'rgood':'rbad');
+      S.cbq=S.cbq||[];if(Math.abs(o.k)>=2&&S.cbq.length<12)S.cbq.push({pk:PK.id,k:o.k,f,label:o.label,due:o.day+1+(Math.random()*2|0)});
+      render();save()}
+    else if(o.type=='crisis'){react(o.win?'yay':'sad');npcReact(o.win?'rbad':'rgood')}
+    else if(o.type=='guess')react('yay')};
+  /* nhân quả quay lại */
+  const GOOD=['Người được {n} giúp hôm ấy tìm tới tận nơi để đền ơn!','Tiếng lành đồn xa: ai cũng biết chuyện tử tế của {n}, khách kéo tới ủng hộ!','Ân tình hôm nọ quay lại đúng lúc {n} cần nhất!'],
+        BAD=['Chuyện hôm ấy bị lộ ra, ai cũng xì xào sau lưng {n}…','Cái giá của lựa chọn hôm nọ giờ mới tới…','Người ta vẫn nhớ chuyện hôm ấy và quay lưng với {n}…'];
+  setInterval(()=>{
+    if(!S||!started||S.ended||ev||lock||story||busy||bannerBusy||dreamOn||!S.cbq||!S.cbq.length||S.cbDay==dayNo())return;
+    const i=S.cbq.findIndex(c=>c.pk==PK.id&&dayNo()>=c.due);if(i<0)return;
+    const c=S.cbq.splice(i,1)[0];S.cbDay=dayNo();const good=c.k>0;
+    banner(good?'🔁 NHÂN QUẢ: GIEO GÌ GẶT NẤY':'🔁 QUẢ BÁO',(has(c.f)?`<img class="outpic" src="${A+c.f}" alt="" style="filter:sepia(.45) brightness(.92)">`:'')
+      +`<i style="opacity:.8">Nhớ hôm cả phòng chọn “${esc(c.label)}”…</i><br>${esc(tx(pick(good?GOOD:BAD)))}`,5200,good?()=>sfx.reveal(4):sfx.bad);
+    if(good){addProg(.07,'báo đáp');if(Math.random()<.25)giveClue();emote('🥹',2500)}else{addProg(-.06);emote('😣',2500)}
+    window.ART.react&&window.ART.react(good?'yay':'sad');render();save()},1000);
+})();
+</script>
 </body>
 </html>
