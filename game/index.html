@@ -1532,6 +1532,7 @@ boot(false);tickHud();life();
     if(KEY[n]&&vol>=.6)duck(KEY[n][0],KEY[n][1],at);
     const go=b=>{if(!b)return;const s=AC.createBufferSource(),g=AC.createGain();s.buffer=b;s.playbackRate.value=rate;g.gain.value=vol;s.connect(g);g.connect(sfxGain);s.start(AC.currentTime+at)};
     buf[n]?go(buf[n]):load(n).then(go)}
+  window.AUD={play:(...a)=>play(...a),duck:(...a)=>{if(ctx())duck(...a)},load:n=>ctx()?load(n):Promise.resolve(null)};   // cho lớp CUỐN dùng (giọng thoại)
   function setMusic(n){
     if(n===curName||!ctx())return; curName=n; const t=AC.currentTime;
     if(curSrc){const s=curSrc,g=curGain;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0,t+.9);setTimeout(()=>{try{s.stop()}catch(e){}},1000);curSrc=null}
@@ -1979,6 +1980,195 @@ boot(false);tickHud();life();
       +`<i style="opacity:.8">Nhớ hôm cả phòng chọn “${esc(c.label)}”…</i><br>${esc(tx(pick(good?GOOD:BAD)))}`,5200,good?()=>sfx.reveal(4):sfx.bad);
     if(good){addProg(.07,'báo đáp');if(Math.random()<.25)giveClue();emote('🥹',2500)}else{addProg(-.06);emote('😣',2500)}
     window.ART.react&&window.ART.react(good?'yay':'sad');render();save()},1000);
+})();
+</script>
+<!-- =====================================================================
+     CUỐN LAYER 20/11/2026: cho người xem thấy mình trong game.
+     1) Nhân vật nói chuyện: bong bóng thoại to có tên người xem + giọng đọc thu sẵn (snd/voice/…)
+     2) Đối đầu phản diện: bảng kéo co, đếm ngược, ai cứu nhiều nhất; thua thì bị cướp đồ
+     3) Màn hình gọn: một dòng kêu gọi to thay bảng giá quà, một đời ngắn hơn (15 phút)
+     ===================================================================== -->
+<style>
+#talk{position:absolute;left:50%;top:150px;z-index:40;transform:translate(-50%,-8px) scale(.92);opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;
+  width:470px;background:#fffdf7;color:#1f2937;border-radius:20px;padding:12px 18px 13px;box-shadow:0 10px 30px #0008;border:3px solid #fde047}
+#talk.on{opacity:1;transform:translate(-50%,0) scale(1)}
+#duel.on~#talk{top:auto;bottom:16px}
+#duel.on~#talk:after{bottom:auto;top:-16px;border:14px solid transparent;border-bottom-color:#fde047;border-top:0}
+#duel.on~#talk.vil:after{border-bottom-color:#ef4444}
+#talk:after{content:'';position:absolute;left:50%;bottom:-16px;margin-left:-14px;border:14px solid transparent;border-top-color:#fde047;border-bottom:0}
+#talk .who{font:800 15px/1.1 system-ui,sans-serif;color:#b45309;margin-bottom:4px;letter-spacing:.3px}
+#talk .q{font:600 14px/1.3 system-ui,sans-serif;color:#6b7280;margin-bottom:5px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#talk .t{font:800 23px/1.28 system-ui,sans-serif}
+#talk .t b{color:#db2777}
+#talk.vil{background:#1f0a0a;color:#fecaca;border-color:#ef4444}
+#talk.vil:after{border-top-color:#ef4444}
+#talk.vil .who{color:#f87171}
+/* trận đấu phản diện */
+#duel{position:absolute;left:10px;right:10px;top:62px;z-index:38;display:none;background:linear-gradient(#300a0ae8,#1a0610e8);border:2px solid #ef4444;border-radius:18px;padding:10px 12px 12px;color:#fff;box-shadow:0 8px 30px #000a}
+#duel.on{display:block;animation:d_in .35s ease-out}
+@keyframes d_in{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+#duel .top{display:flex;align-items:center;gap:10px}
+#duel .vimg{width:74px;height:74px;border-radius:50%;object-fit:cover;object-position:50% 12%;border:3px solid #ef4444;background:#000;flex:none}
+#duel .vemo{width:74px;height:74px;border-radius:50%;border:3px solid #f59e0b;display:none;align-items:center;justify-content:center;font-size:40px;flex:none;background:#000}
+#duel.gen .vimg{display:none}#duel.gen .vemo{display:flex}
+#duel .ti{flex:1;min-width:0}
+#duel .ti h3{font:900 21px/1.1 system-ui,sans-serif;color:#fca5a5;margin:0 0 3px;text-transform:uppercase}
+#duel .ti p{font:600 13.5px/1.3 system-ui,sans-serif;margin:0;opacity:.9}
+#duel .clock{font:900 38px/1 system-ui,sans-serif;color:#fde047;min-width:62px;text-align:center;text-shadow:0 2px 8px #000}
+#duel .clock.low{color:#f87171;animation:d_pulse .5s infinite alternate}
+@keyframes d_pulse{to{transform:scale(1.18)}}
+#duel .tug{position:relative;height:30px;margin:10px 0 6px;border-radius:15px;background:#7f1d1d;overflow:hidden;border:2px solid #fff3}
+#duel .tug i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#16a34a,#4ade80);transition:width .25s}
+#duel .tug span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:900 15px system-ui,sans-serif;text-shadow:0 1px 3px #000}
+#duel .cta{font:900 25px/1.15 system-ui,sans-serif;text-align:center;color:#fff;animation:d_pulse .6s infinite alternate;transform-origin:50% 50%}
+#duel .sv{font:700 13px/1.3 system-ui,sans-serif;text-align:center;color:#fde68a;margin-top:5px;min-height:17px}
+/* dòng kêu gọi to (thay bảng giá quà) */
+#how.cuon>*:not(#cta){display:none!important}
+#cta{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-radius:16px;background:#ffffff0d;border:2px solid #ffffff22}
+#cta .a{font:900 34px/1.1 system-ui,sans-serif;color:#fff;letter-spacing:.3px}
+#cta .b{font:700 17px/1.3 system-ui,sans-serif;color:#fde68a;margin-top:7px}
+#cta.pop .a{animation:c_pop .45s ease-out}
+@keyframes c_pop{0%{transform:scale(.7);opacity:.2}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+#cta.red{background:#7f1d1d55;border-color:#ef4444}#cta.red .a{color:#fecaca;animation:d_pulse .6s infinite alternate}
+#cta.vote{background:#1e3a8a44;border-color:#60a5fa}
+</style>
+<script>
+(()=>{
+  const $$=s=>document.querySelector(s), live=P.get('live')=='1';
+  /* ---------- 3a) một đời ngắn hơn (đổi bằng ?min= ?days= ?speed= như cũ) ---------- */
+  if(!P.get('min'))CFG.minutes=15; if(!P.get('days'))CFG.days=5; if(!P.get('speed'))CFG.speed=1.5;
+  CFG.eventEvery=[35,50];
+  EV_ROT.splice(0,EV_ROT.length,'choice','crisis','guess','choice','crisis','choice');   // phản diện ghé mỗi ~2 phút
+
+  /* thêm vài lần phản diện ra tay để đối đầu xuất hiện đều */
+  const VIL={bom:{n:'Thiếu gia Khang',e:'😈',f:0},na:{n:'Tiểu thư Trâm Anh',e:'💅',f:1},muop:{n:'Đại ca Sẹo',e:'😾',f:0}};
+  const ALL=['street','road','cafe','office','boss','pub','golf','bar','date','fair','shop','market','live','mall','atelier','studio','runway','party','alley','roof','home','park','yacht','cinema'];
+  const addV=(id,L)=>L.forEach(([t,say])=>PACKS[id].CRISES.push({t,bg:PACKS[id].CRISES.find(c=>c.npc=='😈').bg,at:ALL,npc:'😈',say,vil:1}));
+  addV('bom',[['Thiếu gia Khang cho người tới phá chỗ làm của {n}!','Để xem hôm nay ai cứu mày!'],['Thiếu gia Khang giật mất hợp đồng của {n}!','Hợp đồng này là của tao!']]);
+  addV('na',[['Tiểu thư Trâm Anh xé nát mẫu váy của {n}!','Đồ nhà quê mà đòi làm thời trang?'],['Tiểu thư Trâm Anh thuê người bôi nhọ {n} trên mạng!','Để xem fan của cô còn ở lại không!']]);
+  addV('muop',[['Đại ca Sẹo dẫn cả băng tới cướp chỗ ngủ của {n}!','Chỗ này của tao!'],['Đại ca Sẹo giành con cá của {n}!','Cá này tao ăn!']]);
+  for(const id in PACKS)(PACKS[id].CRISES||[]).forEach(c=>{if(c.npc=='😈')c.vil=1});
+
+  /* ---------- 1) nhân vật nói chuyện ---------- */
+  let talkEl=null;
+  let LINES=null; fetch('voice/lines.json').then(r=>r.ok?r.json():null).then(j=>LINES=j).catch(()=>{});
+  const BAD=/(đ[ịi]t|\bdm\b|\bđm\b|đéo|\bdeo\b|l[ồo]n|c[ặa]c|bu[ồo]i|\bvcl\b|\bvl\b|\bcc\b|\bđĩ\b|\bdi~|f+u+c+k|shit|bitch)/i;
+  const clean=s=>String(s||'').replace(/https?:\S+/g,'[link]').replace(new RegExp(BAD.source,'gi'),'***').slice(0,70);
+  const last={};               // tránh lặp lại câu vừa nói
+  const pickLine=(who,cat)=>{const L=LINES&&LINES[who]&&LINES[who][cat];if(!L||!L.length)return null;let i=Math.random()*L.length|0;if(L.length>1&&last[who+cat]===i)i=(i+1)%L.length;last[who+cat]=i;return{i,t:L[i]}};
+  let q=[],speaking=false,lastSpoke=0,hideT=0;
+  // ưu tiên: số càng lớn càng được nói trước; hàng chờ chỉ giữ vài câu để luôn "nói chuyện ngay lúc này"
+  function talk(cat,o={}){
+    const who=o.vil?'v'+PK.id:PK.id, pr=o.pr||1;
+    if(!LINES)return;
+    if(q.length>=3){q.sort((a,b)=>a.pr-b.pr);if(q[0].pr>=pr)return;q.shift()}
+    q.push({who,cat,pr,user:o.user,quote:o.quote,vil:!!o.vil,ts:performance.now()});
+    if(!speaking)next();
+  }
+  function next(){
+    q=q.filter(x=>performance.now()-x.ts<9000);           // câu đợi quá lâu thì bỏ (chuyện đã qua)
+    if(!q.length){speaking=false;return}
+    q.sort((a,b)=>b.pr-a.pr); const x=q.shift(), ln=pickLine(x.who,x.cat); if(!ln){return next()}
+    speaking=true; lastSpoke=performance.now();
+    const name=x.vil?VIL[PK.id].n:S.ch.name;
+    talkEl.className=x.vil?'vil':'';
+    talkEl.innerHTML=`<div class="who">${x.vil?'😈 ':''}${esc(name)}</div>${x.quote?`<div class="q">💬 ${esc(x.user)}: “${esc(clean(x.quote))}”</div>`:''}<div class="t">${x.user&&!x.quote?`<b>@${esc(x.user)}</b> `:''}${esc(ln.t)}</div>`;
+    requestAnimationFrame(()=>talkEl.classList.add('on'));
+    const file=`voice/${x.who}/${x.cat}-${ln.i}`; let done=false;
+    const fin=ms=>{if(done)return;done=true;clearTimeout(hideT);hideT=setTimeout(()=>{talkEl.classList.remove('on');setTimeout(next,260)},ms)};
+    if(muted||!window.AUD)fin(Math.max(2200,ln.t.length*75));
+    else AUD.load(file).then(b=>{if(!b)return fin(Math.max(2200,ln.t.length*75));AUD.duck(.3,b.duration+.2);AUD.play(file,1.15);fin(b.duration*1000+500)});
+    setTimeout(()=>fin(400),9000);                         // phòng khi không tải được tiếng
+  }
+  window.TALK=talk;
+  const CAT=t=>{const s=t.toLowerCase();
+    if(/^(hi|hello|helo|hế lô|hé lô|alo|chào|chao|xin chào|xin chao)\b|\b(chào|chao) (cả nhà|mọi người|em|anh|chị|bạn|na|bờm|mèo)/.test(s))return 'hi';
+    if(/haha|hihi|kk+|kaka|hehe|=\)\)|😂|🤣/.test(s))return 'laugh';
+    if(/cố lên|co len|fighting|ủng hộ|ung ho|lên đời|len doi/.test(s))return 'cheer';
+    if(/đẹp|dep|xinh|cute|dễ thương|de thuong|đáng yêu|iu |yêu|love|❤|😍/.test(s))return 'praise';
+    if(BAD.test(s)||/\bngu\b|xấu|chán|dở|\btệ\b|ghét|nghèo/.test(s))return 'sad';
+    if(/\băn\b|đói|cơm|\bcá\b|bánh|trà sữa|uống/.test(s))return 'food';
+    if(/\?|\bsao\b|\bgì\b|\bnào\b|bao nhiêu|\bmấy\b|\bai\b/.test(s))return 'ask';
+    return 'ok'};
+  let lastCmtReply=0;
+  const greeted={};
+  const _onEvent=onEvent;
+  onEvent=function(e){
+    const r=_onEvent(e);
+    if(!S||S.ended||!started||!e||!e.type)return r;
+    const u=String(e.user||'ẩn danh').slice(0,24), now=performance.now(), t=String(e.text||'').trim();
+    if(e.type=='gift'){const c=Math.max(1,(+e.coins||1)*(+e.count||1));talk(c>=1000?'g4':c>=100?'g3':c>=10?'g2':'g1',{user:u,pr:c>=1000?9:c>=100?8:c>=10?6:4})}
+    else if(e.type=='follow'||e.type=='share')talk(e.type,{user:u,pr:3});
+    else if(e.type=='comment'&&!/^[123]$/.test(t)&&!(ev&&ev.d&&ev.d.kw&&t.toLowerCase().includes(ev.d.kw))){
+      // mỗi ~6 giây trả lời một bình luận; người mới bình luận lần đầu được ưu tiên
+      const fresh=!greeted[u]; if(now-lastCmtReply>(fresh?4000:6500)&&(!speaking||q.length==0)){lastCmtReply=now;greeted[u]=1;const c=CAT(t);talk(fresh&&c=='ok'?'hi':c,{user:u,quote:t,pr:fresh?3:2})}}
+    if(ev&&ev.type=='crisis'){ev.sv=ev.sv||{};const add=e.type=='like'?+e.count||1:e.type=='gift'?999:e.type=='comment'&&ev.d.kw&&t.toLowerCase().includes(ev.d.kw)?5:0;if(add)ev.sv[u]=(ev.sv[u]||0)+add}
+    return r};
+  if(window.LiveGame)window.LiveGame.event=onEvent;
+
+  /* ---------- 2) đối đầu phản diện ---------- */
+  const duel=document.createElement('div');duel.id='duel';
+  duel.innerHTML=`<div class="top"><img class="vimg" alt=""><div class="vemo">⚠️</div><div class="ti"><h3></h3><p></p></div><div class="clock"></div></div>
+    <div class="tug"><i></i><span></span></div><div class="cta"></div><div class="sv"></div>`;
+  $$('#scene').appendChild(duel);
+  talkEl=document.createElement('div');talkEl.id='talk';$$('#scene').appendChild(talkEl);
+  const vimg=duel.querySelector('.vimg'); vimg.onerror=()=>duel.classList.add('gen');
+  let hurried=false;
+  function duelDraw(){
+    if(!ev||ev.type!='crisis'){duel.classList.remove('on');return}
+    const isV=!!ev.d.vil, n=S.ch.name, left=Math.max(0,Math.ceil(ev.left)), pct=Math.min(100,ev.got/ev.need*100);
+    if(!duel.classList.contains('on')){duel.classList.toggle('gen',!isV);if(isV)vimg.src='art/npc/villain-'+PK.id+'.png';duel.classList.add('on')}
+    duel.querySelector('h3').textContent=isV?`${VIL[PK.id].e} ${VIL[PK.id].n} tấn công!`:'⚠️ Biến cố!';
+    duel.querySelector('.ti p').textContent=tx(ev.d.t);
+    const ck=duel.querySelector('.clock');ck.textContent=left+'s';ck.classList.toggle('low',left<=7);
+    duel.querySelector('.tug i').style.width=pct+'%';
+    duel.querySelector('.tug span').textContent=`❤️ ${Math.min(ev.got,ev.need)|0} / ${ev.need}`;
+    duel.querySelector('.cta').textContent=`❤️ THẢ TIM CỨU ${n.toUpperCase()}!`+(ev.d.kw?` hoặc gõ "${ev.d.kw}"`:'');
+    const top=Object.entries(ev.sv||{}).sort((a,b)=>b[1]-a[1]).slice(0,3);
+    duel.querySelector('.sv').innerHTML=top.length?'🦸 Đang cứu: '+top.map(([u],k)=>`<b>${esc(u)}</b>`).join(' · '):'Chưa ai ra tay…';
+    if(!hurried&&left<=8&&pct<70){hurried=true;talk('hurry',{pr:7})}
+  }
+  const _startEvent=startEvent;
+  startEvent=function(){const had=ev;
+    // phản diện xuất hiện ở bất cứ đâu nhân vật đang đứng → biến cố thường là phản diện ra tay
+    if(!had)(PK.CRISES||[]).forEach(c=>{if(c.vil&&c.at&&!c.at.includes(base.bg))c.at.push(base.bg)});
+    // khoảng 6/10 lần biến cố là phản diện ra tay (kẻ thù quen mặt → người xem có lý do cứu)
+    const nextT=EV_ROT[((S.evN||0)+1)%EV_ROT.length], C=PK.CRISES;
+    if(!had&&nextT=='crisis'&&Math.random()<.6&&C.some(c=>c.vil)){const keep=C.slice();C.splice(0,C.length,...keep.filter(c=>c.vil));try{_startEvent()}finally{C.splice(0,C.length,...keep)}}
+    else _startEvent();
+    if(!had&&ev){hurried=false;
+      if(ev.type=='crisis'){ev.sv={};if(ev.d.vil)talk('come',{vil:1,pr:8});talk('crisis',{pr:7})}
+      else talk('choice',{pr:5})}};
+  if(window.LiveGame)window.LiveGame.startEvent=()=>startEvent();
+  const _endEvent=endEvent;
+  endEvent=function(win,hero){
+    const e=ev;
+    if(e&&e.type=='crisis'&&win&&!hero){const top=Object.entries(e.sv||{}).sort((a,b)=>b[1]-a[1])[0];if(top)hero=top[0]}
+    if(e&&e.type=='crisis'&&win&&hero)credit(hero,30);
+    const r=_endEvent(win,hero);
+    if(e&&e.type=='crisis'){duel.classList.remove('on');
+      if(win){talk('win',{pr:7,user:hero});if(e.d.vil)talk('lose',{vil:1,pr:6})}
+      else{if(e.d.vil)talk('win',{vil:1,pr:7});talk('lose',{pr:6});
+        // thua: phản diện cướp đi một món đang có
+        const own=SLOTS.filter(s=>S.eq[s]>0&&s!='nha'); if(own.length&&e.d.vil){const sl=pick(own),old=S.eq[sl];S.eq[sl]=old-1;if(sl=='xe')shownXe=S.eq[sl];
+          setTimeout(()=>{toast(`${VIL[PK.id].e} <b>${esc(VIL[PK.id].n)}</b> cướp mất ${ITEMS[sl].e[old]} ${esc(ITEMS[sl].t[old])}!`,4);render();save()},1600)}}}
+    else if(e&&(e.type=='choice'||e.type=='guess'))setTimeout(()=>talk('voted',{pr:2}),3600);
+    return r};
+
+  /* ---------- 3b) dòng kêu gọi to ---------- */
+  const how=$$('#how'); how.classList.add('cuon'); const cta=document.createElement('div');cta.id='cta';how.appendChild(cta);
+  const IDLE=[['💬 GÕ TÊN BẠN','{n} sẽ chào bạn tận tên'],['❤️ THẢ TIM','{n} đi làm kiếm tiền · cứu {n} khi gặp nạn'],['🎁 TẶNG 🌹 HOA HỒNG','mở rương · {n} mặc đồ bạn tặng'],['➕ FOLLOW','+1 lượt quay rương cho {n}']];
+  let ctaKey='',idleI=0,idleT=0;
+  function setCta(k,a,b,cls){if(k===ctaKey){cta.querySelector('.b').innerHTML=b;return}ctaKey=k;cta.className=cls||'';cta.innerHTML=`<div class="a">${a}</div><div class="b">${b}</div>`;void cta.offsetWidth;cta.classList.add('pop')}
+  setInterval(()=>{
+    if(!S)return; duelDraw();
+    const n=esc(S.ch.name), left=ev?Math.max(0,Math.ceil(ev.left)):0;
+    if(ev&&ev.type=='crisis')setCta('crisis','❤️ THẢ TIM CỨU '+n.toUpperCase()+'!',`còn <b>${left}</b> giây · ai cứu nhiều nhất được vinh danh`,'red');
+    else if(ev&&ev.opts){const opts=ev.opts.map((o,k)=>`<b>${k+1}</b> ${esc(tx(o))} (${ev.v[k]})`).join(' · ');setCta('vote'+ev.d._i,`💬 GÕ ${ev.opts.map((o,k)=>k+1).join(' · ')} ĐỂ CHỌN`,`${opts} · còn <b>${left}</b>s`,'vote')}
+    else{const now=performance.now();if(now-idleT>6000||ctaKey.startsWith('vote')||ctaKey=='crisis'){idleT=now;idleI=(idleI+1)%IDLE.length;const [a,b]=IDLE[idleI];setCta('idle'+idleI,a,tx(b))}}
+    // im lặng lâu thì nhân vật tự rủ người xem
+    if(started&&!S.ended&&!ev&&!speaking&&performance.now()-lastSpoke>22000&&!busy){lastSpoke=performance.now();talk('idle',{pr:1})}
+  },250);
 })();
 </script>
 <!-- =====================================================================
