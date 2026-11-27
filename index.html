@@ -72,7 +72,7 @@ button{font:inherit;color:inherit}
 .stage{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
 .track{display:flex;height:100%}
 @media (prefers-reduced-motion:reduce){.track{transition:none}}
-.slide{flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;padding-block:clamp(20px,4vh,48px);
+.slide{flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;padding-block:clamp(28px,5vh,56px);
   padding-left:var(--gut-l);padding-right:var(--gut-r)}
 .wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(18px,3vh,32px);min-height:100%}
 .head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 32px;align-items:end}
@@ -91,7 +91,7 @@ figcaption{display:flex;flex-direction:column;gap:6px}
 figcaption .t{font-weight:700;font-size:14px}
 figcaption .t .it{font-size:17px;margin-left:4px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
   padding:5px 9px 5px 8px;background:var(--navy);border:1px solid rgba(168,200,242,.55);color:var(--paper)}
 .chip::before{content:"";width:5px;height:5px;background:var(--pastel)}
 .row{display:grid;gap:clamp(12px,2vw,24px)}
@@ -137,7 +137,7 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .chan dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:12px 0;font-size:13px}
 .chan dt{color:var(--muted)}
 .chan dd{margin:0;font-weight:800;font-variant-numeric:tabular-nums}
-.chan dd.top{color:var(--pastel)}
+.chan dd.top{color:var(--pastel);display:block;padding:0;border:0}
 
 /* ảnh chân dung: ảnh in, viền pastel lệch */
 .portrait{position:relative;isolation:isolate;width:clamp(104px,9vw,140px);aspect-ratio:4/5;margin:0 0 22px;max-width:100%}
@@ -150,11 +150,11 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .ailab .pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,18px)}
 .prompt{margin:4px 0 0;font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:12px;line-height:1.6;color:var(--muted);
   border-left:2px solid var(--pastel);padding:4px 0 4px 12px;max-width:60ch}
-.tag{position:absolute;top:10px;left:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 8px;
+.tag{position:absolute;top:10px;left:10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 8px;
   background:rgba(7,8,11,.7);border:1px solid var(--line)}
 .tag.on{background:var(--navy);border-color:rgba(168,200,242,.6)}
 .snd{position:absolute;right:10px;bottom:12px;border:1px solid rgba(168,200,242,.6);background:rgba(7,8,11,.65);padding:6px 10px;
-  font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:background-color .4s var(--ease)}
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:background-color .4s var(--ease)}
 .snd:hover,.snd[aria-pressed="true"]{background:var(--navy-2)}
 
 /* phim */
@@ -189,7 +189,7 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .edu b{display:block}
 
 /* liên hệ */
-.contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);flex:1;align-items:stretch;margin-inline:calc(-1 * var(--gut-l)) calc(-1 * var(--gut-r));margin-block:calc(-1 * clamp(20px,4vh,48px))}
+.contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);flex:1;align-items:stretch;margin-inline:calc(-1 * var(--gut-l)) calc(-1 * var(--gut-r));margin-block:calc(-1 * clamp(28px,5vh,56px))}
 .contact .l{padding:clamp(28px,6vh,72px) var(--gut-r) clamp(28px,6vh,72px) var(--gut-l);display:flex;flex-direction:column;justify-content:center;gap:10px}
 .contact .l h2{margin:0;font-size:clamp(40px,6vw,84px);line-height:1;font-weight:800;letter-spacing:-.02em}
 .contact .r{background:var(--navy);padding:clamp(28px,6vh,72px) var(--gut-r) clamp(28px,6vh,72px) clamp(20px,4vw,56px);display:flex;flex-direction:column;justify-content:center;gap:26px}
@@ -231,7 +231,7 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .tlbar button i::after{content:"";position:absolute;inset:0;border-radius:3px;background:var(--pastel);transform:scaleX(var(--p,0));transform-origin:left;
   transition:transform .8s var(--ease-io),background-color .8s var(--ease-io)}
 .tlbar button.done i::after{opacity:.45}
-.tlbar button span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tlbar button span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tlbar button span b{font-weight:800;color:var(--paper);margin-right:6px;font-variant-numeric:tabular-nums}
 .tlbar button[aria-current="true"] span{color:var(--paper)}
 .tlbar button[aria-current="true"] span b{color:var(--pastel)}
@@ -385,19 +385,20 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 @keyframes marq{to{transform:translateX(-50%)}}
 
 /* timeline dựng phim dưới showreel */
-.edl{margin-top:12px;border:1px solid var(--line);background:#0a0d15;font-size:10.5px;user-select:none}
+.edl{margin-top:12px;border:1px solid var(--line);background:#0a0d15;font-size:11px;user-select:none}
 .edl .hd{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--line);color:var(--muted);letter-spacing:.06em}
 .edl .hd b{color:var(--pastel);font-weight:700;font-variant-numeric:tabular-nums;font-size:12px;letter-spacing:.02em}
 .edl .body{display:grid;grid-template-columns:34px minmax(0,1fr)}
 .edl .lanes{position:relative}
 .edl .heads div,.edl .ln{height:20px;border-bottom:1px solid #161d2d}
-.edl .heads div{display:grid;place-items:center;font-weight:700;color:var(--muted);border-right:1px solid var(--line);font-size:9.5px;letter-spacing:.06em}
+.edl .heads div{display:grid;place-items:center;font-weight:700;color:var(--muted);border-right:1px solid var(--line);font-size:11px;letter-spacing:.06em}
 .edl .heads .ru,.edl .ln.ru{height:16px}
 .edl .ln{position:relative}
-.edl .ln.ru span{position:absolute;top:0;bottom:0;border-left:1px solid #2a3550;padding-left:3px;font-size:8.5px;line-height:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.edl .ln.ru{overflow:hidden}
+.edl .ln.ru span{position:absolute;top:0;bottom:0;border-left:1px solid #2a3550;padding-left:3px;font-size:11px;line-height:14px;color:var(--muted);font-variant-numeric:tabular-nums}
 .edl .ln.ru span.mi{border-left-color:#1c2539;height:5px;top:auto}
 .edl .cl{position:absolute;top:2px;bottom:2px;border-radius:2px;padding:0 5px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;
-  font-size:9.5px;font-weight:700;color:var(--ink);border:0;cursor:pointer;transition:filter .3s var(--ease)}
+  font-size:11px;font-weight:700;color:var(--ink);border:0;cursor:pointer;transition:filter .3s var(--ease)}
 .edl .cl:hover{filter:brightness(1.18)}
 .edl .v2 .cl{background:#c6b6f0}
 .edl .v1 .cl{background:var(--pastel)}
@@ -408,7 +409,7 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 .edl .ph::before{content:"";position:absolute;top:0;left:-4px;border:4.5px solid transparent;border-top:6px solid #e5484d}
 
 /* số liệu: nguồn từng con số */
-.stat .src{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#7f95c4;margin-top:4px}
+.stat .src{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#7f95c4;margin-top:4px}
 
 /* dịch vụ */
 .svc{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
@@ -515,7 +516,7 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
         <h1>Nguyễn Duy<br>Việt Tuấn</h1>
         <div class="it role">video producer &amp; editor</div>
         <p class="pitch">Dựng để người xem <span class="it">dừng lướt,</span> quay để sản phẩm <span class="it">bán được.</span></p>
-        <p class="lede">Hơn 6 năm làm video: quảng cáo sản phẩm, video ads AI, xây kênh TikTok cho F&amp;B và thương hiệu, phim ngắn và MV. Từ ý tưởng, kịch bản, quay đến dựng, màu và âm thanh.</p>
+        <p class="lede">6+ năm làm ads sản phẩm, video AI, kênh TikTok, phim và MV. Từ ý tưởng đến bản dựng cuối.</p>
         <div class="ctas"><a class="cta" href="#journey">Xem dự án →</a><a class="cta ghost" href="#services">Dịch vụ &amp; báo giá</a></div>
       </div>
       <div class="reel">
@@ -530,7 +531,7 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
             <div class="lanes"><div class="ln ru" id="edlRu"></div><div class="ln v2" id="edlV2"></div><div class="ln v1" id="edlV1"></div><div class="ln a1" id="edlA1"></div><div class="ln a2" id="edlA2"></div><div class="ph" id="edlPh"></div></div>
           </div>
         </div>
-        <div class="tc"><span>Bấm vào một clip trên timeline để xem đoạn đó</span><span>Bấm → để xem từng phần</span></div>
+        <div class="tc"><span>Bấm một clip để xem đoạn đó</span><span>Bấm → xem tiếp</span></div>
       </div>
     </div>
     <div class="strip">
@@ -547,9 +548,9 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
     <div class="sechead"><div class="sec"><span class="no">02</span><span class="st"><b>Performance Ads</b><span class="cap">Journey · Crossian · AI Lab</span></span></div></div>
    <div class="pane" id="journey" data-tab="Journey Official">
     <div class="head">
-      <h2>Quảng cáo sản phẩm công nghệ cho Journey Official</h2>
+      <h2>Ads công nghệ cho Journey Official</h2>
       <div class="aside"><b>107K followers</b>video top 6.5M view</div>
-      <p>Video ads cho phụ kiện công nghệ của Journey và Alogic (thị trường nước ngoài): hook, product demo, ASMR. Kiêm leader team Organic làm nội dung TikTok, Instagram · 2023 – 2025.</p>
+      <p>Hook, product demo, ASMR cho Journey và Alogic. Leader team Organic · 2023 – 2025.</p>
     </div>
     <div class="row r4 phones">
       <figure><div class="vid v9"><video data-loop src="j-axie.mp4" poster="j-axie.jpg" muted loop playsinline preload="none"></video></div>
@@ -566,7 +567,7 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
     <div class="head">
       <h2>Video ads AI tại Crossian</h2>
       <div class="aside"><b>Editor</b>2025 – 2026</div>
-      <p>Dựng video quảng cáo hiệu suất có dùng AI cho các sản phẩm của Crossian, cùng MV thương hiệu 4K và phim sự kiện cuối năm.</p>
+      <p>Ads hiệu suất dùng AI, MV thương hiệu 4K và phim sự kiện cuối năm.</p>
     </div>
     <div class="row r3 phones">
       <figure><div class="vid v9"><video data-loop src="c-holdme.mp4" poster="c-holdme.jpg" muted loop playsinline preload="none"></video></div>
@@ -578,30 +579,30 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
     </div>
     <div class="row r2" style="max-width:1000px">
       <figure><div class="vid v16"><video data-loop src="c-mv.mp4" poster="c-mv.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">MV Crossian<span class="it">4K brand film</span></span><div class="chips"><span class="chip">Cinematography</span><span class="chip">Color grading</span></div></figcaption></figure>
+        <figcaption><span class="t">MV Crossian<span class="it">4K brand film</span></span><div class="chips"><span class="chip">Cinematography</span></div></figcaption></figure>
       <figure><div class="vid v16"><video data-loop src="c-banana.mp4" poster="c-banana.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Banana Land<span class="it">year-end event film</span></span><div class="chips"><span class="chip">2D graphics</span><span class="chip">Edit</span></div></figcaption></figure>
+        <figcaption><span class="t">Banana Land<span class="it">year-end event film</span></span><div class="chips"><span class="chip">2D graphics</span></div></figcaption></figure>
     </div>
    </div>
    <div class="pane" id="ailab" data-tab="AI Lab · Gemini Veo" hidden>
     <div class="head">
-      <h2>Video AI: từ prompt đến bản dựng hoàn chỉnh</h2>
+      <h2>Video AI: từ prompt đến bản dựng</h2>
       <div class="aside"><b>Prompt → Veo → hậu kỳ</b>tháng 10/2026</div>
-      <p>Tạo cảnh bằng Gemini (Veo), sau đó làm hậu kỳ như một video thật: chọn đoạn đẹp, cắt bỏ lỗi AI, chỉnh màu, thêm chữ, nhạc và SFX.</p>
+      <p>Tạo cảnh bằng Veo, rồi hậu kỳ như video thật: cắt lỗi AI, màu, chữ, nhạc, SFX.</p>
     </div>
     <div class="ailab">
       <figure>
         <div class="vid v16"><video data-loop src="ai-intro.mp4" poster="ai-intro.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Behind the timeline<span class="it">intro showreel 2026</span></span>
-          <div class="chips"><span class="chip">AI video</span><span class="chip">Prompt design</span></div>
-          <p class="prompt">"Cinematic slow dolly-in on a video editor's desk at night… deep navy ambient light, soft pastel blue rim light… 35mm film look."</p></figcaption>
+          <div class="chips"><span class="chip">Prompt design</span></div>
+          <p class="prompt">"Slow dolly-in on an editor's desk at night… 35mm film look."</p></figcaption>
       </figure>
       <div class="pair">
         <figure><div class="vid v9"><video data-loop src="ai-raw.mp4" poster="ai-raw.jpg" muted loop playsinline preload="none"></video><span class="tag">AI thô</span></div>
           <figcaption><span class="t">Đế sạc không dây<span class="it">raw Veo</span></span><div class="chips"><span class="chip">10s · 1 prompt</span></div></figcaption></figure>
         <figure><div class="vid v9"><video data-loop id="aiEdit" src="ai-edit.mp4" poster="ai-edit.jpg" muted loop playsinline preload="none"></video><span class="tag on">Đã dựng</span>
           <button class="snd" data-target="aiEdit" aria-pressed="false">Bật tiếng</button></div>
-          <figcaption><span class="t">Concept ad<span class="it">8s, đã hậu kỳ</span></span><div class="chips"><span class="chip">Cắt lỗi AI</span><span class="chip">Text + SFX</span></div></figcaption></figure>
+          <figcaption><span class="t">Concept ad<span class="it">8s, đã hậu kỳ</span></span><div class="chips"><span class="chip">Cắt lỗi AI</span></div></figcaption></figure>
       </div>
     </div>
    </div>
@@ -613,34 +614,34 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
   <div class="wrap">
     <div class="head">
       <div class="sec"><span class="no">03</span><span class="st"><b>Kênh TikTok</b><span class="cap">F&amp;B · Lifestyle · Brand · 2025 – 2026</span></span></div>
-      <h2>6 kênh TikTok: lên ý tưởng, quay, dựng và phát triển kênh</h2>
-      <div class="aside"><b>F&amp;B · Lifestyle · Brand</b>số liệu tại trang kênh</div>
+      <h2>6 kênh TikTok: ý tưởng, quay, dựng</h2>
+      <div class="aside"><b>200K+ followers</b>số liệu tại trang kênh</div>
     </div>
     <div class="chans">
       <article class="chan"><div class="vid v9"><video data-loop src="t-bongbang.mp4" poster="t-bongbang.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">F&amp;B</div><h3>Bánh mì Bống Bang</h3><span class="it h">@banhmi.bongngbang75</span>
           <dl><dt>Followers</dt><dd>19.3K</dd><dt>Likes</dt><dd>426.9K</dd><dt>Video top</dt><dd class="top">3.3M view</dd></dl>
-          <div class="chips"><span class="chip">Concept &amp; script</span><span class="chip">Shoot</span></div></div></article>
+          <div class="chips"><span class="chip">Concept &amp; script</span></div></div></article>
       <article class="chan"><div class="vid v9"><video data-loop src="t-bongcha.mp4" poster="t-bongcha.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">F&amp;B</div><h3>BôngCha</h3><span class="it h">@bongcha75</span>
           <dl><dt>Followers</dt><dd>4,966</dd><dt>Likes</dt><dd>72K</dd><dt>Video top</dt><dd class="top">470.3K view</dd></dl>
-          <div class="chips"><span class="chip">Product styling</span><span class="chip">Edit</span></div></div></article>
+          <div class="chips"><span class="chip">Product styling</span></div></div></article>
       <article class="chan"><div class="vid v9"><video data-loop src="t-kimngan.mp4" poster="t-kimngan.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">Lifestyle</div><h3>Kim Ngân 9Life</h3><span class="it h">@kimngan.9life</span>
           <dl><dt>Followers</dt><dd>55.8K</dd><dt>Likes</dt><dd>1.1M</dd><dt>Video top</dt><dd class="top">2.6M view</dd></dl>
-          <div class="chips"><span class="chip">Storytelling</span><span class="chip">Edit</span></div></div></article>
+          <div class="chips"><span class="chip">Storytelling</span></div></div></article>
       <article class="chan"><div class="vid v9"><video data-loop src="t-hadon.mp4" poster="t-hadon.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">F&amp;B</div><h3>Hà Đôn</h3><span class="it h">@hadon.fnb</span>
           <dl><dt>Followers</dt><dd>3,948</dd><dt>Likes</dt><dd>132.2K</dd><dt>Video top</dt><dd class="top">2.8M view</dd></dl>
-          <div class="chips"><span class="chip">Subtitle design</span><span class="chip">Edit</span></div></div></article>
+          <div class="chips"><span class="chip">Subtitle design</span></div></div></article>
       <article class="chan"><div class="vid v9"><video data-loop src="t-greensm.mp4" poster="t-greensm.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">Brand</div><h3>Green SM Platform</h3><span class="it h">@greensm.platform</span>
           <dl><dt>Followers</dt><dd>17.8K</dd><dt>Likes</dt><dd>131.1K</dd><dt>Video top</dt><dd class="top">14.2M view</dd></dl>
-          <div class="chips"><span class="chip">Talking-head edit</span><span class="chip">Color</span></div></div></article>
+          <div class="chips"><span class="chip">Talking-head edit</span></div></div></article>
       <article class="chan"><div class="vid v9"><video data-loop src="t-journey.mp4" poster="t-journey.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">Brand</div><h3>Journey</h3><span class="it h">@thejrnyofficial</span>
           <dl><dt>Followers</dt><dd>107K</dd><dt>Likes</dt><dd>1.1M</dd><dt>Video top</dt><dd class="top">6.5M view</dd></dl>
-          <div class="chips"><span class="chip">Product demo</span><span class="chip">2D motion</span></div></div></article>
+          <div class="chips"><span class="chip">Product demo</span></div></div></article>
     </div>
   </div>
 </section>
@@ -655,81 +656,81 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
     <div class="head">
       <h2>Vlog &amp; biến hình cho kênh lifestyle U50</h2>
       <div class="aside"><b>25+ video</b>tháng 10 – 11/2026</div>
-      <p>Dựng vlog một ngày (dậy sớm, tập, đi chợ, nấu ăn) và video biến hình trước/sau từ footage iPhone 4K HDR: cắt theo beat, zoom reframe, sub tiếng Việt, hiệu ứng chuyển cảnh.</p>
+      <p>Vlog một ngày và biến hình trước/sau từ footage iPhone 4K: cắt theo beat, reframe, sub Việt.</p>
     </div>
     <div class="row r4 phones">
       <figure><div class="vid v9"><video data-loop src="n-u50-vlog3.mp4" poster="n-u50-vlog3.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Vlog sáng<span class="it">nấu ăn</span></span><div class="chips"><span class="chip">Beat-sync edit</span><span class="chip">Subtitle</span></div></figcaption></figure>
+        <figcaption><span class="t">Vlog sáng<span class="it">nấu ăn</span></span><div class="chips"><span class="chip">Beat-sync edit</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-u50-vlog1.mp4" poster="n-u50-vlog1.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Vlog 5h sáng<span class="it">morning routine</span></span><div class="chips"><span class="chip">Storytelling</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-u50-bh7.mp4" poster="n-u50-bh7.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Biến hình<span class="it">before / after</span></span><div class="chips"><span class="chip">Transition FX</span><span class="chip">Zoom reframe</span></div></figcaption></figure>
+        <figcaption><span class="t">Biến hình<span class="it">before / after</span></span><div class="chips"><span class="chip">Transition FX</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-u50-th1.mp4" poster="n-u50-th1.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Biến hình tổng hợp<span class="it">4 bộ đồ</span></span><div class="chips"><span class="chip">Speed ramp</span><span class="chip">Color</span></div></figcaption></figure>
+        <figcaption><span class="t">Biến hình tổng hợp<span class="it">4 bộ đồ</span></span><div class="chips"><span class="chip">Speed ramp</span></div></figcaption></figure>
       </div>
    </div>
    <div class="pane" id="fashion" data-tab="Thời trang nam · AI" hidden>
     <div class="head">
       <h2>Video affiliate thời trang nam với người mẫu AI</h2>
       <div class="aside"><b>40+ video</b>TikTok Shop</div>
-      <p>Từ ảnh sản phẩm tạo người mẫu AI che mặt và cảnh quay bằng Google Flow / Veo, dựng video dọc có hook, phụ đề, nhạc trend, nhiều bản hook để test quảng cáo.</p>
+      <p>Từ ảnh sản phẩm ra người mẫu AI và cảnh quay bằng Veo, dựng nhiều bản hook để test ads.</p>
     </div>
     <div class="row r4 phones">
       <figure><div class="vid v9"><video data-loop src="n-fa-kaki.mp4" poster="n-fa-kaki.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Áo khoác kaki<span class="it">biến hình</span></span><div class="chips"><span class="chip">AI model (Veo)</span><span class="chip">Hook</span></div></figcaption></figure>
+        <figcaption><span class="t">Áo khoác kaki<span class="it">biến hình</span></span><div class="chips"><span class="chip">AI model (Veo)</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-fa-hoguom.mp4" poster="n-fa-hoguom.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Áo dáng lửng<span class="it">Hồ Gươm</span></span><div class="chips"><span class="chip">AI location</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-fa-3mau.mp4" poster="n-fa-3mau.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">3 màu áo<span class="it">nhạc trend</span></span><div class="chips"><span class="chip">Music sync</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-fa-gemini.mp4" poster="n-fa-gemini.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Bản Gemini Pro<span class="it">30s</span></span><div class="chips"><span class="chip">Prompt design</span><span class="chip">Hook variants</span></div></figcaption></figure>
+        <figcaption><span class="t">Bản Gemini Pro<span class="it">30s</span></span><div class="chips"><span class="chip">Hook variants</span></div></figcaption></figure>
       </div>
    </div>
    <div class="pane" id="beauty" data-tab="Mỹ phẩm · Việt hoá" hidden>
     <div class="head">
       <h2>Việt hoá video review mỹ phẩm nước ngoài</h2>
       <div class="aside"><b>Azelaic Acid 12%</b>tháng 11/2026</div>
-      <p>Lấy video review tiếng Tagalog / Anh / Trung, xoá chữ và watermark cũ, lồng giọng Việt bằng AI khớp miệng, làm lại phụ đề, chữ động và nhạc nền.</p>
+      <p>Xoá chữ và watermark cũ, lồng giọng Việt AI khớp miệng, làm lại phụ đề và nhạc.</p>
     </div>
     <div class="row r4 phones">
       <figure><div class="vid v9"><video data-loop src="n-mp-25s.mp4" poster="n-mp-25s.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Review 25s<span class="it">giọng AI tiếng Việt</span></span><div class="chips"><span class="chip">AI voice VI</span><span class="chip">Lip sync</span></div></figcaption></figure>
+        <figcaption><span class="t">Review 25s<span class="it">giọng AI tiếng Việt</span></span><div class="chips"><span class="chip">AI voice VI</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-mp-v11.mp4" poster="n-mp-v11.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Infographic<span class="it">12% Azelaic</span></span><div class="chips"><span class="chip">Motion text</span><span class="chip">2D graphics</span></div></figcaption></figure>
+        <figcaption><span class="t">Infographic<span class="it">12% Azelaic</span></span><div class="chips"><span class="chip">Motion text</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-mp-v1.mp4" poster="n-mp-v1.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Model review<span class="it">hook/body/CTA</span></span><div class="chips"><span class="chip">Ad structure</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-mp-c53.mp4" poster="n-mp-c53.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Review 53s<span class="it">đã xoá chữ cũ</span></span><div class="chips"><span class="chip">Text removal</span><span class="chip">Subtitle</span></div></figcaption></figure>
+        <figcaption><span class="t">Review 53s<span class="it">đã xoá chữ cũ</span></span><div class="chips"><span class="chip">Text removal</span></div></figcaption></figure>
       </div>
    </div>
    <div class="pane" id="antaaura" data-tab="Anta Aura · VJ" hidden>
     <div class="head">
-      <h2>Video bán hàng có VJ cho kem dưỡng cổ Anta Aura</h2>
+      <h2>Video bán hàng có VJ · Anta Aura</h2>
       <div class="aside"><b>55s · 4K dọc</b>tháng 11/2026</div>
-      <p>Video test theo brief của brand: hook tình huống hài, VJ nói vào camera, b-roll hoạt chất và bằng chứng lâm sàng, CTA. Cắt theo từng câu thoại, đổi cỡ khung theo vế, SFX đúng mốc chữ, chữ nằm trong safezone TikTok.</p>
+      <p>Video test theo brief: hook hài, VJ nói, b-roll hoạt chất, bằng chứng lâm sàng, CTA. Cắt theo từng câu thoại.</p>
     </div>
     <div class="row r4 phones">
       <figure><div class="vid v9"><video data-loop src="n-aa-hook.mp4" poster="n-aa-hook.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Hook<span class="it">tình huống giằng co</span></span><div class="chips"><span class="chip">Hook editing</span><span class="chip">SFX</span></div></figcaption></figure>
+        <figcaption><span class="t">Hook<span class="it">tình huống giằng co</span></span><div class="chips"><span class="chip">Hook editing</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-aa-vj.mp4" poster="n-aa-vj.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">VJ giới thiệu<span class="it">cắt theo câu thoại</span></span><div class="chips"><span class="chip">Dialogue cut</span><span class="chip">Reframe 4K</span></div></figcaption></figure>
+        <figcaption><span class="t">VJ giới thiệu<span class="it">cắt theo câu thoại</span></span><div class="chips"><span class="chip">Dialogue cut</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-aa-active.mp4" poster="n-aa-active.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Hoạt chất<span class="it">icon + b-roll</span></span><div class="chips"><span class="chip">Motion graphics</span><span class="chip">B-roll</span></div></figcaption></figure>
+        <figcaption><span class="t">Hoạt chất<span class="it">icon + b-roll</span></span><div class="chips"><span class="chip">Motion graphics</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-aa-proof.mp4" poster="n-aa-proof.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Bằng chứng<span class="it">before / after</span></span><div class="chips"><span class="chip">Info card</span><span class="chip">Color</span></div></figcaption></figure>
+        <figcaption><span class="t">Bằng chứng<span class="it">before / after</span></span><div class="chips"><span class="chip">Info card</span></div></figcaption></figure>
       </div>
    </div>
    <div class="pane" id="roblox" data-tab="Roblox TTS Story" hidden>
     <div class="head">
-      <h2>Roblox TTS Story — video YouTube 16:9 dài 32 phút</h2>
+      <h2>Roblox TTS Story · YouTube 32 phút</h2>
       <div class="aside"><b>Premiere Pro</b>project nhiều lớp</div>
-      <p>Dựng từ kịch bản + voice từng nhân vật: nhân vật Roblox trên nền ảnh thật, chuyển động theo note, chữ thoại Graphic sửa được, SFX và nhạc từ kho của team, đối chiếu kịch bản ra Excel.</p>
+      <p>Dựng từ kịch bản và voice từng nhân vật: chuyển động theo note, chữ thoại sửa được, SFX và nhạc.</p>
     </div>
     <div class="row r2">
       <figure><div class="vid v16"><video data-loop src="n-rb-1.mp4" poster="n-rb-1.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Locker room<span class="it">cảnh mở đầu</span></span><div class="chips"><span class="chip">Long-form edit</span><span class="chip">Character motion</span></div></figcaption></figure>
+        <figcaption><span class="t">Locker room<span class="it">cảnh mở đầu</span></span><div class="chips"><span class="chip">Long-form edit</span></div></figcaption></figure>
       <figure><div class="vid v16"><video data-loop src="n-rb-2.mp4" poster="n-rb-2.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Bedroom<span class="it">thoại nhân vật</span></span><div class="chips"><span class="chip">TTS story</span><span class="chip">Premiere layered</span></div></figcaption></figure>
+        <figcaption><span class="t">Bedroom<span class="it">thoại nhân vật</span></span><div class="chips"><span class="chip">Premiere layered</span></div></figcaption></figure>
       </div>
    </div>
   </div>
@@ -744,23 +745,23 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
     <div class="head">
       <h2>Web drama cho SVM Group, MV parody với Hài Quang Thắng</h2>
       <div class="aside"><b>SVM Group</b>2022 – 2023</div>
-      <p>Đứng kênh và chịu trách nhiệm sản xuất phim cho SVM Group. Trước đó cộng tác sản xuất video cùng nghệ sĩ Quang Thắng và hỗ trợ ê-kíp chương trình Việc Tử Tế.</p>
+      <p>Đứng kênh, sản xuất phim cho SVM Group. Cộng tác với nghệ sĩ Quang Thắng và chương trình Việc Tử Tế.</p>
     </div>
     <div class="film">
       <figure><div class="vid v16"><video data-loop src="f-drama1.mp4" poster="f-drama1.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Web drama<span class="it">SVM Group · tập 908</span></span><div class="chips"><span class="chip">Production</span><span class="chip">Color grading</span></div></figcaption></figure>
+        <figcaption><span class="t">Web drama<span class="it">SVM Group · tập 908</span></span><div class="chips"><span class="chip">Production</span></div></figcaption></figure>
       <figure><div class="vid v16"><video data-loop src="f-drama2.mp4" poster="f-drama2.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Web drama<span class="it">SVM Group · tập 904</span></span><div class="chips"><span class="chip">Production</span><span class="chip">Edit</span></div></figcaption></figure>
+        <figcaption><span class="t">Web drama<span class="it">SVM Group · tập 904</span></span><div class="chips"><span class="chip">Edit</span></div></figcaption></figure>
       <figure><div class="vid v16"><video data-loop src="f-mv.mp4" poster="f-mv.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">parody MV</span></span><div class="chips"><span class="chip">Music-sync edit</span><span class="chip">Sound design</span></div></figcaption></figure>
+        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">parody MV</span></span><div class="chips"><span class="chip">Music-sync edit</span></div></figcaption></figure>
       <figure><div class="vid v16"><video data-loop src="f-trailer.mp4" poster="f-trailer.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">official trailer</span></span><div class="chips"><span class="chip">Trailer edit</span><span class="chip">Title design</span></div></figcaption></figure>
+        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">official trailer</span></span><div class="chips"><span class="chip">Trailer edit</span></div></figcaption></figure>
     </div>
    </div>
    <div class="pane" id="freelance" data-tab="Freelance · Agency" hidden>
     <div class="head">
       <h2>Dự án ngoài: hợp tác agency và thương hiệu</h2>
-      <p>Xây kênh TikTok, quay dựng cho khách hàng, làm nội dung cùng agency cho nhiều nhãn hàng: phòng gym, bất động sản, sự kiện, bảo hiểm.</p>
+      <p>Kênh TikTok và quay dựng cho gym, bất động sản, sự kiện, bảo hiểm.</p>
     </div>
     <div class="row r3 phones">
       <figure><div class="vid v9"><video data-loop src="x-ares.mp4" poster="x-ares.jpg" muted loop playsinline preload="none"></video></div>
@@ -782,20 +783,20 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
       <h2>Sáu năm đứng sau máy quay và timeline</h2>
     </div>
     <ul class="tl">
-      <li><span class="y">2019</span><b>Media Staff</b><span>Quảng cáo dịch vụ, đào tạo nội bộ, giải trí. Cộng tác với nghệ sĩ Quang Thắng, hỗ trợ chương trình Việc Tử Tế.</span></li>
-      <li><span class="y">2020</span><b>Fanpage giải trí</b><span>Xây fanpage, chạy ads, viết content và định hướng phát triển.</span></li>
-      <li><span class="y">2022</span><b>SVM Group</b><span>Đứng kênh, chịu trách nhiệm sản xuất phim.</span></li>
-      <li><span class="y">2023</span><b>Journey · Alogic</b><span>Video quảng cáo công nghệ cho công ty nước ngoài. Leader team Organic.</span></li>
+      <li><span class="y">2019</span><b>Media Staff</b><span>Video quảng cáo, đào tạo, giải trí. Cộng tác Quang Thắng, Việc Tử Tế.</span></li>
+      <li><span class="y">2020</span><b>Fanpage giải trí</b><span>Xây fanpage, chạy ads, viết content.</span></li>
+      <li><span class="y">2022</span><b>SVM Group</b><span>Đứng kênh, sản xuất phim.</span></li>
+      <li><span class="y">2023</span><b>Journey · Alogic</b><span>Ads công nghệ, thị trường nước ngoài. Leader team Organic.</span></li>
       <li><span class="y">2025</span><b>Crossian</b><span>Editor video ads, video AI.</span></li>
-      <li><span class="y">2026</span><b>Freelance</b><span>Vlog lifestyle U50, thời trang nam AI, Việt hoá mỹ phẩm, Roblox story. Build kênh TikTok, hợp tác agency.</span></li>
+      <li><span class="y">2026</span><b>Freelance</b><span>Vlog U50, thời trang AI, Việt hoá mỹ phẩm, Roblox. Hợp tác agency.</span></li>
     </ul>
     <div class="stats">
-      <div class="stat"><div class="n" data-to="6" data-dec="0" data-suf="">6<em>+</em></div><span class="it">năm</span><p>Làm sản xuất video, từ 2019 đến nay</p><span class="src">2019 – 2026 · 6 nơi làm</span></div>
-      <div class="stat"><div class="n" data-to="200" data-dec="0" data-suf="K">200K<em>+</em></div><span class="it">followers</span><p>Xây dựng trên 6 kênh TikTok</p><span class="src">Journey · Kim Ngân · Bống Bang…</span></div>
-      <div class="stat"><div class="n" data-to="90" data-dec="0" data-suf="M">90M<em>+</em></div><span class="it">lượt xem</span><p>Cộng từ các video top của các kênh</p><span class="src">Video top 14.2M · Green SM</span></div>
-      <div class="stat"><div class="n" data-to="2.9" data-dec="1" data-suf="M">2.9M<em>+</em></div><span class="it">lượt thích</span><p>Tổng lượt thích trên TikTok</p><span class="src">TikTok · tháng 10/2026</span></div>
+      <div class="stat"><div class="n" data-to="6" data-dec="0" data-suf="">6<em>+</em></div><span class="it">năm</span><p>Làm video từ 2019</p></div>
+      <div class="stat"><div class="n" data-to="200" data-dec="0" data-suf="K">200K<em>+</em></div><span class="it">followers</span><p>Trên 6 kênh TikTok</p></div>
+      <div class="stat"><div class="n" data-to="90" data-dec="0" data-suf="M">90M<em>+</em></div><span class="it">lượt xem</span><p>Từ các video top</p></div>
+      <div class="stat"><div class="n" data-to="2.9" data-dec="1" data-suf="M">2.9M<em>+</em></div><span class="it">lượt thích</span><p>Tổng trên TikTok</p></div>
     </div>
-    <p class="note">Số liệu lấy từ trang TikTok của từng kênh, tháng 10/2026.</p>
+    <p class="note">Số liệu từ trang TikTok từng kênh, tháng 10/2026.</p>
   </div>
 </section>
 
@@ -804,30 +805,30 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
   <div class="wrap">
     <div class="sechead"><div class="sec"><span class="no">07</span><span class="st"><b>Kỹ năng &amp; Dịch vụ</b><span class="cap">Skills · Services</span></span></div></div>
    <div class="pane" id="services" data-tab="Dịch vụ">
-    <div class="head"><h2>Cần làm video gì, chọn một kiểu hợp tác</h2>
-      <div class="aside"><b>Báo giá theo brief</b>bấm từng mục để xem chi tiết</div></div>
+    <div class="head"><h2>Bốn kiểu hợp tác</h2>
+      <div class="aside"><b>Báo giá theo brief</b>bấm để xem chi tiết</div></div>
     <div class="svc">
       <details open><summary><span class="k">Theo dự án</span><h3>Quay dựng video ads</h3><span class="pl"></span></summary>
-        <div class="dd"><ul><li>Video quảng cáo sản phẩm 9:16 và 16:9</li><li>Hook, product demo, ASMR, UGC</li><li>Nhiều bản hook để test quảng cáo</li><li>Màu, chữ động, nhạc và SFX trọn gói</li></ul><a class="cta" href="#contact">Nhận báo giá</a></div></details>
+        <div class="dd"><ul><li>Hook, demo, ASMR, UGC · 9:16 và 16:9</li><li>Nhiều bản hook để test</li><li>Màu, chữ, nhạc, SFX trọn gói</li></ul><a class="cta" href="#contact">Nhận báo giá</a></div></details>
       <details><summary><span class="k">Theo tháng</span><h3>Dựng video gói tháng</h3><span class="pl"></span></summary>
-        <div class="dd"><ul><li>Số video cố định mỗi tháng: vlog, review, affiliate</li><li>Giữ một phong cách dựng cho cả kênh</li><li>Phụ đề tiếng Việt, cắt theo nhạc</li><li>Có lượt chỉnh sửa cho từng video</li></ul><a class="cta" href="#contact">Nhận báo giá</a></div></details>
+        <div class="dd"><ul><li>Số video cố định mỗi tháng</li><li>Một phong cách dựng cho cả kênh</li><li>Có lượt chỉnh sửa mỗi video</li></ul><a class="cta" href="#contact">Nhận báo giá</a></div></details>
       <details><summary><span class="k">Dài hạn</span><h3>Xây kênh TikTok</h3><span class="pl"></span></summary>
-        <div class="dd"><ul><li>Lên ý tưởng, kịch bản theo tuần</li><li>Quay, dựng, đăng và theo dõi số liệu</li><li>Đã làm 6 kênh F&amp;B, lifestyle, brand</li><li>Hơn 200K followers trên các kênh đã xây</li></ul><a class="cta" href="#contact">Nhận báo giá</a></div></details>
+        <div class="dd"><ul><li>Ý tưởng, kịch bản theo tuần</li><li>Quay, dựng, đăng, theo dõi số liệu</li><li>Đã xây 6 kênh, 200K+ followers</li></ul><a class="cta" href="#contact">Nhận báo giá</a></div></details>
       <details><summary><span class="k">AI</span><h3>Video AI &amp; Việt hoá</h3><span class="pl"></span></summary>
-        <div class="dd"><ul><li>Cảnh quay, người mẫu AI bằng Veo / Google Flow</li><li>Việt hoá video nước ngoài: xoá chữ, giọng Việt AI</li><li>Khớp khẩu hình, làm lại phụ đề</li><li>Hậu kỳ cắt lỗi AI như video thật</li></ul><a class="cta" href="#contact">Nhận báo giá</a></div></details>
+        <div class="dd"><ul><li>Người mẫu, cảnh quay AI bằng Veo</li><li>Việt hoá: xoá chữ, giọng Việt AI, khớp miệng</li><li>Hậu kỳ cắt lỗi AI</li></ul><a class="cta" href="#contact">Nhận báo giá</a></div></details>
     </div>
    </div>
    <div class="pane" id="skillset" data-tab="Kỹ năng &amp; công cụ" hidden>
     <div class="head"><h2>Làm được gì trong một dự án video</h2></div>
     <div class="skills">
       <ul class="sk">
-        <li><b>Ý tưởng &amp; kịch bản</b><span>Lên concept, hook, kịch bản cho ads và kênh TikTok</span></li>
-        <li><b>Quay phim</b><span>Máy ảnh chuyên nghiệp và điện thoại, quay sản phẩm</span></li>
-        <li><b>Editing</b><span>Nhịp dựng, hook, phụ đề, dựng theo nhạc</span></li>
-        <li><b>Color grading</b><span>Chỉnh màu cho sản phẩm, phim và MV</span></li>
-        <li><b>2D animation</b><span>Motion text, graphics, title cho video</span></li>
-        <li><b>Sound design</b><span>SFX, nhạc nền, mix âm thanh</span></li>
-        <li><b>AI video</b><span>Sản xuất video ads có dùng AI</span></li>
+        <li><b>Ý tưởng &amp; kịch bản</b><span>Concept, hook, kịch bản ads và TikTok</span></li>
+        <li><b>Quay phim</b><span>Máy ảnh, điện thoại, quay sản phẩm</span></li>
+        <li><b>Editing</b><span>Nhịp dựng, hook, phụ đề, theo nhạc</span></li>
+        <li><b>Color grading</b><span>Sản phẩm, phim, MV</span></li>
+        <li><b>2D animation</b><span>Motion text, graphics, title</span></li>
+        <li><b>Sound design</b><span>SFX, nhạc nền, mix</span></li>
+        <li><b>AI video</b><span>Video ads dùng AI</span></li>
       </ul>
       <div class="tools">
         <div><div class="cap" style="margin-bottom:10px">Phần mềm</div>
@@ -849,7 +850,7 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
         <div class="sec"><span class="no">08</span><span class="st"><b>Liên hệ</b><span class="cap">Contact</span></span></div>
         <h2 class="ask">Cần video ra đơn, hay cần người <span class="it">chăm kênh?</span></h2>
         <div class="who2" style="font-weight:800;font-size:clamp(18px,1.8vw,24px);margin-top:6px">Nguyễn Duy Việt Tuấn <span class="it" style="font-size:1.2em">— video producer &amp; editor</span></div>
-        <p style="color:#c9d3e6;max-width:44ch;margin:8px 0 0">Nhận dự án quay dựng, video ads, xây kênh TikTok và hợp tác agency.</p>
+        
       </div>
       <div class="r">
         <div class="ci"><span class="it">Email</span><div class="v"><strong id="em">nguyenduyviettuan@gmail.com</strong><button class="copy" data-copy="em">Sao chép</button></div></div>

@@ -72,7 +72,7 @@ button{font:inherit;color:inherit}
 .stage{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
 .track{display:flex;height:100%}
 @media (prefers-reduced-motion:reduce){.track{transition:none}}
-.slide{flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;padding-block:clamp(20px,4vh,48px);
+.slide{flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;padding-block:clamp(28px,5vh,56px);
   padding-left:var(--gut-l);padding-right:var(--gut-r)}
 .wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(18px,3vh,32px);min-height:100%}
 .head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 32px;align-items:end}
@@ -91,7 +91,7 @@ figcaption{display:flex;flex-direction:column;gap:6px}
 figcaption .t{font-weight:700;font-size:14px}
 figcaption .t .it{font-size:17px;margin-left:4px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
   padding:5px 9px 5px 8px;background:var(--navy);border:1px solid rgba(168,200,242,.55);color:var(--paper)}
 .chip::before{content:"";width:5px;height:5px;background:var(--pastel)}
 .row{display:grid;gap:clamp(12px,2vw,24px)}
@@ -137,7 +137,7 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .chan dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:12px 0;font-size:13px}
 .chan dt{color:var(--muted)}
 .chan dd{margin:0;font-weight:800;font-variant-numeric:tabular-nums}
-.chan dd.top{color:var(--pastel)}
+.chan dd.top{color:var(--pastel);display:block;padding:0;border:0}
 
 /* ảnh chân dung: ảnh in, viền pastel lệch */
 .portrait{position:relative;isolation:isolate;width:clamp(104px,9vw,140px);aspect-ratio:4/5;margin:0 0 22px;max-width:100%}
@@ -150,11 +150,11 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .ailab .pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,18px)}
 .prompt{margin:4px 0 0;font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:12px;line-height:1.6;color:var(--muted);
   border-left:2px solid var(--pastel);padding:4px 0 4px 12px;max-width:60ch}
-.tag{position:absolute;top:10px;left:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 8px;
+.tag{position:absolute;top:10px;left:10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 8px;
   background:rgba(7,8,11,.7);border:1px solid var(--line)}
 .tag.on{background:var(--navy);border-color:rgba(168,200,242,.6)}
 .snd{position:absolute;right:10px;bottom:12px;border:1px solid rgba(168,200,242,.6);background:rgba(7,8,11,.65);padding:6px 10px;
-  font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:background-color .4s var(--ease)}
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:background-color .4s var(--ease)}
 .snd:hover,.snd[aria-pressed="true"]{background:var(--navy-2)}
 
 /* phim */
@@ -189,7 +189,7 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .edu b{display:block}
 
 /* liên hệ */
-.contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);flex:1;align-items:stretch;margin-inline:calc(-1 * var(--gut-l)) calc(-1 * var(--gut-r));margin-block:calc(-1 * clamp(20px,4vh,48px))}
+.contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);flex:1;align-items:stretch;margin-inline:calc(-1 * var(--gut-l)) calc(-1 * var(--gut-r));margin-block:calc(-1 * clamp(28px,5vh,56px))}
 .contact .l{padding:clamp(28px,6vh,72px) var(--gut-r) clamp(28px,6vh,72px) var(--gut-l);display:flex;flex-direction:column;justify-content:center;gap:10px}
 .contact .l h2{margin:0;font-size:clamp(40px,6vw,84px);line-height:1;font-weight:800;letter-spacing:-.02em}
 .contact .r{background:var(--navy);padding:clamp(28px,6vh,72px) var(--gut-r) clamp(28px,6vh,72px) clamp(20px,4vw,56px);display:flex;flex-direction:column;justify-content:center;gap:26px}
@@ -231,7 +231,7 @@ figcaption .t .it{font-size:17px;margin-left:4px}
 .tlbar button i::after{content:"";position:absolute;inset:0;border-radius:3px;background:var(--pastel);transform:scaleX(var(--p,0));transform-origin:left;
   transition:transform .8s var(--ease-io),background-color .8s var(--ease-io)}
 .tlbar button.done i::after{opacity:.45}
-.tlbar button span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tlbar button span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tlbar button span b{font-weight:800;color:var(--paper);margin-right:6px;font-variant-numeric:tabular-nums}
 .tlbar button[aria-current="true"] span{color:var(--paper)}
 .tlbar button[aria-current="true"] span b{color:var(--pastel)}
@@ -385,19 +385,20 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 @keyframes marq{to{transform:translateX(-50%)}}
 
 /* timeline dựng phim dưới showreel */
-.edl{margin-top:12px;border:1px solid var(--line);background:#0a0d15;font-size:10.5px;user-select:none}
+.edl{margin-top:12px;border:1px solid var(--line);background:#0a0d15;font-size:11px;user-select:none}
 .edl .hd{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--line);color:var(--muted);letter-spacing:.06em}
 .edl .hd b{color:var(--pastel);font-weight:700;font-variant-numeric:tabular-nums;font-size:12px;letter-spacing:.02em}
 .edl .body{display:grid;grid-template-columns:34px minmax(0,1fr)}
 .edl .lanes{position:relative}
 .edl .heads div,.edl .ln{height:20px;border-bottom:1px solid #161d2d}
-.edl .heads div{display:grid;place-items:center;font-weight:700;color:var(--muted);border-right:1px solid var(--line);font-size:9.5px;letter-spacing:.06em}
+.edl .heads div{display:grid;place-items:center;font-weight:700;color:var(--muted);border-right:1px solid var(--line);font-size:11px;letter-spacing:.06em}
 .edl .heads .ru,.edl .ln.ru{height:16px}
 .edl .ln{position:relative}
-.edl .ln.ru span{position:absolute;top:0;bottom:0;border-left:1px solid #2a3550;padding-left:3px;font-size:8.5px;line-height:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.edl .ln.ru{overflow:hidden}
+.edl .ln.ru span{position:absolute;top:0;bottom:0;border-left:1px solid #2a3550;padding-left:3px;font-size:11px;line-height:14px;color:var(--muted);font-variant-numeric:tabular-nums}
 .edl .ln.ru span.mi{border-left-color:#1c2539;height:5px;top:auto}
 .edl .cl{position:absolute;top:2px;bottom:2px;border-radius:2px;padding:0 5px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;
-  font-size:9.5px;font-weight:700;color:var(--ink);border:0;cursor:pointer;transition:filter .3s var(--ease)}
+  font-size:11px;font-weight:700;color:var(--ink);border:0;cursor:pointer;transition:filter .3s var(--ease)}
 .edl .cl:hover{filter:brightness(1.18)}
 .edl .v2 .cl{background:#c6b6f0}
 .edl .v1 .cl{background:var(--pastel)}
@@ -408,7 +409,7 @@ figure:hover .vid video,.chan:hover .vid video{transform:scale(1.03)}
 .edl .ph::before{content:"";position:absolute;top:0;left:-4px;border:4.5px solid transparent;border-top:6px solid #e5484d}
 
 /* số liệu: nguồn từng con số */
-.stat .src{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#7f95c4;margin-top:4px}
+.stat .src{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#7f95c4;margin-top:4px}
 
 /* dịch vụ */
 .svc{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
@@ -515,7 +516,7 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
         <h1>Nguyễn Duy<br>Việt Tuấn</h1>
         <div class="it role">video producer &amp; editor</div>
         <p class="pitch">Edits that make people <span class="it">stop scrolling,</span> shoots that make products <span class="it">sell.</span></p>
-        <p class="lede">6+ years making video: product ads, AI video ads, TikTok channel growth for F&amp;B and brands, short films and music videos. From concept and script to shooting, editing, color and sound.</p>
+        <p class="lede">6+ years of product ads, AI video, TikTok channels, film and music video. From concept to final cut.</p>
         <div class="ctas"><a class="cta" href="#journey">See projects →</a><a class="cta ghost" href="#services">Services &amp; quotes</a></div>
       </div>
       <div class="reel">
@@ -530,7 +531,7 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
             <div class="lanes"><div class="ln ru" id="edlRu"></div><div class="ln v2" id="edlV2"></div><div class="ln v1" id="edlV1"></div><div class="ln a1" id="edlA1"></div><div class="ln a2" id="edlA2"></div><div class="ph" id="edlPh"></div></div>
           </div>
         </div>
-        <div class="tc"><span>Click a clip on the timeline to jump there</span><span>Press → to browse sections</span></div>
+        <div class="tc"><span>Click a clip to jump there</span><span>Press → for more</span></div>
       </div>
     </div>
     <div class="strip">
@@ -547,9 +548,9 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
     <div class="sechead"><div class="sec"><span class="no">02</span><span class="st"><b>Performance Ads</b><span class="cap">Journey · Crossian · AI Lab</span></span></div></div>
    <div class="pane" id="journey" data-tab="Journey Official">
     <div class="head">
-      <h2>Tech product ads for Journey Official</h2>
+      <h2>Tech ads for Journey Official</h2>
       <div class="aside"><b>107K followers</b>video top 6.5M view</div>
-      <p>Video ads for Journey and Alogic tech accessories (international markets): hooks, product demos, ASMR. Also led the Organic team making TikTok and Instagram content · 2023 – 2025.</p>
+      <p>Hooks, product demos and ASMR for Journey and Alogic. Organic team lead · 2023 – 2025.</p>
     </div>
     <div class="row r4 phones">
       <figure><div class="vid v9"><video data-loop src="j-axie.mp4" poster="j-axie.jpg" muted loop playsinline preload="none"></video></div>
@@ -566,7 +567,7 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
     <div class="head">
       <h2>AI video ads at Crossian</h2>
       <div class="aside"><b>Editor</b>2025 – 2026</div>
-      <p>Performance video ads made with AI for Crossian products, plus a 4K brand film and the year-end event film.</p>
+      <p>AI-made performance ads, a 4K brand film and the year-end event film.</p>
     </div>
     <div class="row r3 phones">
       <figure><div class="vid v9"><video data-loop src="c-holdme.mp4" poster="c-holdme.jpg" muted loop playsinline preload="none"></video></div>
@@ -578,30 +579,30 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
     </div>
     <div class="row r2" style="max-width:1000px">
       <figure><div class="vid v16"><video data-loop src="c-mv.mp4" poster="c-mv.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">MV Crossian<span class="it">4K brand film</span></span><div class="chips"><span class="chip">Cinematography</span><span class="chip">Color grading</span></div></figcaption></figure>
+        <figcaption><span class="t">MV Crossian<span class="it">4K brand film</span></span><div class="chips"><span class="chip">Cinematography</span></div></figcaption></figure>
       <figure><div class="vid v16"><video data-loop src="c-banana.mp4" poster="c-banana.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Banana Land<span class="it">year-end event film</span></span><div class="chips"><span class="chip">2D graphics</span><span class="chip">Edit</span></div></figcaption></figure>
+        <figcaption><span class="t">Banana Land<span class="it">year-end event film</span></span><div class="chips"><span class="chip">2D graphics</span></div></figcaption></figure>
     </div>
    </div>
    <div class="pane" id="ailab" data-tab="AI Lab · Gemini Veo" hidden>
     <div class="head">
-      <h2>AI video: from prompt to finished edit</h2>
+      <h2>AI video: from prompt to final cut</h2>
       <div class="aside"><b>Prompt → Veo → post-production</b>Oct 2026</div>
-      <p>Shots generated with Gemini (Veo), then finished like real footage: picking the best moments, cutting AI glitches, grading, adding type, music and SFX.</p>
+      <p>Shots from Veo, finished like real footage: AI glitches cut, grade, type, music, SFX.</p>
     </div>
     <div class="ailab">
       <figure>
         <div class="vid v16"><video data-loop src="ai-intro.mp4" poster="ai-intro.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Behind the timeline<span class="it">intro showreel 2026</span></span>
-          <div class="chips"><span class="chip">AI video</span><span class="chip">Prompt design</span></div>
-          <p class="prompt">"Cinematic slow dolly-in on a video editor's desk at night… deep navy ambient light, soft pastel blue rim light… 35mm film look."</p></figcaption>
+          <div class="chips"><span class="chip">Prompt design</span></div>
+          <p class="prompt">"Slow dolly-in on an editor's desk at night… 35mm film look."</p></figcaption>
       </figure>
       <div class="pair">
         <figure><div class="vid v9"><video data-loop src="ai-raw.mp4" poster="ai-raw.jpg" muted loop playsinline preload="none"></video><span class="tag">Raw AI</span></div>
           <figcaption><span class="t">Wireless charging stand<span class="it">raw Veo</span></span><div class="chips"><span class="chip">10s · 1 prompt</span></div></figcaption></figure>
         <figure><div class="vid v9"><video data-loop id="aiEdit" src="ai-edit.mp4" poster="ai-edit.jpg" muted loop playsinline preload="none"></video><span class="tag on">Edited</span>
           <button class="snd" data-target="aiEdit" aria-pressed="false">Sound on</button></div>
-          <figcaption><span class="t">Concept ad<span class="it">8s, post-produced</span></span><div class="chips"><span class="chip">AI glitch cut</span><span class="chip">Text + SFX</span></div></figcaption></figure>
+          <figcaption><span class="t">Concept ad<span class="it">8s, post-produced</span></span><div class="chips"><span class="chip">AI glitch cut</span></div></figcaption></figure>
       </div>
     </div>
    </div>
@@ -613,34 +614,34 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
   <div class="wrap">
     <div class="head">
       <div class="sec"><span class="no">03</span><span class="st"><b>TikTok channels</b><span class="cap">F&amp;B · Lifestyle · Brand · 2025 – 2026</span></span></div>
-      <h2>6 TikTok channels: concept, shooting, editing and growth</h2>
-      <div class="aside"><b>F&amp;B · Lifestyle · Brand</b>figures from each profile</div>
+      <h2>6 TikTok channels: concept, shoot, edit</h2>
+      <div class="aside"><b>200K+ followers</b>figures from each profile</div>
     </div>
     <div class="chans">
       <article class="chan"><div class="vid v9"><video data-loop src="t-bongbang.mp4" poster="t-bongbang.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">F&amp;B</div><h3>Bánh mì Bống Bang</h3><span class="it h">@banhmi.bongngbang75</span>
           <dl><dt>Followers</dt><dd>19.3K</dd><dt>Likes</dt><dd>426.9K</dd><dt>Video top</dt><dd class="top">3.3M view</dd></dl>
-          <div class="chips"><span class="chip">Concept &amp; script</span><span class="chip">Shoot</span></div></div></article>
+          <div class="chips"><span class="chip">Concept &amp; script</span></div></div></article>
       <article class="chan"><div class="vid v9"><video data-loop src="t-bongcha.mp4" poster="t-bongcha.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">F&amp;B</div><h3>BôngCha</h3><span class="it h">@bongcha75</span>
           <dl><dt>Followers</dt><dd>4,966</dd><dt>Likes</dt><dd>72K</dd><dt>Video top</dt><dd class="top">470.3K view</dd></dl>
-          <div class="chips"><span class="chip">Product styling</span><span class="chip">Edit</span></div></div></article>
+          <div class="chips"><span class="chip">Product styling</span></div></div></article>
       <article class="chan"><div class="vid v9"><video data-loop src="t-kimngan.mp4" poster="t-kimngan.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">Lifestyle</div><h3>Kim Ngân 9Life</h3><span class="it h">@kimngan.9life</span>
           <dl><dt>Followers</dt><dd>55.8K</dd><dt>Likes</dt><dd>1.1M</dd><dt>Video top</dt><dd class="top">2.6M view</dd></dl>
-          <div class="chips"><span class="chip">Storytelling</span><span class="chip">Edit</span></div></div></article>
+          <div class="chips"><span class="chip">Storytelling</span></div></div></article>
       <article class="chan"><div class="vid v9"><video data-loop src="t-hadon.mp4" poster="t-hadon.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">F&amp;B</div><h3>Hà Đôn</h3><span class="it h">@hadon.fnb</span>
           <dl><dt>Followers</dt><dd>3,948</dd><dt>Likes</dt><dd>132.2K</dd><dt>Video top</dt><dd class="top">2.8M view</dd></dl>
-          <div class="chips"><span class="chip">Subtitle design</span><span class="chip">Edit</span></div></div></article>
+          <div class="chips"><span class="chip">Subtitle design</span></div></div></article>
       <article class="chan"><div class="vid v9"><video data-loop src="t-greensm.mp4" poster="t-greensm.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">Brand</div><h3>Green SM Platform</h3><span class="it h">@greensm.platform</span>
           <dl><dt>Followers</dt><dd>17.8K</dd><dt>Likes</dt><dd>131.1K</dd><dt>Video top</dt><dd class="top">14.2M view</dd></dl>
-          <div class="chips"><span class="chip">Talking-head edit</span><span class="chip">Color</span></div></div></article>
+          <div class="chips"><span class="chip">Talking-head edit</span></div></div></article>
       <article class="chan"><div class="vid v9"><video data-loop src="t-journey.mp4" poster="t-journey.jpg" muted loop playsinline preload="none"></video></div>
         <div><div class="cap cat">Brand</div><h3>Journey</h3><span class="it h">@thejrnyofficial</span>
           <dl><dt>Followers</dt><dd>107K</dd><dt>Likes</dt><dd>1.1M</dd><dt>Video top</dt><dd class="top">6.5M view</dd></dl>
-          <div class="chips"><span class="chip">Product demo</span><span class="chip">2D motion</span></div></div></article>
+          <div class="chips"><span class="chip">Product demo</span></div></div></article>
     </div>
   </div>
 </section>
@@ -655,81 +656,81 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
     <div class="head">
       <h2>Vlogs &amp; transformations for a lifestyle channel (women 50+)</h2>
       <div class="aside"><b>25+ video</b>Oct – Nov 2026</div>
-      <p>Day-in-the-life vlogs (early wake-up, workout, market, cooking) and before/after transformation videos from iPhone 4K HDR footage: beat-cut, zoom reframing, Vietnamese subtitles, transitions.</p>
+      <p>Day-in-the-life vlogs and before/after transformations from iPhone 4K footage: beat cuts, reframing, Vietnamese subtitles.</p>
     </div>
     <div class="row r4 phones">
       <figure><div class="vid v9"><video data-loop src="n-u50-vlog3.mp4" poster="n-u50-vlog3.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Morning vlog<span class="it">cooking</span></span><div class="chips"><span class="chip">Beat-sync edit</span><span class="chip">Subtitle</span></div></figcaption></figure>
+        <figcaption><span class="t">Morning vlog<span class="it">cooking</span></span><div class="chips"><span class="chip">Beat-sync edit</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-u50-vlog1.mp4" poster="n-u50-vlog1.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">5 a.m. vlog<span class="it">morning routine</span></span><div class="chips"><span class="chip">Storytelling</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-u50-bh7.mp4" poster="n-u50-bh7.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Transformation<span class="it">before / after</span></span><div class="chips"><span class="chip">Transition FX</span><span class="chip">Zoom reframe</span></div></figcaption></figure>
+        <figcaption><span class="t">Transformation<span class="it">before / after</span></span><div class="chips"><span class="chip">Transition FX</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-u50-th1.mp4" poster="n-u50-th1.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Transformation mix<span class="it">4 outfits</span></span><div class="chips"><span class="chip">Speed ramp</span><span class="chip">Color</span></div></figcaption></figure>
+        <figcaption><span class="t">Transformation mix<span class="it">4 outfits</span></span><div class="chips"><span class="chip">Speed ramp</span></div></figcaption></figure>
       </div>
    </div>
    <div class="pane" id="fashion" data-tab="Men’s fashion · AI" hidden>
     <div class="head">
       <h2>Men’s fashion affiliate videos with AI models</h2>
       <div class="aside"><b>40+ video</b>TikTok Shop</div>
-      <p>From product photos to masked AI models and scenes in Google Flow / Veo, cut into vertical videos with hooks, subtitles and trending music, plus hook variants for ad testing.</p>
+      <p>From product photos to AI models and scenes in Veo, cut into hook variants for ad testing.</p>
     </div>
     <div class="row r4 phones">
       <figure><div class="vid v9"><video data-loop src="n-fa-kaki.mp4" poster="n-fa-kaki.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Khaki jacket<span class="it">transformation</span></span><div class="chips"><span class="chip">AI model (Veo)</span><span class="chip">Hook</span></div></figcaption></figure>
+        <figcaption><span class="t">Khaki jacket<span class="it">transformation</span></span><div class="chips"><span class="chip">AI model (Veo)</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-fa-hoguom.mp4" poster="n-fa-hoguom.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Cropped jacket<span class="it">Hoan Kiem Lake</span></span><div class="chips"><span class="chip">AI location</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-fa-3mau.mp4" poster="n-fa-3mau.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">3 colors<span class="it">trending music</span></span><div class="chips"><span class="chip">Music sync</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-fa-gemini.mp4" poster="n-fa-gemini.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Gemini Pro cut<span class="it">30s</span></span><div class="chips"><span class="chip">Prompt design</span><span class="chip">Hook variants</span></div></figcaption></figure>
+        <figcaption><span class="t">Gemini Pro cut<span class="it">30s</span></span><div class="chips"><span class="chip">Hook variants</span></div></figcaption></figure>
       </div>
    </div>
    <div class="pane" id="beauty" data-tab="Beauty · Localization" hidden>
     <div class="head">
       <h2>Localizing foreign beauty reviews into Vietnamese</h2>
       <div class="aside"><b>Azelaic Acid 12%</b>Nov 2026</div>
-      <p>Tagalog / English / Chinese reviews with burned-in text and watermarks removed, a lip-synced Vietnamese AI voice, new subtitles, motion text and music.</p>
+      <p>Old text and watermarks removed, lip-synced Vietnamese AI voice, new subtitles and music.</p>
     </div>
     <div class="row r4 phones">
       <figure><div class="vid v9"><video data-loop src="n-mp-25s.mp4" poster="n-mp-25s.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Review 25s<span class="it">Vietnamese AI voice</span></span><div class="chips"><span class="chip">AI voice VI</span><span class="chip">Lip sync</span></div></figcaption></figure>
+        <figcaption><span class="t">Review 25s<span class="it">Vietnamese AI voice</span></span><div class="chips"><span class="chip">AI voice VI</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-mp-v11.mp4" poster="n-mp-v11.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Infographic<span class="it">12% Azelaic</span></span><div class="chips"><span class="chip">Motion text</span><span class="chip">2D graphics</span></div></figcaption></figure>
+        <figcaption><span class="t">Infographic<span class="it">12% Azelaic</span></span><div class="chips"><span class="chip">Motion text</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-mp-v1.mp4" poster="n-mp-v1.jpg" muted loop playsinline preload="none"></video></div>
         <figcaption><span class="t">Model review<span class="it">hook/body/CTA</span></span><div class="chips"><span class="chip">Ad structure</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-mp-c53.mp4" poster="n-mp-c53.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Review 53s<span class="it">old text removed</span></span><div class="chips"><span class="chip">Text removal</span><span class="chip">Subtitle</span></div></figcaption></figure>
+        <figcaption><span class="t">Review 53s<span class="it">old text removed</span></span><div class="chips"><span class="chip">Text removal</span></div></figcaption></figure>
       </div>
    </div>
    <div class="pane" id="antaaura" data-tab="Anta Aura · VJ" hidden>
     <div class="head">
-      <h2>Presenter-led sales video for Anta Aura neck cream</h2>
+      <h2>Presenter-led sales video · Anta Aura</h2>
       <div class="aside"><b>55s · 4K vertical</b>Nov 2026</div>
-      <p>Test video from the brand’s brief: a comic situational hook, presenter to camera, ingredient b-roll and clinical proof, CTA. Cut on every line of dialogue, reframed per phrase, SFX on the exact word, all text inside the TikTok safe zone.</p>
+      <p>Test video from the brief: comic hook, presenter, ingredient b-roll, clinical proof, CTA. Cut on every line.</p>
     </div>
     <div class="row r4 phones">
       <figure><div class="vid v9"><video data-loop src="n-aa-hook.mp4" poster="n-aa-hook.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Hook<span class="it">tug-of-war skit</span></span><div class="chips"><span class="chip">Hook editing</span><span class="chip">SFX</span></div></figcaption></figure>
+        <figcaption><span class="t">Hook<span class="it">tug-of-war skit</span></span><div class="chips"><span class="chip">Hook editing</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-aa-vj.mp4" poster="n-aa-vj.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Presenter<span class="it">cut on dialogue</span></span><div class="chips"><span class="chip">Dialogue cut</span><span class="chip">Reframe 4K</span></div></figcaption></figure>
+        <figcaption><span class="t">Presenter<span class="it">cut on dialogue</span></span><div class="chips"><span class="chip">Dialogue cut</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-aa-active.mp4" poster="n-aa-active.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Ingredients<span class="it">icon + b-roll</span></span><div class="chips"><span class="chip">Motion graphics</span><span class="chip">B-roll</span></div></figcaption></figure>
+        <figcaption><span class="t">Ingredients<span class="it">icon + b-roll</span></span><div class="chips"><span class="chip">Motion graphics</span></div></figcaption></figure>
       <figure><div class="vid v9"><video data-loop src="n-aa-proof.mp4" poster="n-aa-proof.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Proof<span class="it">before / after</span></span><div class="chips"><span class="chip">Info card</span><span class="chip">Color</span></div></figcaption></figure>
+        <figcaption><span class="t">Proof<span class="it">before / after</span></span><div class="chips"><span class="chip">Info card</span></div></figcaption></figure>
       </div>
    </div>
    <div class="pane" id="roblox" data-tab="Roblox TTS Story" hidden>
     <div class="head">
-      <h2>Roblox TTS Story — a 32-minute 16:9 YouTube video</h2>
+      <h2>Roblox TTS Story · 32-minute YouTube video</h2>
       <div class="aside"><b>Premiere Pro</b>layered project</div>
-      <p>Built from the script and per-character voice lines: Roblox characters over real photo backgrounds, motion from editor notes, editable dialogue graphics, the team’s SFX and music library, and a script check exported to Excel.</p>
+      <p>Built from the script and per-character voices: motion from notes, editable dialogue text, SFX and music.</p>
     </div>
     <div class="row r2">
       <figure><div class="vid v16"><video data-loop src="n-rb-1.mp4" poster="n-rb-1.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Locker room<span class="it">opening scene</span></span><div class="chips"><span class="chip">Long-form edit</span><span class="chip">Character motion</span></div></figcaption></figure>
+        <figcaption><span class="t">Locker room<span class="it">opening scene</span></span><div class="chips"><span class="chip">Long-form edit</span></div></figcaption></figure>
       <figure><div class="vid v16"><video data-loop src="n-rb-2.mp4" poster="n-rb-2.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Bedroom<span class="it">character dialogue</span></span><div class="chips"><span class="chip">TTS story</span><span class="chip">Premiere layered</span></div></figcaption></figure>
+        <figcaption><span class="t">Bedroom<span class="it">character dialogue</span></span><div class="chips"><span class="chip">Premiere layered</span></div></figcaption></figure>
       </div>
    </div>
   </div>
@@ -744,23 +745,23 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
     <div class="head">
       <h2>Web drama for SVM Group, parody MV with comedian Quang Thắng</h2>
       <div class="aside"><b>SVM Group</b>2022 – 2023</div>
-      <p>Channel host and film production lead at SVM Group. Earlier I produced videos with comedian Quang Thắng and supported the crew of the TV show “Việc Tử Tế”.</p>
+      <p>Channel host and film production at SVM Group. Worked with comedian Quang Thắng and the TV show “Việc Tử Tế”.</p>
     </div>
     <div class="film">
       <figure><div class="vid v16"><video data-loop src="f-drama1.mp4" poster="f-drama1.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Web drama<span class="it">SVM Group · ep. 908</span></span><div class="chips"><span class="chip">Production</span><span class="chip">Color grading</span></div></figcaption></figure>
+        <figcaption><span class="t">Web drama<span class="it">SVM Group · ep. 908</span></span><div class="chips"><span class="chip">Production</span></div></figcaption></figure>
       <figure><div class="vid v16"><video data-loop src="f-drama2.mp4" poster="f-drama2.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Web drama<span class="it">SVM Group · ep. 904</span></span><div class="chips"><span class="chip">Production</span><span class="chip">Edit</span></div></figcaption></figure>
+        <figcaption><span class="t">Web drama<span class="it">SVM Group · ep. 904</span></span><div class="chips"><span class="chip">Edit</span></div></figcaption></figure>
       <figure><div class="vid v16"><video data-loop src="f-mv.mp4" poster="f-mv.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">parody MV</span></span><div class="chips"><span class="chip">Music-sync edit</span><span class="chip">Sound design</span></div></figcaption></figure>
+        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">parody MV</span></span><div class="chips"><span class="chip">Music-sync edit</span></div></figcaption></figure>
       <figure><div class="vid v16"><video data-loop src="f-trailer.mp4" poster="f-trailer.jpg" muted loop playsinline preload="none"></video></div>
-        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">official trailer</span></span><div class="chips"><span class="chip">Trailer edit</span><span class="chip">Title design</span></div></figcaption></figure>
+        <figcaption><span class="t">Đại Gia Cái Bang<span class="it">official trailer</span></span><div class="chips"><span class="chip">Trailer edit</span></div></figcaption></figure>
     </div>
    </div>
    <div class="pane" id="freelance" data-tab="Freelance · Agency" hidden>
     <div class="head">
       <h2>Outside projects: agencies and brands</h2>
-      <p>Building TikTok channels, shooting and editing for clients, and producing content with agencies for many brands: gyms, real estate, events, insurance.</p>
+      <p>TikTok channels, shooting and editing for gyms, real estate, events and insurance.</p>
     </div>
     <div class="row r3 phones">
       <figure><div class="vid v9"><video data-loop src="x-ares.mp4" poster="x-ares.jpg" muted loop playsinline preload="none"></video></div>
@@ -782,20 +783,20 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
       <h2>Six years behind the camera and the timeline</h2>
     </div>
     <ul class="tl">
-      <li><span class="y">2019</span><b>Media Staff</b><span>Service ads, internal training and entertainment. Worked with comedian Quang Thắng; supported the TV show “Việc Tử Tế”.</span></li>
-      <li><span class="y">2020</span><b>Entertainment fanpage</b><span>Built the page, ran ads, wrote content and set the growth direction.</span></li>
-      <li><span class="y">2022</span><b>SVM Group</b><span>Channel host, responsible for film production.</span></li>
-      <li><span class="y">2023</span><b>Journey · Alogic</b><span>Tech ads for international companies. Organic team lead.</span></li>
+      <li><span class="y">2019</span><b>Media Staff</b><span>Ads, training and entertainment video. Worked with Quang Thắng and “Việc Tử Tế”.</span></li>
+      <li><span class="y">2020</span><b>Entertainment fanpage</b><span>Built the page, ran ads, wrote content.</span></li>
+      <li><span class="y">2022</span><b>SVM Group</b><span>Channel host, film production.</span></li>
+      <li><span class="y">2023</span><b>Journey · Alogic</b><span>Tech ads for international markets. Organic team lead.</span></li>
       <li><span class="y">2025</span><b>Crossian</b><span>Editor video ads, video AI.</span></li>
-      <li><span class="y">2026</span><b>Freelance</b><span>Lifestyle vlogs, men’s fashion with AI models, beauty localization, Roblox story. TikTok channel building, agency work.</span></li>
+      <li><span class="y">2026</span><b>Freelance</b><span>Lifestyle vlogs, AI fashion, beauty localization, Roblox. Agency work.</span></li>
     </ul>
     <div class="stats">
-      <div class="stat"><div class="n" data-to="6" data-dec="0" data-suf="">6<em>+</em></div><span class="it">years</span><p>Producing video since 2019</p><span class="src">2019 – 2026 · 6 roles</span></div>
-      <div class="stat"><div class="n" data-to="200" data-dec="0" data-suf="K">200K<em>+</em></div><span class="it">followers</span><p>Built across 6 TikTok channels</p><span class="src">Journey · Kim Ngan · Bong Bang…</span></div>
-      <div class="stat"><div class="n" data-to="90" data-dec="0" data-suf="M">90M<em>+</em></div><span class="it">views</span><p>Sum of the channels’ top videos</p><span class="src">Top video 14.2M · Green SM</span></div>
-      <div class="stat"><div class="n" data-to="2.9" data-dec="1" data-suf="M">2.9M<em>+</em></div><span class="it">likes</span><p>Total likes on TikTok</p><span class="src">TikTok · Oct 2026</span></div>
+      <div class="stat"><div class="n" data-to="6" data-dec="0" data-suf="">6<em>+</em></div><span class="it">years</span><p>Making video since 2019</p></div>
+      <div class="stat"><div class="n" data-to="200" data-dec="0" data-suf="K">200K<em>+</em></div><span class="it">followers</span><p>Across 6 TikTok channels</p></div>
+      <div class="stat"><div class="n" data-to="90" data-dec="0" data-suf="M">90M<em>+</em></div><span class="it">views</span><p>From the top videos</p></div>
+      <div class="stat"><div class="n" data-to="2.9" data-dec="1" data-suf="M">2.9M<em>+</em></div><span class="it">likes</span><p>Total on TikTok</p></div>
     </div>
-    <p class="note">Figures taken from each channel’s TikTok profile, October 2026.</p>
+    <p class="note">Figures from each channel’s TikTok profile, October 2026.</p>
   </div>
 </section>
 
@@ -804,30 +805,30 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
   <div class="wrap">
     <div class="sechead"><div class="sec"><span class="no">07</span><span class="st"><b>Skills &amp; Services</b><span class="cap">Skills · Services</span></span></div></div>
    <div class="pane" id="services" data-tab="Services">
-    <div class="head"><h2>Pick the way we work together</h2>
-      <div class="aside"><b>Quoted per brief</b>open each item for details</div></div>
+    <div class="head"><h2>Four ways to work together</h2>
+      <div class="aside"><b>Quoted per brief</b>click to expand</div></div>
     <div class="svc">
       <details open><summary><span class="k">Per project</span><h3>Video ad production</h3><span class="pl"></span></summary>
-        <div class="dd"><ul><li>Product ads in 9:16 and 16:9</li><li>Hook, product demo, ASMR, UGC</li><li>Multiple hook variants for ad testing</li><li>Color, motion text, music and SFX included</li></ul><a class="cta" href="#contact">Get a quote</a></div></details>
+        <div class="dd"><ul><li>Hooks, demos, ASMR, UGC · 9:16 and 16:9</li><li>Hook variants for testing</li><li>Grade, type, music, SFX included</li></ul><a class="cta" href="#contact">Get a quote</a></div></details>
       <details><summary><span class="k">Monthly</span><h3>Monthly editing package</h3><span class="pl"></span></summary>
-        <div class="dd"><ul><li>A fixed number of videos a month: vlogs, reviews, affiliate</li><li>One consistent editing style for the channel</li><li>Subtitles, cuts on the beat</li><li>Revision rounds for every video</li></ul><a class="cta" href="#contact">Get a quote</a></div></details>
+        <div class="dd"><ul><li>A fixed number of videos per month</li><li>One editing style for the channel</li><li>Revision rounds per video</li></ul><a class="cta" href="#contact">Get a quote</a></div></details>
       <details><summary><span class="k">Long-term</span><h3>TikTok channel growth</h3><span class="pl"></span></summary>
-        <div class="dd"><ul><li>Weekly ideas and scripts</li><li>Shoot, edit, post and track the numbers</li><li>6 channels done: F&amp;B, lifestyle, brand</li><li>200K+ followers across the channels built</li></ul><a class="cta" href="#contact">Get a quote</a></div></details>
+        <div class="dd"><ul><li>Weekly concepts and scripts</li><li>Shoot, edit, post, track numbers</li><li>6 channels built, 200K+ followers</li></ul><a class="cta" href="#contact">Get a quote</a></div></details>
       <details><summary><span class="k">AI</span><h3>AI video &amp; localization</h3><span class="pl"></span></summary>
-        <div class="dd"><ul><li>AI shots and models with Veo / Google Flow</li><li>Localizing foreign videos: text removal, AI voice-over</li><li>Lip sync and new subtitles</li><li>Post-production that cuts AI glitches like real footage</li></ul><a class="cta" href="#contact">Get a quote</a></div></details>
+        <div class="dd"><ul><li>AI models and scenes in Veo</li><li>Localization: text removal, AI voice, lip sync</li><li>Post-production that removes AI glitches</li></ul><a class="cta" href="#contact">Get a quote</a></div></details>
     </div>
    </div>
    <div class="pane" id="skillset" data-tab="Skills &amp; tools" hidden>
     <div class="head"><h2>What I bring to a video project</h2></div>
     <div class="skills">
       <ul class="sk">
-        <li><b>Concept &amp; script</b><span>Concepts, hooks and scripts for ads and TikTok channels</span></li>
-        <li><b>Shooting</b><span>Cinema cameras and smartphones, product shooting</span></li>
-        <li><b>Editing</b><span>Pacing, hooks, subtitles, cutting to music</span></li>
-        <li><b>Color grading</b><span>Grading for products, films and music videos</span></li>
-        <li><b>2D animation</b><span>Motion text, graphics and titles</span></li>
-        <li><b>Sound design</b><span>SFX, music and mixing</span></li>
-        <li><b>AI video</b><span>Producing video ads with AI</span></li>
+        <li><b>Concept &amp; script</b><span>Concepts, hooks, scripts for ads and TikTok</span></li>
+        <li><b>Shooting</b><span>Camera, smartphone, product shooting</span></li>
+        <li><b>Editing</b><span>Pacing, hooks, subtitles, cut to music</span></li>
+        <li><b>Color grading</b><span>Products, film, music video</span></li>
+        <li><b>2D animation</b><span>Motion text, graphics, title</span></li>
+        <li><b>Sound design</b><span>SFX, music, mix</span></li>
+        <li><b>AI video</b><span>Video ads made with AI</span></li>
       </ul>
       <div class="tools">
         <div><div class="cap" style="margin-bottom:10px">Software</div>
@@ -849,7 +850,7 @@ figure:hover .vid{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(0
         <div class="sec"><span class="no">08</span><span class="st"><b>Contact</b><span class="cap">Contact</span></span></div>
         <h2 class="ask">Need videos that sell, or someone to <span class="it">run the channel?</span></h2>
         <div class="who2" style="font-weight:800;font-size:clamp(18px,1.8vw,24px);margin-top:6px">Nguyễn Duy Việt Tuấn <span class="it" style="font-size:1.2em">— video producer &amp; editor</span></div>
-        <p style="color:#c9d3e6;max-width:44ch;margin:8px 0 0">Available for shooting and editing, video ads, TikTok channel building and agency collaboration.</p>
+        
       </div>
       <div class="r">
         <div class="ci"><span class="it">Email</span><div class="v"><strong id="em">nguyenduyviettuan@gmail.com</strong><button class="copy" data-copy="em">Copy</button></div></div>
